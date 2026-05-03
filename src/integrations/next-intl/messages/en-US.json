@@ -1,0 +1,46 @@
+{
+  "shadcnComponents": {
+    "breadcrumb": {
+      "navLabel": "Breadcrumb",
+      "more": "More"
+    },
+    "carousel": {
+      "nextSlide": "Next slide",
+      "previousSlide": "Previous slide",
+      "carouselLabel": "Carousel"
+    },
+    "dialog": {
+      "close": "Close"
+    },
+    "command": {
+      "title": "Command palette",
+      "description": "Search for a command to run..."
+    },
+    "pagination": {
+      "navLabel": "Pagination",
+      "previousPage": "Previous",
+      "nextPage": "Next",
+      "goToPreviousPage": "Go to previous page",
+      "goToNextPage": "Go to next page",
+      "morePages": "More pages"
+    },
+    "sheet": {
+      "close": "Close"
+    }
+  },
+  "customComponents": {
+    "themeSwitch": {
+      "label": "Choose a theme",
+      "placeholder": "Theme",
+      "light": "Light",
+      "dark": "Dark",
+      "system": "System"
+    }
+  },
+  "landingPage": {
+    "metadata": {
+      "description": "Professional full-stack starter for building SaaS applications."
+    },
+    "welcome": "Welcome to the {name} page!"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "shadcnComponents": {
+    "breadcrumb": {
+      "navLabel": "Nawigacja",
+      "more": "Więcej"
+    },
+    "carousel": {
+      "nextSlide": "Następny slajd",
+      "previousSlide": "Poprzedni slajd",
+      "carouselLabel": "Karuzela"
+    },
+    "dialog": {
+      "close": "Zamknij"
+    },
+    "command": {
+      "title": "Paleta poleceń",
+      "description": "Wyszukaj polecenie do eykonania..."
+    },
+    "pagination": {
+      "navLabel": "Paginacja",
+      "previousPage": "Wstecz",
+      "nextPage": "Dalej",
+      "goToPreviousPage": "Przejdź do poprzedniej strony",
+      "goToNextPage": "Przejdź do następnej strony",
+      "morePages": "Kolejne strony"
+    },
+    "sheet": {
+      "close": "Zamknij"
+    }
+  },
+  "customComponents": {
+    "themeSwitch": {
+      "label": "Wybierz motyw",
+      "placeholder": "Motyw",
+      "light": "Jasny",
+      "dark": "Ciemny",
+      "system": "System"
+    }
+  },
+  "landingPage": {
+    "metadata": {
+      "description": "Profesjonalny starter dla aplikacji typu SaaS."
+    },
+    "welcome": "Witaj na stronie {name}!"
+  }
+}

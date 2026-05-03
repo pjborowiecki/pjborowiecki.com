@@ -1,11 +1,15 @@
-"use client"
+import type { ComponentProps, JSX } from "react"
 
-import { ThemeProvider as NextThemesProvider } from "next-themes"
-import type { ThemeProviderProps } from "next-themes/dist/types"
+import { ThemeProvider as WrkszThemeProvider } from "@wrksz/themes/next"
 
-export function ThemeProvider({
-  children,
-  ...props
-}: ThemeProviderProps): JSX.Element {
-  return <NextThemesProvider {...props}>{children}</NextThemesProvider>
+import { CONSTANTS } from "~/src/constants"
+
+const THEME_STORAGE_KEY = `${CONSTANTS.APP_NAME}-theme`
+
+export function ThemeProvider({ children, ...props }: Readonly<ComponentProps<typeof WrkszThemeProvider>>): JSX.Element {
+  return (
+    <WrkszThemeProvider storage="localStorage" storageKey={THEME_STORAGE_KEY} defaultTheme="system" disableTransitionOnChange {...props}>
+      {children}
+    </WrkszThemeProvider>
+  )
 }
