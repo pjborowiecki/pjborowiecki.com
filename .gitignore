@@ -56,6 +56,7 @@ next-env.d.ts
 
 # AI tools
 opensrc/
+graphify-out/
 
 # misc
 .DS_Store
