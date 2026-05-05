@@ -3,7 +3,13 @@ import type { JSX } from "react"
 
 import { getTranslations } from "next-intl/server"
 
-import { CONSTANTS } from "~/src/constants"
+import { AboutSection } from "~/src/components/custom/sections/about-section"
+import { ContactSection } from "~/src/components/custom/sections/contact-section"
+import { HeroSection } from "~/src/components/custom/sections/hero-section"
+import { InsightsSection } from "~/src/components/custom/sections/insights-section"
+import { PhilosophySection } from "~/src/components/custom/sections/philosophy"
+import { SkillsSection } from "~/src/components/custom/sections/skills-section"
+import { WorkSection } from "~/src/components/custom/sections/work-section"
 
 export async function generateMetadata({ params }: Readonly<PageProps<"/[locale]">>): Promise<Metadata> {
   const { locale } = await params
@@ -14,14 +20,16 @@ export async function generateMetadata({ params }: Readonly<PageProps<"/[locale]
   }
 }
 
-export default async function LandingPage({ params }: Readonly<PageProps<"/[locale]">>): Promise<JSX.Element> {
-  const { locale } = await params
-
-  const t = await getTranslations({ locale, namespace: "landingPage" })
-
+export default function LandingPage(): JSX.Element {
   return (
-    <div>
-      <p>{t("welcome", { name: CONSTANTS.APP_NAME })}</p>
-    </div>
+    <main className="relative z-10">
+      <HeroSection />
+      <AboutSection />
+      <PhilosophySection />
+      <WorkSection />
+      <InsightsSection />
+      <SkillsSection />
+      <ContactSection />
+    </main>
   )
 }

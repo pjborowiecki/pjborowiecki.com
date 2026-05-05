@@ -8,7 +8,14 @@ const THEME_STORAGE_KEY = `${CONSTANTS.APP_NAME}-theme`
 
 export function ThemeProvider({ children, ...props }: Readonly<ComponentProps<typeof WrkszThemeProvider>>): JSX.Element {
   return (
-    <WrkszThemeProvider storage="localStorage" storageKey={THEME_STORAGE_KEY} defaultTheme="system" disableTransitionOnChange {...props}>
+    <WrkszThemeProvider
+      storage="localStorage"
+      storageKey={THEME_STORAGE_KEY}
+      defaultTheme="dark"
+      forcedTheme="dark"
+      disableTransitionOnChange
+      {...props}
+    >
       {children}
     </WrkszThemeProvider>
   )
