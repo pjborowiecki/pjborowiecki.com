@@ -156,6 +156,12 @@ declare const messages: {
       "placeholderProject": "WHAT WOULD YOU LIKE TO DISCUSS?",
       "placeholderEmail": "EMAIL ADDRESS",
       "send": "SEND MESSAGE",
+      "sending": "Sending message...",
+      "success": "Message sent successfully! I'll get back to you soon.",
+      "error": "Failed to send message. Please try again later.",
+      "nameRequired": "Name is required",
+      "emailRequired": "Valid email is required",
+      "detailsRequired": "Please provide some details",
       "copyright": "© 2024 PJBorowiecki Systems",
       "location": "Krakow, PL"
     },
@@ -245,6 +251,16 @@ declare const messages: {
         "publicLaunch": "Public Launch",
         "nov15": "Nov 15"
       }
+    }
+  },
+  "emails": {
+    "contact": {
+      "title": "New Contact Form Submission",
+      "preview": "New message from {name}",
+      "name": "Name:",
+      "email": "Email:",
+      "company": "Company:",
+      "details": "Details"
     }
   }
 };
