@@ -2,7 +2,12 @@ import { env } from "~/src/environment"
 
 import type { RequireAtLeastOne } from "~/src/types/utilities"
 
-type SendEmailProps = { to: string; subject: string } & RequireAtLeastOne<{ html: string; text: string }>
+type SendEmailProps = {
+  to: string | string[]
+  from: string | { address: string; name: string }
+  reply_to?: string | { address: string; name: string }
+  subject: string
+} & RequireAtLeastOne<{ html: string; text: string }>
 type SendEmailResult = { success: true; status: number } | { success: false; status: number; error: string }
 
 export async function sendEmail(props: Readonly<SendEmailProps>): Promise<SendEmailResult> {
@@ -27,7 +32,8 @@ export async function sendEmail(props: Readonly<SendEmailProps>): Promise<SendEm
 
   if (!response.ok) {
     const errorText = await response.text().catch(() => "Unparseable error response")
-    return { success: false, status: response.status, error: errorText }
+    console.error(`[Cloudflare Email API Error] Status: ${response.status}, Body: ${errorText}`)
+    return { success: false, status: response.status, error: "Failed to send email due to an API error." }
   }
 
   return { success: true, status: response.status }

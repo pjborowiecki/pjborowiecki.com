@@ -5,6 +5,8 @@ import type { JSX } from "react"
 
 import { useTranslations } from "next-intl"
 
+import { CONSTANTS } from "~/src/constants"
+
 import { Reveal } from "~/src/components/custom/reveal"
 
 export function AboutSection(): JSX.Element {
@@ -61,7 +63,7 @@ export function AboutSection(): JSX.Element {
                 <div className="border-border border-t pt-8">
                   <h3 className="mb-2 font-mono text-muted-foreground text-xs uppercase tracking-widest">{t("codebases")}</h3>
                   <a
-                    href="https://github.com/pjborowiecki"
+                    href={CONSTANTS.SOCIAL_LINKS.find((l) => l.name === "GitHub")?.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block font-bold text-foreground transition-colors hover:text-primary"
@@ -74,7 +76,7 @@ export function AboutSection(): JSX.Element {
                 <div className="border-border border-t pt-8">
                   <h3 className="mb-2 font-mono text-muted-foreground text-xs uppercase tracking-widest">{t("network")}</h3>
                   <a
-                    href="https://www.linkedin.com/in/pjborowiecki"
+                    href={CONSTANTS.SOCIAL_LINKS.find((l) => l.name === "LinkedIn")?.url}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block font-bold text-foreground transition-colors hover:text-primary"
