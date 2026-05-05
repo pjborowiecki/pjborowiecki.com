@@ -3,15 +3,18 @@
 import type { JSX } from "react"
 
 import { zodResolver } from "@hookform/resolvers/zod"
+import { Loader2 } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 import { FormProvider, useForm } from "react-hook-form"
 import { toast } from "sonner"
 import z from "zod/v4"
 
-import { CONSTANTS } from "~/src/constants"
 import type { Locale } from "~/src/constants/types"
 
+import { isKnownError } from "~/src/lib/utils"
+
 import { ContactFooter } from "~/src/components/custom/contact-footer"
+import { ContactInfo } from "~/src/components/custom/contact-info"
 import { ContactInlineField } from "~/src/components/custom/contact-inline-field"
 import { Reveal } from "~/src/components/custom/reveal"
 import { Button } from "~/src/components/shadcn/button"
@@ -52,36 +55,23 @@ export function ContactSection(): JSX.Element {
       },
       error: (err) => {
         console.error("Failed to send email:", err)
+        const msg = err instanceof Error ? err.message : ""
+
+        if (isKnownError(msg)) {
+          return t(msg)
+        }
         return t("error")
       },
     })
+
+    await promise
   }
 
   return (
     <section id="contact" className="relative overflow-hidden border-border border-t py-32">
       <div className="container relative z-10 mx-auto px-6 md:px-12">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-24">
-          <div className="flex h-full flex-col justify-between lg:col-span-5">
-            <Reveal>
-              <h2 className="mb-8 font-black font-sans text-7xl text-foreground leading-[0.85] tracking-tighter md:text-9xl">
-                {t("start")}
-              </h2>
-              <p className="mb-12 max-w-md font-light text-lg text-muted-foreground leading-relaxed">{t("interested")}</p>
-            </Reveal>
-
-            <div className="hidden lg:block">
-              <Reveal delay={0.2}>
-                <div className="space-y-8">
-                  <div className="flex flex-col">
-                    <h3 className="mb-2 font-mono text-foreground text-xs uppercase tracking-widest">{t("email")}</h3>
-                    <a href={`mailto:${CONSTANTS.EMAIL}`} className="text-muted-foreground text-xl transition-colors hover:text-foreground">
-                      {CONSTANTS.EMAIL}
-                    </a>
-                  </div>
-                </div>
-              </Reveal>
-            </div>
-          </div>
+          <ContactInfo />
 
           <div className="pt-4 lg:col-span-7">
             <Reveal delay={0.1} width="100%">
@@ -127,10 +117,15 @@ export function ContactSection(): JSX.Element {
                       disabled={form.formState.isSubmitting}
                       className="group relative inline-flex items-center gap-3 overflow-hidden rounded-none bg-foreground px-10 py-8 text-background transition-colors hover:bg-primary disabled:opacity-70"
                     >
+                      {form.formState.isSubmitting && (
+                        <Loader2 className="h-4 w-4 animate-spin text-background transition-colors group-hover:text-foreground" />
+                      )}
                       <span className="relative z-10 font-bold text-sm uppercase tracking-widest transition-colors group-hover:text-foreground">
-                        {t("send")}
+                        {form.formState.isSubmitting ? t("sending") : t("send")}
                       </span>
-                      <span className="relative z-10 transition-colors group-hover:text-foreground">{"\u2192"}</span>
+                      {!form.formState.isSubmitting && (
+                        <span className="relative z-10 transition-colors group-hover:text-foreground">{"\u2192"}</span>
+                      )}
                     </Button>
                   </div>
                 </form>

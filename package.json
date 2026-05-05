@@ -48,6 +48,7 @@
     "deploy:preview": "bunx vercel deploy -y"
   },
   "dependencies": {
+    "@arcjet/next": "^1.4.0",
     "@base-ui/react": "^1.4.1",
     "@gsap/react": "^2.1.2",
     "@hookform/resolvers": "^5.2.2",
