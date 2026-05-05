@@ -1,0 +1,15 @@
+node_modules/
+.next/
+.git/
+.cursor/
+.agents/
+opensrc/
+.source/
+.husky/
+e2e/
+test-results/
+playwright-report/
+blob-report/
+coverage/
+.DS_Store
+*.tsbuildinfo
