@@ -15,7 +15,7 @@ import { TranslationsProvider } from "~/src/providers/translations-provider"
 
 import { routing } from "~/src/integrations/next-intl/i18n.routing"
 
-import { geistMono, geistSans } from "~/src/lib/fonts"
+import { fontMono, fontSans } from "~/src/lib/fonts"
 import { cn } from "~/src/lib/utils"
 
 import { Toaster } from "~/src/components/shadcn/sonner"
@@ -46,10 +46,10 @@ export default async function RootLayout({ children, params }: Readonly<LayoutPr
   return (
     <html
       lang={locale}
-      className={cn(geistSans.variable, geistMono.variable, "h-full bg-background text-foreground antialiased")}
+      className={cn(fontSans.variable, fontMono.variable, "bg-background text-foreground antialiased")}
       suppressHydrationWarning
     >
-      <body className="flex min-h-full flex-col">
+      <body className="flex min-h-screen flex-col">
         <TranslationsProvider>
           <ThemeProvider>
             <TooltipProvider>
