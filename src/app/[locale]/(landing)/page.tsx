@@ -7,7 +7,7 @@ import { AboutSection } from "~/src/components/custom/sections/about-section"
 import { ContactSection } from "~/src/components/custom/sections/contact-section"
 import { HeroSection } from "~/src/components/custom/sections/hero-section"
 import { InsightsSection } from "~/src/components/custom/sections/insights-section"
-import { PhilosophySection } from "~/src/components/custom/sections/philosophy"
+import { PhilosophySection } from "~/src/components/custom/sections/philosophy-section"
 import { SkillsSection } from "~/src/components/custom/sections/skills-section"
 import { WorkSection } from "~/src/components/custom/sections/work-section"
 

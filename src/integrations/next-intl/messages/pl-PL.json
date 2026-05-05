@@ -153,6 +153,12 @@
       "placeholderProject": "CO CHCIAŁBYŚ OMÓWIĆ?",
       "placeholderEmail": "ADRES E-MAIL",
       "send": "WYŚLIJ WIADOMOŚĆ",
+      "sending": "Wysyłanie wiadomości...",
+      "success": "Wiadomość wysłana! Odpowiem tak szybko, jak to możliwe.",
+      "error": "Nie udało się wysłać wiadomości. Spróbuj ponownie później.",
+      "nameRequired": "Imię jest wymagane",
+      "emailRequired": "Prawidłowy adres e-mail jest wymagany",
+      "detailsRequired": "Proszę podać więcej szczegółów",
       "copyright": "© 2024 PJBorowiecki Systems",
       "location": "Kraków, PL"
     },
@@ -242,6 +248,16 @@
         "publicLaunch": "Publiczna Premiera",
         "nov15": "15 Lis"
       }
+    }
+  },
+  "emails": {
+    "contact": {
+      "title": "Nowe zapytanie kontaktowe",
+      "preview": "Nowa wiadomość od {name}",
+      "name": "Imię:",
+      "email": "Email:",
+      "company": "Firma:",
+      "details": "Szczegóły"
     }
   }
 }
