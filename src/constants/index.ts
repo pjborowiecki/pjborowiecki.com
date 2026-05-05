@@ -1,4 +1,6 @@
+import { ERRORS } from "~/src/constants/_constants/errors"
 import { DEFAULT_LOCALE, LOCALES } from "~/src/constants/_constants/locales"
+import { SOCIAL_LINKS } from "~/src/constants/_constants/social-links"
 
 export const CONSTANTS = {
   APP_NAME: "pjborowiecki.com",
@@ -6,10 +8,8 @@ export const CONSTANTS = {
   APP_GITHUB_OWNER: "pjborowiecki",
   APP_GITHUB_REPO: "pjborowiecki.com",
   EMAIL: "hello@pjborowiecki.com",
-  SOCIAL_LINKS: [
-    { name: "LinkedIn", url: "https://www.linkedin.com/in/pjborowiecki" },
-    { name: "GitHub", url: "https://github.com/pjborowiecki" },
-  ],
+  ERRORS,
+  SOCIAL_LINKS,
   DEFAULT_LOCALE,
   LOCALES,
 } as const
