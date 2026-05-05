@@ -5,7 +5,7 @@ export const CONSTANTS = {
   DEFAULT_APP_URL: "http://localhost:3000",
   APP_GITHUB_OWNER: "pjborowiecki",
   APP_GITHUB_REPO: "pjborowiecki.com",
-  EMAIL: "contact@pjborowiecki.com",
+  EMAIL: "hello@pjborowiecki.com",
   SOCIAL_LINKS: [
     { name: "LinkedIn", url: "https://www.linkedin.com/in/pjborowiecki" },
     { name: "GitHub", url: "https://github.com/pjborowiecki" },
