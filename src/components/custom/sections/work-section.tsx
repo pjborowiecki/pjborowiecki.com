@@ -29,7 +29,7 @@ export function WorkSection(): JSX.Element {
 
   return (
     <>
-      <section id="work" className="relative py-32">
+      <section id="work" className="relative py-8 md:py-32">
         <div className="pointer-events-none fixed inset-0 z-20 hidden md:block">
           {visibleProjects.map((project) => (
             <div
@@ -67,15 +67,15 @@ export function WorkSection(): JSX.Element {
               <button
                 type="button"
                 key={project.id}
-                className="group w-full cursor-pointer border-border border-b px-4 py-16 text-left transition-colors duration-300 hover:bg-foreground/2 md:px-8"
+                className="group w-full cursor-pointer border-border border-b px-4 py-4 text-left transition-colors duration-300 hover:bg-foreground/2 md:px-8 md:py-16"
                 onMouseEnter={() => setHoveredProject(project.id)}
                 onMouseLeave={() => setHoveredProject(null)}
                 onClick={() => setSelectedProject(project)}
               >
-                <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
+                <div className="flex flex-col items-start justify-between gap-1 md:flex-row md:items-center md:gap-8">
                   <div className="flex flex-col gap-2 overflow-hidden">
                     <Reveal variant="text-mask" delay={index * 0.1}>
-                      <h3 className="font-black font-sans text-5xl text-foreground tracking-tighter transition-all duration-300 group-hover:bg-linear-to-r group-hover:from-foreground group-hover:to-foreground/50 group-hover:bg-clip-text group-hover:text-transparent md:text-7xl">
+                      <h3 className="break-words font-black font-sans text-4xl text-foreground tracking-tighter transition-all duration-300 group-hover:bg-linear-to-r group-hover:from-foreground group-hover:to-foreground/50 group-hover:bg-clip-text group-hover:text-transparent sm:text-5xl md:text-7xl">
                         {project.title}
                       </h3>
                     </Reveal>
@@ -84,12 +84,12 @@ export function WorkSection(): JSX.Element {
                     </Reveal>
                   </div>
 
-                  <div className="flex flex-col items-end gap-4 transition-opacity duration-300 md:opacity-50 md:group-hover:opacity-100">
+                  <div className="flex flex-col items-start gap-4 transition-opacity duration-300 md:items-end md:opacity-50 md:group-hover:opacity-100">
                     <Reveal variant="slide-right" delay={index * 0.1 + 0.2}>
                       <span className="font-bold font-sans text-foreground text-xl">{project.year}</span>
                     </Reveal>
                     <Reveal variant="slide-right" delay={index * 0.1 + 0.3}>
-                      <div className="flex flex-wrap justify-end gap-2">
+                      <div className="flex flex-wrap justify-start gap-2 md:justify-end">
                         {project.techStack?.slice(0, 2).map((t) => (
                           <span
                             key={t}
