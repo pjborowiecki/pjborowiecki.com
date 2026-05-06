@@ -68,42 +68,42 @@ export function ContactSection(): JSX.Element {
   }
 
   return (
-    <section id="contact" className="relative overflow-hidden border-border border-t py-32">
+    <section id="contact" className="relative overflow-hidden border-border border-t py-8 md:py-32">
       <div className="container relative z-10 mx-auto px-6 md:px-12">
-        <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-24">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-24">
           <ContactInfo />
 
-          <div className="pt-4 lg:col-span-7">
+          <div className="lg:col-span-7">
             <Reveal delay={0.1} width="100%">
               <FormProvider {...form}>
                 <form id="contact-form" onSubmit={form.handleSubmit(onSubmit)}>
                   <FieldGroup>
                     <div className="flex flex-col gap-12 font-light text-2xl text-muted-foreground leading-relaxed md:text-3xl">
-                      <div className="flex flex-wrap items-center gap-2">
+                      <div className="flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-2">
                         <span>{t("hello")}</span>
-                        <ContactInlineField name="name" placeholder={t("placeholderName")} className="w-48 md:w-64" />
+                        <ContactInlineField name="name" placeholder={t("placeholderName")} className="w-full sm:w-48 md:w-64" />
                         <span>{t("andFrom")}</span>
-                        <ContactInlineField name="company" placeholder={t("placeholderCompany")} className="w-48 md:w-64" />
+                        <ContactInlineField name="company" placeholder={t("placeholderCompany")} className="w-full sm:w-48 md:w-64" />
                         <span>{"."}</span>
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-2">
+                      <div className="flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-2">
                         <span>{t("partner")}</span>
                         <ContactInlineField
                           name="details"
                           placeholder={t("placeholderProject")}
-                          className="min-w-[250px] flex-1 md:min-w-[300px]"
+                          className="w-full sm:min-w-[250px] sm:flex-1 md:min-w-[300px]"
                         />
                         <span>{"."}</span>
                       </div>
 
-                      <div className="flex flex-wrap items-center gap-2">
+                      <div className="flex flex-col items-start gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:gap-2">
                         <span>{t("reachMe")}</span>
                         <ContactInlineField
                           name="email"
                           type="email"
                           placeholder={t("placeholderEmail")}
-                          className="min-w-[200px] flex-1 md:min-w-[250px]"
+                          className="w-full sm:min-w-[200px] sm:flex-1 md:min-w-[250px]"
                         />
                         <span>{t("discuss")}</span>
                       </div>
@@ -115,7 +115,7 @@ export function ContactSection(): JSX.Element {
                       type="submit"
                       size="lg"
                       disabled={form.formState.isSubmitting}
-                      className="group relative inline-flex items-center gap-3 overflow-hidden rounded-none bg-foreground px-10 py-8 text-background transition-colors hover:bg-primary disabled:opacity-70"
+                      className="group relative inline-flex items-center gap-3 overflow-hidden rounded-none bg-foreground px-4 py-3 text-background transition-colors hover:bg-primary disabled:opacity-70 md:px-10 md:py-8"
                     >
                       {form.formState.isSubmitting && (
                         <Loader2 className="h-4 w-4 animate-spin text-background transition-colors group-hover:text-foreground" />

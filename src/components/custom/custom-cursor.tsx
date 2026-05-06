@@ -62,11 +62,11 @@ export function CustomCursor(): JSX.Element {
     <>
       <div
         ref={cursorRef}
-        className="pointer-events-none fixed top-0 left-0 z-9999 h-3 w-3 rounded-full bg-foreground mix-blend-difference"
+        className="pointer-events-none fixed top-0 left-0 z-9999 hidden h-3 w-3 rounded-full bg-foreground mix-blend-difference md:block"
       />
       <div
         ref={trailingRef}
-        className="pointer-events-none fixed top-0 left-0 z-9998 h-10 w-10 rounded-full border border-foreground/50 mix-blend-difference"
+        className="pointer-events-none fixed top-0 left-0 z-9998 hidden h-10 w-10 rounded-full border border-foreground/50 mix-blend-difference md:block"
       />
     </>
   )

@@ -35,7 +35,7 @@ export function HeroSection(): JSX.Element {
           style={{ transform: `translate3d(calc(-50% + ${mousePos.x * -20}px), calc(-50% + ${mousePos.y * -20}px), 0)` }}
         />
 
-        <div className="pointer-events-none absolute inset-0 flex justify-between px-6 opacity-10 md:px-12">
+        <div className="pointer-events-none absolute inset-0 flex justify-between px-6 opacity-5 md:px-12 md:opacity-10">
           <div className="h-full w-px bg-foreground"></div>
           <div className="hidden h-full w-px bg-foreground md:block"></div>
           <div className="h-full w-px bg-foreground"></div>
@@ -43,7 +43,7 @@ export function HeroSection(): JSX.Element {
       </div>
 
       <div className="container relative z-10 mx-auto flex h-full flex-col justify-center px-6 md:px-12">
-        <div className="mb-12 flex items-end justify-between border-border border-b pb-6 md:mb-24">
+        <div className="mb-6 flex items-end justify-between border-border border-b pb-6 md:mb-24">
           <Reveal variant="slide-right">
             <div className="flex items-center gap-3">
               <div className="h-2 w-2 animate-pulse rounded-full bg-green-500"></div>
@@ -57,13 +57,13 @@ export function HeroSection(): JSX.Element {
           </Reveal>
         </div>
 
-        <div className="perspective-1000 mx-auto mb-24 flex w-full max-w-[95vw] flex-col">
+        <div className="perspective-1000 mx-auto mb-12 flex w-full max-w-[95vw] flex-col md:mb-24">
           <div
             className="flex items-center justify-start transition-transform duration-200 ease-out will-change-transform"
             style={{ transform: `translate3d(${mousePos.x * 10}px, ${mousePos.y * 5}px, 0)` }}
           >
             <Reveal variant="text-mask" duration={1}>
-              <h1 className="font-black font-sans text-[10vw] text-foreground leading-[0.85] tracking-tighter mix-blend-difference">
+              <h1 className="font-black font-sans text-[12vw] text-foreground leading-[0.85] tracking-tighter mix-blend-difference sm:text-[15vw] md:text-[10vw]">
                 {t("full")}
               </h1>
             </Reveal>
@@ -75,32 +75,34 @@ export function HeroSection(): JSX.Element {
           </div>
 
           <div
-            className="ml-[2vw] flex items-center gap-4 border-primary/50 border-l-2 pl-[2vw] transition-transform duration-200 ease-out will-change-transform md:ml-[5vw] md:gap-12 md:pl-[10vw]"
+            className="ml-2 flex items-center gap-4 border-primary/50 border-l-2 pl-4 transition-transform duration-200 ease-out will-change-transform md:ml-[5vw] md:gap-12 md:pl-[10vw]"
             style={{ transform: `translate3d(${mousePos.x * 20}px, ${mousePos.y * 10}px, 0)` }}
           >
             <Reveal delay={0.3} variant="scale">
               <div className="hidden h-[2px] w-[6vw] bg-linear-to-r from-primary to-primary/50 md:block"></div>
             </Reveal>
             <Reveal delay={0.2} variant="text-mask" duration={1}>
-              <h1 className="font-black font-sans text-[10vw] text-foreground leading-[0.85] tracking-tighter">{t("stack")}</h1>
+              <h1 className="font-black font-sans text-[12vw] text-foreground leading-[0.85] tracking-tighter sm:text-[15vw] md:text-[10vw]">
+                {t("stack")}
+              </h1>
             </Reveal>
           </div>
 
           <div
-            className="relative mt-4 flex items-center justify-end transition-transform duration-200 ease-out will-change-transform md:mt-8"
+            className="relative mt-4 flex items-center justify-start transition-transform duration-200 ease-out will-change-transform md:mt-8 md:justify-end"
             style={{ transform: `translate3d(${mousePos.x * 30}px, ${mousePos.y * 15}px, 0)` }}
           >
             <Reveal delay={0.4} variant="text-mask" duration={1}>
-              <h1 className="bg-linear-to-b from-foreground to-foreground/60 bg-clip-text font-black font-sans text-[10vw] text-transparent leading-[0.85] tracking-tighter">
+              <h1 className="bg-linear-to-b from-foreground to-foreground/60 bg-clip-text font-black font-sans text-[10vw] text-transparent leading-[0.85] tracking-tighter sm:text-[12vw] md:text-[10vw]">
                 {t("developer")}
               </h1>
             </Reveal>
           </div>
         </div>
 
-        <div className="relative flex flex-col items-end justify-between border-border border-t pt-8 md:flex-row">
+        <div className="relative flex flex-col items-start justify-between gap-6 border-border border-t pt-6 md:flex-row md:items-end md:gap-8 md:pt-8">
           <Reveal delay={0.8} variant="slide-up">
-            <p className="max-w-2xl font-sans text-lg text-muted-foreground leading-relaxed md:text-xl">
+            <p className="max-w-2xl pr-4 font-sans text-base text-muted-foreground leading-relaxed sm:text-lg md:pr-0 md:text-xl">
               {t.rich("building", {
                 strong: (chunks) => <strong className="font-semibold text-foreground">{chunks}</strong>,
               })}
@@ -125,10 +127,10 @@ export function HeroSection(): JSX.Element {
           </Reveal>
         </div>
 
-        <div className="absolute bottom-1 left-1/2 z-20 -translate-x-1/2">
+        <div className="absolute bottom-8 left-1/2 z-20 -translate-x-1/2 md:bottom-4">
           <Reveal delay={1.2} variant="blur-slide">
             <a href="#about" className="block cursor-pointer p-4 text-foreground/50 transition-colors hover:text-foreground">
-              <svg className="h-6 w-6 animate-bounce" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="h-5 w-5 animate-bounce md:h-6 md:w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <title>{"Scroll down"}</title>
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
               </svg>
