@@ -12,6 +12,7 @@ gsap.registerPlugin(ScrollTrigger, useGSAP)
 
 export function PhilosophySection(): JSX.Element {
   const t = useTranslations("custom.philosophy")
+
   const containerRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
   const progressRef = useRef<HTMLDivElement>(null)
@@ -21,47 +22,37 @@ export function PhilosophySection(): JSX.Element {
       const track = trackRef.current
       const progress = progressRef.current
       if (!track || !progress) return
+      const mm = gsap.matchMedia()
 
-      const getScrollAmount = () => track.scrollWidth - window.innerWidth
+      mm.add("(min-width: 768px)", () => {
+        const getScrollAmount = () => track.scrollWidth - window.innerWidth
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top top",
-          end: () => `+=${getScrollAmount()}`,
-          pin: true,
-          scrub: 1,
-          invalidateOnRefresh: true,
-        },
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top top",
+            end: () => `+=${getScrollAmount()}`,
+            pin: true,
+            scrub: 1,
+            invalidateOnRefresh: true,
+          },
+        })
+
+        tl.to(track, { x: () => -getScrollAmount(), ease: "none" }, 0)
+        tl.to(progress, { width: "100%", ease: "none" }, 0)
       })
 
-      tl.to(
-        track,
-        {
-          x: () => -getScrollAmount(),
-          ease: "none",
-        },
-        0,
-      )
-
-      tl.to(
-        progress,
-        {
-          width: "100%",
-          ease: "none",
-        },
-        0,
-      )
+      return () => mm.revert()
     },
     { scope: containerRef },
   )
 
   return (
-    <section id="philosophy" ref={containerRef} className="relative h-screen overflow-hidden bg-background">
-      <div className="container pointer-events-none absolute top-32 left-0 z-20 mx-auto w-full px-6 md:px-12">
+    <section id="philosophy" ref={containerRef} className="relative overflow-hidden bg-background md:h-screen">
+      <div className="container pointer-events-none relative z-20 mx-auto w-full px-6 pt-16 pb-8 md:absolute md:top-32 md:left-0 md:px-12 md:pt-0 md:pb-0">
         <div className="border-primary border-l-2 pl-6">
           <h2 className="mb-2 font-mono text-primary text-xs uppercase tracking-widest">{t("methodology")}</h2>
-          <p className="font-bold font-sans text-3xl text-foreground tracking-tighter md:text-4xl">
+          <p className="font-bold font-sans text-2xl text-foreground tracking-tighter md:text-4xl">
             {t.rich("engineeringStandards", {
               span: (chunks) => <span className="text-muted-foreground">{chunks}</span>,
             })}
@@ -69,16 +60,19 @@ export function PhilosophySection(): JSX.Element {
         </div>
       </div>
 
-      <div className="container pointer-events-none absolute bottom-24 left-0 z-20 mx-auto w-full px-6 md:px-12">
+      <div className="container pointer-events-none absolute bottom-24 left-0 z-20 mx-auto hidden w-full px-6 md:block md:px-12">
         <div className="h-px w-full bg-foreground/10 md:w-1/3">
           <div ref={progressRef} className="h-full w-0 bg-foreground" />
         </div>
         <div className="mt-4 font-mono text-muted-foreground text-xs uppercase tracking-widest">{t("scrollExplore")}</div>
       </div>
 
-      <div ref={trackRef} className="flex h-full w-fit items-center gap-12 px-6 will-change-transform md:gap-24 md:px-12">
-        <div className="flex h-1/2 min-w-[85vw] flex-col justify-center border-border border-l pl-6 md:min-w-[40vw] md:pl-12 lg:min-w-[30vw]">
-          <h3 className="mb-8 font-black font-sans text-4xl text-foreground leading-[0.9] tracking-tighter md:text-6xl">
+      <div
+        ref={trackRef}
+        className="flex h-full w-full flex-col gap-12 px-6 pb-16 will-change-transform md:w-max md:flex-row md:items-center md:gap-24 md:px-12 md:pb-0"
+      >
+        <div className="flex w-full flex-col justify-center border-border border-l pl-6 md:h-1/2 md:w-[85vw] md:min-w-[40vw] md:shrink-0 md:pl-12 lg:min-w-[30vw]">
+          <h3 className="mb-4 font-black font-sans text-3xl text-foreground leading-[0.9] tracking-tighter md:mb-8 md:text-6xl">
             {t.rich("buildingForTomorrow", {
               span: (chunks) => <span className="text-muted-foreground">{chunks}</span>,
               br: () => <br />,
@@ -115,7 +109,7 @@ export function PhilosophySection(): JSX.Element {
         ].map((card) => (
           <article
             key={card.number}
-            className="group relative aspect-[4/5] min-w-[70vw] overflow-hidden border border-border bg-card md:aspect-[3/4] md:min-w-[30vw] lg:min-w-[20vw]"
+            className="group relative aspect-3/4 w-full overflow-hidden border border-border bg-card md:w-[80vw] md:min-w-[30vw] md:shrink-0 lg:min-w-[20vw]"
           >
             <div className="absolute inset-0 z-0">
               <Image
@@ -128,7 +122,7 @@ export function PhilosophySection(): JSX.Element {
               <div className="absolute inset-0 bg-linear-to-b from-background/50 via-background/20 to-background/90"></div>
             </div>
 
-            <div className="relative z-10 flex h-full flex-col justify-between p-6 md:p-8">
+            <div className="relative z-10 flex h-full flex-col justify-between gap-4 p-6 md:p-8">
               <div className="flex items-start justify-between">
                 <span className="font-black font-sans text-5xl text-foreground/10 transition-colors duration-500 group-hover:text-foreground/30 md:text-7xl">
                   {card.number}

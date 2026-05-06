@@ -94,8 +94,8 @@ export function SkillsSection(): JSX.Element {
   ]
 
   return (
-    <section id="skills" className="relative overflow-hidden border-border border-t py-32">
-      <div className="container relative z-10 mx-auto mb-24 px-6 md:px-12">
+    <section id="skills" className="relative overflow-hidden border-border border-t py-8 md:py-32">
+      <div className="container relative z-10 mx-auto mb-8 px-6 md:mb-24 md:px-12">
         <Reveal>
           <div className="flex flex-col items-end justify-between gap-8 border-border border-b pb-8 md:flex-row">
             <div>
@@ -115,10 +115,10 @@ export function SkillsSection(): JSX.Element {
       </div>
 
       <Marquee items={primarySkills} className="mb-12" gapClass="gap-6 pr-6 md:gap-10 md:pr-10" />
-      <Marquee items={secondaryKeywords} direction="right" className="mb-32 opacity-80" />
+      <Marquee items={secondaryKeywords} direction="right" className="mb-16 opacity-80 md:mb-32" />
 
       <div className="container mx-auto px-6 md:px-12">
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-3">
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3 md:gap-12">
           <Reveal delay={0.1}>
             <div className="group space-y-6 border-border border-t pt-6">
               <span className="font-mono text-primary text-xs">{"01"}</span>

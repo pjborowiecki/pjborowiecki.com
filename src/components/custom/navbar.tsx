@@ -24,8 +24,8 @@ export function Navbar(): JSX.Element {
   )
 
   return (
-    <nav ref={navRef} className="pointer-events-none fixed top-0 left-0 z-50 w-full py-8">
-      <div className="container mx-auto flex items-start justify-between px-6 md:px-12">
+    <nav ref={navRef} className="pointer-events-none absolute top-0 left-0 z-50 w-full py-8 md:fixed">
+      <div className="container mx-auto flex items-center justify-between gap-4 px-6 md:items-start md:px-12">
         <div className="nav-brand pointer-events-auto mix-blend-difference">
           <a href="/" className="group flex flex-col gap-1">
             <span className="font-black font-sans text-foreground text-xl uppercase leading-none tracking-tighter transition-colors group-hover:text-foreground/50">
@@ -59,7 +59,7 @@ export function Navbar(): JSX.Element {
           </div>
         </div>
 
-        <Button variant="ghost" size="icon" className="pointer-events-auto text-foreground mix-blend-difference md:hidden">
+        <Button variant="ghost" size="icon" className="pointer-events-auto shrink-0 text-foreground mix-blend-difference md:hidden">
           <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <title>{"Menu"}</title>
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 6h16M4 12h16M4 18h16" />

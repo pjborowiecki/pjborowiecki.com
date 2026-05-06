@@ -12,22 +12,24 @@ import { ARTICLES } from "~/src/data"
 export function InsightsSection(): JSX.Element {
   const t = useTranslations("custom.insights")
   return (
-    <section id="insights" className="relative border-border border-t py-32">
+    <section id="insights" className="relative border-border border-t py-8 md:py-32">
       <div className="container mx-auto px-6 md:px-12">
         <Reveal variant="text-mask">
-          <div className="mb-24 flex flex-col items-start justify-between md:flex-row">
-            <h2 className="font-black font-sans text-6xl text-foreground leading-[0.9] tracking-tighter md:text-8xl">{t("title")}</h2>
+          <div className="mb-8 flex flex-col items-start justify-between md:mb-24 md:flex-row">
+            <h2 className="font-black font-sans text-4xl text-foreground leading-[0.9] tracking-tighter sm:text-5xl md:text-8xl">
+              {t("title")}
+            </h2>
           </div>
         </Reveal>
 
-        <div className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-12 lg:grid-cols-3">
           {ARTICLES?.map((article, index) => (
             <article
               key={article.id}
               className="group flex h-full cursor-pointer flex-col border-border border-l pl-6 md:border-l-0 md:pl-0"
             >
               <Reveal delay={index * 0.15} variant="blur-slide" className="h-full">
-                <div className="relative mb-8 aspect-16/10 overflow-hidden border border-border bg-muted">
+                <div className="relative mb-8 aspect-video overflow-hidden border border-border bg-muted">
                   <div className="absolute inset-0 z-10 bg-foreground/10 opacity-0 mix-blend-overlay transition-opacity duration-300 group-hover:opacity-100" />
 
                   <Image
@@ -67,7 +69,7 @@ export function InsightsSection(): JSX.Element {
           ))}
         </div>
 
-        <div className="mt-24 flex justify-center">
+        <div className="mt-16 flex justify-center md:mt-24">
           <Reveal variant="blur-slide">
             <a
               href="/"
