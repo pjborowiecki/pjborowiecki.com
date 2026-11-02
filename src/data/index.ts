@@ -1,16 +1,18 @@
-import type { Article, NavItem, Project, Skill } from "~/src/types"
+import type { Article, Certification, NavItem, Project } from "~/src/types"
 
 export const NAV_ITEMS: NavItem[] = [
-  { label: "Profile", href: "#about" },
-  { label: "Philosophy", href: "#philosophy" },
-  { label: "Selected Work", href: "#work" },
-  { label: "Insights", href: "#insights" },
-  { label: "Expertise", href: "#skills" },
+  { key: "philosophy", href: "#philosophy" },
+  { key: "expertise", href: "#skills" },
+  { key: "ai", href: "#ai" },
+  { key: "about", href: "#about" },
+  { key: "work", href: "#work" },
+  { key: "insights", href: "#insights" },
 ]
 
 export const PROJECTS: Project[] = [
   {
     id: "shoppeya",
+    discipline: "architecture",
     title: "Shoppeya.com",
     category: "Modular, Serverless E-commerce Platform",
     year: "2026",
@@ -23,27 +25,14 @@ export const PROJECTS: Project[] = [
     draft: true,
   },
   {
-    id: "saasyland",
-    title: "SaaSyLand.com",
-    category: "Modern, opinionated SaaS Starter Kit",
-    year: "2023",
-    image: "/images/work/saasyland.jpg",
-    shortDescription: "An opinionated SaaS starter kit optimized for performance, using the Bun runtime on Vercel.",
-    challenge:
-      "Starting a new SaaS requires configuring authentication, databases, payment gateways, and dashboards from scratch. This repetitive boilerplate wastes valuable development time and delays time-to-market.",
-    solution:
-      "Engineered a pre-configured, highly optimized boilerplate that includes everything a SaaS might need—authentication, database setup, a custom dashboard, payments, and sample products—all ready to build on.",
-    techStack: ["Next.js", "Bun", "Vercel", "Stripe", "PostgreSQL", "TailwindCSS"],
-    outcome:
-      "Saves developers hundreds of hours of configuration, accelerating MVP development and ensuring a production-ready foundation out of the box.",
-    draft: false,
-  },
-  {
     id: "marte",
-    title: "Marte-Bizuteria.pl",
-    category: "Real-life Jewellery Brand from Poland",
+    featured: true,
+    title: "MarteBizuteria.pl",
+    category: "Premium e-commerce platform for a Polish jewellery brand",
     year: "2024",
-    image: "/images/work/marte.jpg",
+    image: "/images/site/work-marte.webp",
+    imageWidth: 1600,
+    imageHeight: 3925,
     shortDescription:
       "A highly polished, ultra-fast e-commerce storefront and admin management system for a real-world jewelry brand in Poland.",
     challenge:
@@ -56,7 +45,29 @@ export const PROJECTS: Project[] = [
     draft: false,
   },
   {
+    id: "saasyland",
+    featured: true,
+    title: "SaaSyLand.com",
+    category: "Production-ready SaaS foundation that saves teams hundreds of hours",
+    year: "2023",
+    image: "/images/site/work-saasyland.webp",
+    imageWidth: 1600,
+    imageHeight: 4051,
+    url: "https://saasyland.com",
+    github: { stars: "430+", url: "https://github.com/saasyland/saasyland.com" },
+    shortDescription: "An opinionated SaaS starter kit: one command scaffolds auth, billing, an admin and a visual page builder.",
+    challenge:
+      "Starting a new SaaS requires configuring authentication, databases, payment gateways, and dashboards from scratch. This repetitive boilerplate wastes valuable development time and delays time-to-market.",
+    solution:
+      "Engineered a pre-configured, highly optimized boilerplate that includes everything a SaaS might need (authentication, database setup, a custom dashboard, payments, and sample products), all ready to build on.",
+    techStack: ["TanStack Start", "Bun", "Cloudflare", "Drizzle", "Better Auth", "Polar", "Vitest", "Playwright"],
+    outcome:
+      "Saves developers hundreds of hours of configuration, accelerating MVP development and ensuring a production-ready foundation out of the box.",
+    draft: false,
+  },
+  {
     id: "seatfrenzy",
+    discipline: "products",
     title: "SeatFrenzy.com",
     category: "Venue management and Table Booking System",
     year: "2024",
@@ -73,6 +84,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "skillslay",
+    discipline: "ai",
     title: "SkillSlay.com",
     category: "AI-powered Fleet Management & Telematics",
     year: "2026",
@@ -89,6 +101,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "pilartrack",
+    discipline: "ai",
     title: "PilarTrack.com",
     category: "AI-powered Fleet Management & Telematics",
     year: "2026",
@@ -105,6 +118,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "glambooker",
+    discipline: "architecture",
     title: "GlamBooker.com",
     category: "Multitenant SaaS Booking Platform for Beauty Industry",
     year: "2026",
@@ -119,6 +133,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "reactprojects",
+    discipline: "products",
     title: "ReactProjects.com",
     category: "Advanced Learning Management System",
     year: "2024",
@@ -134,6 +149,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: "arka",
+    discipline: "products",
     title: "Arka-Weterynaria.pl",
     category: "Landing Page and a Booking System for a real Vet Clinic in Poland",
     year: "2024",
@@ -181,13 +197,26 @@ export const ARTICLES: Article[] = [
   },
 ]
 
-export const SKILLS: Skill[] = [
-  { name: "System Design", level: 98, category: "Architecture" },
-  { name: "Microservices", level: 95, category: "Architecture" },
-  { name: "Node.js / Go", level: 92, category: "Backend" },
-  { name: "Kubernetes", level: 90, category: "DevOps" },
-  { name: "React / Next.js", level: 95, category: "Frontend" },
-  { name: "Event Driven", level: 88, category: "Architecture" },
-  { name: "AWS / GCP", level: 90, category: "DevOps" },
-  { name: "CI/CD Pipelines", level: 85, category: "DevOps" },
+/** None of these has been earned yet. Each goes live when its `url` is set to the issuer's verification page. */
+export const CERTIFICATIONS: Certification[] = [
+  { id: "awsArchitect", issuer: "AWS Certified", logo: "aws", name: "Solutions Architect – Associate" },
+  { id: "awsGenAi", issuer: "AWS Certified", logo: "aws", name: "Generative AI Developer – Professional" },
+  { id: "claudeArchitect", issuer: "Anthropic", logo: "anthropic", name: "Claude Certified Architect – Foundations" },
+  { id: "gcpArchitect", issuer: "Google Cloud", logo: "googleCloud", name: "Professional Cloud Architect" },
+  { id: "awsBusiness", issuer: "AWS Certified", logo: "aws", name: "AI Business Strategist" },
+  { id: "msAgentic", issuer: "Microsoft Certified", logo: "microsoft", name: "Agentic AI Business Solutions Architect" },
+  { id: "googleAi", issuer: "Google", logo: "google", name: "AI Professional Certificate" },
+]
+
+export const CORE_TECHNOLOGIES = [
+  "React",
+  "Next.js",
+  "TypeScript",
+  "Node.js",
+  "Go (Golang)",
+  "Python",
+  "PostgreSQL",
+  "Docker",
+  "Kubernetes",
+  "AI / LLMs",
 ]
