@@ -10,6 +10,7 @@ const nextConfig: NextConfig = {
   typedRoutes: true,
   experimental: { rootParams: true },
   images: {
+    qualities: [75, 88],
     remotePatterns: [{ protocol: "https", hostname: "avatars.githubusercontent.com", pathname: "/**" }],
   },
 }

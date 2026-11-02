@@ -11,8 +11,8 @@ export function ThemeProvider({ children, ...props }: Readonly<ComponentProps<ty
     <WrkszThemeProvider
       storage="localStorage"
       storageKey={THEME_STORAGE_KEY}
-      defaultTheme="dark"
-      forcedTheme="dark"
+      defaultTheme="light"
+      forcedTheme="light"
       disableTransitionOnChange
       {...props}
     >

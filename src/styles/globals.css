@@ -1,6 +1,7 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
+@import "lenis/dist/lenis.css";
 
 @import "fumadocs-ui/css/shadcn.css";
 @import "fumadocs-ui/css/preset.css";
@@ -11,39 +12,72 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* The hero's side-by-side cover. Narrow or portrait screens get the stacked composition instead. */
+@custom-variant cover (@media (min-width: 900px) and (min-aspect-ratio: 11 / 10));
+@custom-variant side (@media (min-width: 768px) and (min-aspect-ratio: 1 / 1));
+
+/* Scroll-staged layout. Only applies when JS is running and motion is allowed; everything else reads as a plain document. */
+@custom-variant live {
+  @media (prefers-reduced-motion: no-preference) {
+    html.js & {
+      @slot;
+    }
+  }
+}
+
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0 0);
-  --primary: oklch(0.65 0.28 305);
-  --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(0.967 0 0);
-  --secondary-foreground: oklch(0.129 0 0);
-  --muted: oklch(0.967 0 0);
-  --muted-foreground: oklch(0.551 0 0);
-  --accent: oklch(0.967 0 0);
-  --accent-foreground: oklch(0.129 0 0);
-  --destructive: oklch(0.58 0.22 27);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.65 0.28 305);
+  --background: #f4f0e6;
+  --foreground: #0d1526;
+  --card: #fbf8f1;
+  --card-foreground: #0d1526;
+  --popover: #fbf8f1;
+  --popover-foreground: #0d1526;
+  --primary: #0a6247;
+  --primary-foreground: #f5f0e4;
+  --secondary: #e8e2d3;
+  --secondary-foreground: #0d1526;
+  --muted: #e8e2d3;
+  --muted-foreground: #525666;
+  --accent: #e8e2d3;
+  --accent-foreground: #0d1526;
+  --destructive: #c8281e;
+  --border: rgb(13 21 38 / 14%);
+  --input: rgb(13 21 38 / 24%);
+  --ring: #0a6247;
   --chart-1: oklch(0.809 0.105 251.813);
   --chart-2: oklch(0.623 0.214 259.815);
   --chart-3: oklch(0.546 0.245 262.881);
   --chart-4: oklch(0.488 0.243 264.376);
   --chart-5: oklch(0.424 0.199 265.638);
-  --radius: 0.5rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.129 0 0);
-  --sidebar-primary: oklch(0.65 0.28 305);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.967 0 0);
-  --sidebar-accent-foreground: oklch(0.129 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.65 0.28 305);
+  --radius: 0.125rem;
+  --sidebar: #f4f0e6;
+  --sidebar-foreground: #0d1526;
+  --sidebar-primary: #0a6247;
+  --sidebar-primary-foreground: #f5f0e4;
+  --sidebar-accent: #e8e2d3;
+  --sidebar-accent-foreground: #0d1526;
+  --sidebar-border: rgb(13 21 38 / 14%);
+  --sidebar-ring: #0a6247;
+
+  /* Private-bank emerald, warm ivory, navy-black ink, one note of champagne. */
+  --emerald-lit: #22a87c;
+  --emerald: #0a6247;
+  --emerald-deep: #032c20;
+  --cream: #f5f0e4;
+  --champagne: #e2c690;
+
+  /* The whiteboard's own kit, used only inside that section. */
+  --navy: #101c36;
+  --board: #f4f0e6;
+  --signal: #c8281e;
+
+  --gutter: clamp(1.25rem, 3.3vw, 4rem);
+  --nav-height: 4.5rem;
+  --nav-bar-height: 3.75rem;
+  --section-y: clamp(5rem, 9vw, 10rem);
+  --cta-bg: var(--emerald);
+  --cta-ink: var(--cream);
+  --cta-hover: var(--emerald-deep);
 
   --fd-layout-width: 2000px;
 }
@@ -84,7 +118,19 @@
 
 @theme inline {
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-inter-tight), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
+  --text-display: clamp(2.875rem, 7.6vw, 10.5rem);
+  --text-title: clamp(1.75rem, 3.2vw, 4rem);
+  --text-lead: clamp(1.25rem, 1.9vw, 2.375rem);
+  --color-navy: var(--navy);
+  --color-emerald: var(--emerald);
+  --color-emerald-deep: var(--emerald-deep);
+  --color-emerald-lit: var(--emerald-lit);
+  --color-cream: var(--cream);
+  --color-champagne: var(--champagne);
+  --color-board: var(--board);
+  --color-signal: var(--signal);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -129,7 +175,505 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    overflow-x: clip;
+  }
   body {
     @apply bg-background text-foreground;
+    overflow-x: clip;
+    font-feature-settings: "kern", "liga", "calt";
+  }
+  ::selection {
+    background: var(--emerald);
+    color: #f5f0e4;
+  }
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 3px;
+  }
+}
+
+@utility frame {
+  width: 100%;
+  max-width: 2400px;
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+@utility type-display {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.034em;
+  line-height: 0.98;
+  text-wrap: balance;
+}
+
+@utility type-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: -0.022em;
+  line-height: 1.06;
+  text-wrap: balance;
+}
+
+@utility type-lead {
+  font-family: var(--font-sans);
+  font-weight: 400;
+  letter-spacing: -0.016em;
+  line-height: 1.28;
+  text-wrap: pretty;
+}
+
+@utility type-label {
+  font-family: var(--font-sans);
+  font-size: clamp(0.8125rem, 0.82vw, 1.0625rem);
+  font-weight: 500;
+  letter-spacing: -0.008em;
+  line-height: 1.35;
+  color: var(--muted-foreground);
+}
+
+@utility type-body {
+  font-family: var(--font-sans);
+  font-size: clamp(1rem, 1.05vw, 1.3125rem);
+  font-weight: 400;
+  letter-spacing: -0.011em;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+  text-wrap: pretty;
+
+  & strong {
+    font-weight: 550;
+    color: var(--foreground);
+  }
+}
+
+/* Token swap for anything sitting on emerald. Restates `color` because it is inherited as a computed value. */
+@utility ground-tokens {
+  --foreground: var(--cream);
+  --muted-foreground: #b6d2c5;
+  --border: rgb(245 240 228 / 22%);
+  --input: rgb(245 240 228 / 38%);
+  --ring: var(--cream);
+  --signal: var(--champagne);
+  --cta-bg: var(--cream);
+  --cta-ink: var(--emerald-deep);
+  --cta-hover: var(--champagne);
+}
+
+@utility ground-emerald {
+  --foreground: var(--cream);
+  --muted-foreground: #b6d2c5;
+  --border: rgb(245 240 228 / 22%);
+  --input: rgb(245 240 228 / 38%);
+  --ring: var(--cream);
+  --signal: var(--champagne);
+  --cta-bg: var(--cream);
+  --cta-ink: var(--emerald-deep);
+  --cta-hover: var(--champagne);
+  background-color: #084f3a;
+  background-image: url("/images/site/grain.png");
+  background-size: 220px 220px;
+  color: var(--foreground);
+}
+
+/* Matte black, leaning a touch towards the emerald so the two grounds sit together. */
+@utility ground-ink {
+  --foreground: var(--cream);
+  --muted-foreground: #b3b6ad;
+  --border: rgb(245 240 228 / 18%);
+  --input: rgb(245 240 228 / 34%);
+  --ring: var(--cream);
+  --signal: #ff8f7d;
+  --cta-bg: var(--cream);
+  --cta-ink: #121412;
+  --cta-hover: var(--champagne);
+  background-color: #121412;
+  background-image: url("/images/site/grain.png");
+  background-size: 220px 220px;
+  color: var(--foreground);
+}
+
+/* A sheet of paper laid on emerald. */
+@utility surface-paper {
+  --foreground: #0d1526;
+  --muted-foreground: #525666;
+  --border: rgb(13 21 38 / 16%);
+  --input: rgb(13 21 38 / 28%);
+  --ring: var(--emerald);
+  --signal: #b3261e;
+  --cta-bg: var(--emerald);
+  --cta-ink: var(--cream);
+  --cta-hover: var(--emerald-deep);
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* The hero's studio light, for the close. */
+.ground-lit {
+  background-image: url("/images/site/grain.png"), radial-gradient(64% 72% at 74% 42%, #1b9a70 0%, #0a6247 50%, #032c20 100%);
+  background-size:
+    220px 220px,
+    100% 100%;
+}
+
+.split-mask {
+  /* Word masks clip by default; leave room for descenders and tight tracking. */
+  padding: 0.06em 0.06em 0.16em;
+  margin: -0.06em -0.06em -0.16em;
+}
+
+/* Hover swap: the label rolls out and its twin rolls in. */
+.roll {
+  display: inline-grid;
+  overflow: hidden;
+  vertical-align: bottom;
+}
+
+.roll > * {
+  grid-area: 1 / 1;
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.roll > :last-child {
+  transform: translateY(110%);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  :is(a, button):hover .roll > :first-child {
+    transform: translateY(-110%);
+  }
+
+  :is(a, button):hover .roll > :last-child {
+    transform: translateY(0);
+  }
+}
+
+/* The nav is a bar in the exact colour of the section beneath it: no blur, no fade, no shadow. Over the hero it has no
+   bar at all. */
+.nav-layer {
+  position: relative;
+  z-index: 1;
+  --nav-bar: transparent;
+  --nav-rule: transparent;
+  --nav-accent: var(--champagne);
+  --cta-bg: var(--cream);
+  --cta-ink: #121412;
+  --cta-hover: var(--champagne);
+  --ring: var(--cream);
+  background-color: var(--nav-bar);
+  box-shadow: inset 0 -1px 0 var(--nav-rule);
+  color: var(--cream);
+}
+
+.nav-layer[data-tone="flood"],
+.nav-layer[data-tone="paper"],
+.nav-layer[data-tone="board"] {
+  --nav-accent: var(--emerald);
+  --cta-bg: #121412;
+  --cta-ink: var(--cream);
+  --cta-hover: var(--emerald);
+  --ring: var(--emerald);
+  color: #0d1526;
+}
+
+.nav-layer[data-tone="paper"],
+.nav-layer[data-tone="board"] {
+  --nav-bar: #f4f0e6;
+  --nav-rule: rgb(13 21 38 / 12%);
+}
+
+.nav-layer[data-tone="emerald"] {
+  --nav-bar: #084f3a;
+  --nav-rule: rgb(245 240 228 / 16%);
+}
+
+.nav-layer[data-tone="lit"] {
+  --nav-bar: #06402e;
+  --nav-rule: rgb(245 240 228 / 16%);
+}
+
+.nav-layer[data-tone="ink"] {
+  --nav-bar: #121412;
+  --nav-rule: rgb(245 240 228 / 14%);
+}
+
+.nav-layer[data-tone="bronze"] {
+  --nav-bar: #1c120c;
+}
+
+.nav-layer[data-tone="graphite"] {
+  --nav-bar: #0a1316;
+}
+
+/* Without JavaScript nothing can follow the sections, so the nav stays with the hero it was drawn for. */
+html:not(.js) .nav {
+  position: absolute;
+}
+
+.nav-layer-next {
+  position: absolute;
+  inset: 0 0 auto;
+  pointer-events: none;
+  clip-path: inset(100% 0 0 0);
+}
+
+.nav-row {
+  display: grid;
+  height: var(--nav-bar-height);
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding-inline: var(--gutter);
+}
+
+/* Always in reach once the hero is behind: one disc, in the opposite colour to whatever it sits on. */
+.back-to-top {
+  position: fixed;
+  right: var(--gutter);
+  bottom: clamp(1rem, 2.4vw, 2rem);
+  display: flex;
+  width: clamp(2.75rem, 3.4vw, 3rem);
+  height: clamp(2.75rem, 3.4vw, 3rem);
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background-color: var(--cream);
+  box-shadow: 0 0 0 1px rgb(13 21 38 / 14%);
+  color: #121412;
+  opacity: 0;
+  pointer-events: none;
+  translate: 0 0.75rem;
+  visibility: hidden;
+  transition:
+    opacity 0.35s,
+    visibility 0.35s,
+    translate 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.3s,
+    color 0.3s;
+}
+
+.back-to-top[data-on="light"] {
+  background-color: #121412;
+  box-shadow: 0 0 0 1px rgb(245 240 228 / 18%);
+  color: var(--cream);
+}
+
+.back-to-top[data-visible] {
+  opacity: 1;
+  pointer-events: auto;
+  translate: 0 0;
+  visibility: visible;
+}
+
+/* Marquee: the strips dissolve at the edges of the screen. A gradient in the ground colour, not a mask, which would
+   re-composite the strip every frame. */
+.marquee-fade {
+  position: relative;
+}
+
+.marquee-fade::before,
+.marquee-fade::after {
+  position: absolute;
+  z-index: 1;
+  inset-block: 0;
+  width: 5%;
+  content: "";
+  pointer-events: none;
+}
+
+.marquee-fade::before {
+  left: 0;
+  background: linear-gradient(to right, var(--background), transparent);
+}
+
+.marquee-fade::after {
+  right: 0;
+  background: linear-gradient(to left, var(--background), transparent);
+}
+
+/* The expertise figures draw themselves in the first time they are seen. */
+.figure-line {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 1.9s cubic-bezier(0.22, 1, 0.36, 1) var(--delay, 0s);
+}
+
+.figure-fade {
+  opacity: 0;
+  transition: opacity 0.9s ease-out var(--delay, 0s);
+}
+
+[data-figure-in] .figure-line {
+  stroke-dashoffset: 0;
+}
+
+[data-figure-in] .figure-fade {
+  opacity: 1;
+}
+
+html:not(.js) .figure-line {
+  stroke-dashoffset: 0;
+}
+
+html:not(.js) .figure-fade {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .figure-line {
+    stroke-dashoffset: 0;
+    transition: none;
+  }
+
+  .figure-fade {
+    opacity: 1;
+    transition: none;
+  }
+}
+
+/* Short laptops: the featured project's numbers give way to its features. */
+@media (min-width: 900px) and (min-aspect-ratio: 11 / 10) and (max-height: 800px) {
+  .showcase-proof {
+    display: none;
+  }
+}
+
+/* The hero: a portrait in a lit studio. The stage background and DOM portrait are the complete static version; the
+   shader replaces both once it is running. */
+.hero-stage {
+  background:
+    url("/images/site/grain.png") 0 0 / 220px 220px,
+    radial-gradient(70% 78% at 50% 30%, #22a87c 0%, #0a6247 52%, #032c20 100%);
+  background-color: var(--emerald-deep);
+}
+
+.hero-subject {
+  position: absolute;
+  top: calc(var(--nav-height) * 0.72);
+  left: 50%;
+  height: min(84svh, 136vw);
+  aspect-ratio: 1650 / 2239;
+  translate: -50% 0;
+}
+
+.hero-fade {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 72svh;
+  background: linear-gradient(to top, var(--emerald-deep) 60%, transparent);
+}
+
+/* Stacked: name across his chest, the rest on the deep of the backdrop beneath it. */
+.hero-foot {
+  position: absolute;
+  inset-inline: var(--gutter);
+  bottom: clamp(1rem, 3svh, 2rem);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-name {
+  margin-bottom: 1.25rem;
+}
+
+.hero-flanks {
+  display: contents;
+}
+
+@media (min-width: 900px) and (min-aspect-ratio: 11 / 10) {
+  .hero-subject {
+    top: max(calc(var(--nav-height) * 0.74), 3.4svh);
+    height: min(104svh, 65vw);
+  }
+
+  .hero-fade {
+    height: 44svh;
+    background: linear-gradient(to top, var(--emerald-deep) 34%, transparent);
+  }
+
+  .hero-foot {
+    display: contents;
+  }
+
+  /* The two wings share one grid row, so their hairlines start level and both end at the same height. */
+  .hero-flanks {
+    position: absolute;
+    inset-inline: var(--gutter);
+    top: clamp(5rem, 12.6svh, 11rem);
+    z-index: 10;
+    display: grid;
+    grid-template-columns: 25.5vw 1fr 24vw;
+    align-items: stretch;
+  }
+
+  .hero-name {
+    margin-bottom: 0;
+  }
+}
+
+/* Narrow covers: the credentials wrap to two lines each there, and something has to give way. */
+@media (max-width: 1100px) {
+  .hero-creds {
+    display: none;
+  }
+}
+
+/* Polish runs longer. On short laptops the credentials give way before the copy reaches the name. */
+@media (max-height: 800px) {
+  .hero-creds {
+    display: none;
+  }
+}
+
+@media (min-width: 900px) and (min-aspect-ratio: 11 / 10) {
+  :lang(pl) .hero-role {
+    font-size: min(3vw, 5.3svh);
+  }
+}
+
+/* Short phones: the offer line, the role and the action are what must fit. */
+@media (max-width: 899px) and (max-height: 700px) {
+  .hero-para {
+    display: none;
+  }
+}
+
+html.studio-live .hero-poster {
+  visibility: hidden;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Hidden until the studio takes over. The keyframe is the failsafe if it never does. */
+  html.js:not(.intro-started) .intro-hide {
+    visibility: hidden;
+    animation: intro-failsafe 0s linear 2.4s forwards;
+  }
+
+  .hero-copy > * {
+    animation: copy-rise 1s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: 0.5s;
+  }
+
+  .hero-copy > :nth-child(2) {
+    animation-delay: 0.6s;
+  }
+
+  .hero-copy > :nth-child(3) {
+    animation-delay: 0.7s;
+  }
+}
+
+@keyframes intro-failsafe {
+  to {
+    visibility: visible;
+  }
+}
+
+@keyframes copy-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
   }
 }

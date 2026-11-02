@@ -1,73 +1,94 @@
 "use client"
 
-import { type JSX, useRef, useState } from "react"
+import { type JSX, useRef } from "react"
 
-import { useGSAP } from "@gsap/react"
-import { gsap } from "gsap"
+import { gsap, MOTION_OK, useGSAP } from "~/src/lib/gsap"
 
-gsap.registerPlugin(useGSAP)
+const INTERACTIVE = "a, button, [role='button'], input, textarea"
+/** The ring is drawn at its largest and scaled down, so changing size never touches layout. */
+const RING_REST = 40 / 112
+const LIGHT_NAV_TONES = ["flood", "paper", "board"]
+const DARK_GROUND =
+  "#hero, .ground-emerald, [data-dark-ground], [data-nav-ground='graphite'], [data-nav-ground='bronze'], [data-nav-ground='ink'], [data-ground='emerald']"
 
 export function CustomCursor(): JSX.Element {
-  const cursorRef = useRef<HTMLDivElement>(null)
-  const trailingRef = useRef<HTMLDivElement>(null)
-  const [hovered, setHovered] = useState(false)
+  const dotRef = useRef<HTMLDivElement>(null)
+  const ringRef = useRef<HTMLDivElement>(null)
+  const labelRef = useRef<HTMLSpanElement>(null)
 
   useGSAP(() => {
-    const mainCursor = cursorRef.current
-    const trailingCursor = trailingRef.current
+    gsap.matchMedia().add(`${MOTION_OK} and (pointer: fine)`, () => {
+      const dot = dotRef.current
+      const ring = ringRef.current
+      const label = labelRef.current
+      if (!dot || !ring || !label) return
 
-    const xToMain = gsap.quickTo(mainCursor, "x", { duration: 0.1, ease: "power3" })
-    const yToMain = gsap.quickTo(mainCursor, "y", { duration: 0.1, ease: "power3" })
+      const dotX = gsap.quickTo(dot, "x", { duration: 0.1, ease: "power3" })
+      const dotY = gsap.quickTo(dot, "y", { duration: 0.1, ease: "power3" })
+      const ringX = gsap.quickTo(ring, "x", { duration: 0.35, ease: "power3" })
+      const ringY = gsap.quickTo(ring, "y", { duration: 0.35, ease: "power3" })
+      let seen = false
 
-    const xToTrailing = gsap.quickTo(trailingCursor, "x", { duration: 0.3, ease: "power3" })
-    const yToTrailing = gsap.quickTo(trailingCursor, "y", { duration: 0.3, ease: "power3" })
-
-    const onMouseMove = (e: MouseEvent) => {
-      xToMain(e.clientX - 6)
-      yToMain(e.clientY - 6)
-
-      xToTrailing(e.clientX - 20)
-      yToTrailing(e.clientY - 20)
-    }
-
-    const onMouseOver = (e: MouseEvent) => {
-      const target = e.target as HTMLElement
-      if (target.tagName === "A" || target.tagName === "BUTTON" || target.closest("a") || target.closest("button")) {
-        setHovered(true)
-      } else {
-        setHovered(false)
+      const onMove = (event: PointerEvent) => {
+        if (!seen) {
+          seen = true
+          gsap.set([dot, ring], { x: event.clientX, y: event.clientY, xPercent: -50, yPercent: -50, autoAlpha: 1 })
+          gsap.set(ring, { scale: RING_REST })
+        }
+        dotX(event.clientX)
+        dotY(event.clientY)
+        ringX(event.clientX)
+        ringY(event.clientY)
       }
-    }
 
-    globalThis.addEventListener("mousemove", onMouseMove)
-    globalThis.addEventListener("mouseover", onMouseOver)
+      const onOver = (event: PointerEvent) => {
+        const target = event.target as Element
+        const named = target.closest?.("[data-cursor]") as HTMLElement | null
+        const active = target.closest?.(INTERACTIVE) !== null
+        const navTone = target.closest?.("[data-tone]")?.getAttribute("data-tone")
+        const dark = navTone
+          ? !LIGHT_NAV_TONES.includes(navTone)
+          : target.closest?.(DARK_GROUND) && !target.closest?.("[data-light-ground]")
+        const ink = dark ? "#f5f0e4" : "#0d1526"
 
-    return () => {
-      globalThis.removeEventListener("mousemove", onMouseMove)
-      globalThis.removeEventListener("mouseover", onMouseOver)
-    }
+        // Over a project the ring becomes a labelled disc.
+        label.textContent = named?.dataset.cursor ?? ""
+        gsap.to(dot, { scale: named ? 0 : active ? 0.5 : 1, backgroundColor: ink, duration: 0.2, overwrite: "auto" })
+        gsap.to(ring, {
+          scale: named ? 1 : active ? RING_REST * 1.6 : RING_REST,
+          backgroundColor: named ? "#e2c690" : "rgba(226,198,144,0)",
+          borderColor: named ? "#e2c690" : ink,
+          duration: 0.35,
+          ease: "power3.out",
+          overwrite: "auto",
+        })
+        gsap.to(label, { autoAlpha: named ? 1 : 0, duration: 0.2, overwrite: "auto" })
+      }
+
+      globalThis.addEventListener("pointermove", onMove, { passive: true })
+      globalThis.addEventListener("pointerover", onOver, { passive: true })
+
+      return () => {
+        globalThis.removeEventListener("pointermove", onMove)
+        globalThis.removeEventListener("pointerover", onOver)
+      }
+    })
   })
-
-  useGSAP(() => {
-    if (hovered) {
-      gsap.to(cursorRef.current, { scale: 0.5, duration: 0.2 })
-      gsap.to(trailingRef.current, { scale: 1.5, backgroundColor: "rgba(255,255,255,0.1)", duration: 0.2 })
-    } else {
-      gsap.to(cursorRef.current, { scale: 1, duration: 0.2 })
-      gsap.to(trailingRef.current, { scale: 1, backgroundColor: "transparent", duration: 0.2 })
-    }
-  }, [hovered])
 
   return (
     <>
       <div
-        ref={cursorRef}
-        className="pointer-events-none fixed top-0 left-0 z-9999 hidden h-3 w-3 rounded-full bg-foreground mix-blend-difference md:block"
+        ref={dotRef}
+        aria-hidden
+        className="pointer-events-none invisible fixed top-0 left-0 z-[200] size-2 rounded-full bg-foreground"
       />
       <div
-        ref={trailingRef}
-        className="pointer-events-none fixed top-0 left-0 z-9998 hidden h-10 w-10 rounded-full border border-foreground/50 mix-blend-difference md:block"
-      />
+        ref={ringRef}
+        aria-hidden
+        className="pointer-events-none invisible fixed top-0 left-0 z-[199] flex size-28 items-center justify-center rounded-full border-[2.8px] border-foreground"
+      >
+        <span ref={labelRef} className="invisible whitespace-nowrap font-medium text-[0.8125rem] text-emerald-deep tracking-[-0.01em]" />
+      </div>
     </>
   )
 }

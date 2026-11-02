@@ -1,86 +1,60 @@
 "use client"
 
-import Image from "next/image"
 import type { JSX } from "react"
 
 import { useTranslations } from "next-intl"
 
+import { ArrowRightIcon } from "~/src/components/custom/icons"
 import { Reveal } from "~/src/components/custom/reveal"
+import { RollText } from "~/src/components/custom/roll-text"
+import { SectionHead } from "~/src/components/custom/section-head"
 
 import { ARTICLES } from "~/src/data"
 
 export function InsightsSection(): JSX.Element {
   const t = useTranslations("custom.insights")
+
   return (
-    <section id="insights" className="relative border-border border-t py-8 md:py-32">
-      <div className="container mx-auto px-6 md:px-12">
-        <Reveal variant="text-mask">
-          <div className="mb-8 flex flex-col items-start justify-between md:mb-24 md:flex-row">
-            <h2 className="font-black font-sans text-4xl text-foreground leading-[0.9] tracking-tighter sm:text-5xl md:text-8xl">
-              {t("title")}
-            </h2>
-          </div>
-        </Reveal>
+    <section
+      id="insights"
+      data-nav-ground="paper"
+      className="relative z-10 bg-background pt-[clamp(4.75rem,5.5vw,6.5rem)] pb-(--section-y)"
+    >
+      <SectionHead label={t("subtitle")} title={t("title")} />
 
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-12 lg:grid-cols-3">
-          {ARTICLES?.map((article, index) => (
-            <article
-              key={article.id}
-              className="group flex h-full cursor-pointer flex-col border-border border-l pl-6 md:border-l-0 md:pl-0"
-            >
-              <Reveal delay={index * 0.15} variant="blur-slide" className="h-full">
-                <div className="relative mb-8 aspect-video overflow-hidden border border-border bg-muted">
-                  <div className="absolute inset-0 z-10 bg-foreground/10 opacity-0 mix-blend-overlay transition-opacity duration-300 group-hover:opacity-100" />
-
-                  <Image
-                    fill
-                    src={article.image}
-                    alt={article.title}
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="object-cover grayscale transition-all duration-700 ease-out group-hover:scale-105 group-hover:grayscale-0"
-                    unoptimized
-                  />
-
-                  <div className="absolute top-0 left-0 z-20 border-border border-r border-b bg-background px-4 py-2">
-                    <span className="font-mono text-foreground text-xs uppercase tracking-wider">{article.category}</span>
-                  </div>
+      <ul className="frame mt-[clamp(2.5rem,5vw,6rem)]">
+        {ARTICLES.map((article) => (
+          <li key={article.id} className="group relative border-border border-t last:border-b">
+            {/* Hover: the rule is redrawn in emerald and the title leans into it. */}
+            <span
+              aria-hidden
+              className="absolute -top-px left-0 h-0.5 w-full origin-left scale-x-0 bg-emerald transition-transform duration-500 ease-out group-hover:scale-x-100"
+            />
+            <Reveal>
+              <article className="grid gap-y-3 py-[clamp(1.25rem,2.4vw,2.75rem)] md:grid-cols-12 md:gap-x-6">
+                <p className="type-label md:col-span-2">
+                  {article.date}
+                  <br className="hidden md:block" />
+                  <span className="md:hidden">{" · "}</span>
+                  {article.category}
+                </p>
+                <h3 className="type-title text-[clamp(1.5rem,2.7vw,3.5rem)] transition-[color,translate] duration-500 ease-out group-hover:translate-x-3 group-hover:text-emerald md:col-span-6">
+                  {article.title}
+                </h3>
+                <div className="md:col-span-4">
+                  <p className="type-body">{article.excerpt}</p>
+                  {article.href && (
+                    <a href={article.href} className="mt-4 inline-flex items-center gap-2 font-medium tracking-[-0.012em]">
+                      <RollText>{t("readArticle")}</RollText>
+                      <ArrowRightIcon className="size-[1.1em] transition-transform duration-300 group-hover:translate-x-1" />
+                    </a>
+                  )}
                 </div>
-
-                <div className="flex flex-1 flex-col">
-                  <div className="mb-4 flex items-center gap-4 font-mono text-muted-foreground text-xs uppercase tracking-widest">
-                    <span>{article.date}</span>
-                    <span className="h-1 w-1 rounded-full bg-primary"></span>
-                    <span>{article.readTime}</span>
-                  </div>
-
-                  <h3 className="mb-4 font-bold font-sans text-2xl text-foreground leading-tight transition-colors group-hover:text-primary">
-                    {article.title}
-                  </h3>
-
-                  <p className="mb-8 line-clamp-3 text-muted-foreground text-sm leading-relaxed">{article.excerpt}</p>
-
-                  <div className="mt-auto flex items-center gap-2 font-mono text-foreground text-xs uppercase tracking-widest transition-transform group-hover:translate-x-2">
-                    <span>{t("readArticle")}</span>
-                    <span className="text-lg leading-none">{"\u2192"}</span>
-                  </div>
-                </div>
-              </Reveal>
-            </article>
-          ))}
-        </div>
-
-        <div className="mt-16 flex justify-center md:mt-24">
-          <Reveal variant="blur-slide">
-            <a
-              href="/"
-              className="group flex items-center gap-3 font-mono text-muted-foreground text-sm uppercase tracking-widest transition-colors hover:text-foreground"
-            >
-              <span>{t("viewArchive")}</span>
-              <div className="h-px w-12 bg-muted-foreground transition-colors group-hover:bg-foreground" />
-            </a>
-          </Reveal>
-        </div>
-      </div>
+              </article>
+            </Reveal>
+          </li>
+        ))}
+      </ul>
     </section>
   )
 }

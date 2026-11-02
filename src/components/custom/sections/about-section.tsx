@@ -1,184 +1,134 @@
 "use client"
 
-import Image from "next/image"
 import type { JSX } from "react"
 
 import { useTranslations } from "next-intl"
 
 import { CONSTANTS } from "~/src/constants"
 
+import { ArrowUpRightIcon } from "~/src/components/custom/icons"
+import { ImageReveal } from "~/src/components/custom/image-reveal"
 import { Reveal } from "~/src/components/custom/reveal"
+import { RollText } from "~/src/components/custom/roll-text"
+import { SectionHead } from "~/src/components/custom/section-head"
+
+function LedgerLink({ href, label }: Readonly<{ href?: string; label: string }>): JSX.Element {
+  return (
+    <a href={href} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-1.5">
+      <RollText>{label}</RollText>
+      <ArrowUpRightIcon className="size-[0.8em] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+    </a>
+  )
+}
+
+const COMMITMENTS = ["direct", "scope", "risk"] as const
+
+const LEDGER_VALUE = "type-title mt-2 text-[clamp(1.5rem,2.5vw,3.25rem)] text-foreground"
 
 export function AboutSection(): JSX.Element {
   const t = useTranslations("custom.about")
+  const github = CONSTANTS.SOCIAL_LINKS.find((link) => link.name === "GitHub")?.url
+  const linkedin = CONSTANTS.SOCIAL_LINKS.find((link) => link.name === "LinkedIn")?.url
 
   return (
-    <section id="about" className="relative border-border border-b py-8 md:py-32">
-      <div className="container mx-auto px-6 md:px-12">
-        <Reveal variant="slide-right">
-          <div className="mb-0 flex items-center gap-4 md:mb-24">
-            <div className="h-2 w-2 rounded-full bg-primary"></div>
-            <h2 className="font-mono text-foreground text-xs uppercase tracking-widest">{t("sectionHeader")}</h2>
-          </div>
-        </Reveal>
+    <section id="intro" data-nav-ground="paper" className="relative z-10 live:-mt-[30svh] bg-background pt-[clamp(4.75rem,5.5vw,6.5rem)]">
+      <SectionHead label={t("sectionHeader")} title={t("title")} />
 
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:gap-24">
-          <div className="relative flex flex-col gap-8 self-start lg:sticky lg:top-32 lg:col-span-4">
-            <Reveal width="100%" variant="blur-slide" duration={1.2}>
-              <div className="group relative aspect-square w-full overflow-hidden border border-border bg-background">
-                <Image
-                  fill
-                  src="https://avatars.githubusercontent.com/u/27385980?v=4"
-                  alt="Piotr J. Borowiecki"
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                  className="object-cover object-center grayscale transition-all duration-700 ease-out group-hover:grayscale-0"
-                />
-                <div className="absolute inset-0 z-10 bg-linear-to-t from-background/80 to-transparent opacity-60"></div>
+      {/* The photograph holds still while the account of the work slides up over it. */}
+      <div className="relative mt-[clamp(2rem,4vw,4.5rem)]">
+        <div className="md:sticky md:top-0">
+          <ImageReveal
+            src="/images/site/advisor-meeting.webp"
+            alt={t("photoAlt")}
+            sizes="100vw"
+            className="aspect-[3/2] md:aspect-auto md:h-svh"
+            caption={
+              <>
+                <span className="block text-[0.8125rem] text-cream/75">{t("location")}</span>
+                <span className="type-title block text-[1.375rem]">{t("krakow")}</span>
+              </>
+            }
+          />
+        </div>
 
-                <div className="absolute bottom-6 left-6 z-20 overflow-hidden">
-                  <div className="transform transition-transform delay-100 duration-500 lg:translate-y-full lg:group-hover:translate-y-0">
-                    <div className="mb-1 font-mono text-primary text-xs uppercase tracking-widest">{t("location")}</div>
-                    <div className="font-bold font-sans text-foreground text-xl">{t("krakow")}</div>
-                  </div>
-                </div>
-              </div>
-            </Reveal>
-
-            <div className="grid grid-cols-2 gap-4 border-border border-t pt-8 sm:gap-8">
-              <Reveal delay={0.2} variant="slide-up">
-                <div>
-                  <h3 className="mb-2 font-mono text-muted-foreground text-xs uppercase tracking-widest">{t("education")}</h3>
-                  <p className="mb-1 font-bold text-foreground">{t("degree")}</p>
-                  <p className="text-muted-foreground text-sm">{t("university")}</p>
-                </div>
-              </Reveal>
-              <Reveal delay={0.3} variant="slide-up">
-                <div>
-                  <h3 className="mb-2 font-mono text-muted-foreground text-xs uppercase tracking-widest">{t("experience")}</h3>
-                  <p className="mb-1 font-bold text-foreground">{t("years")}</p>
-                  <p className="text-muted-foreground text-sm">{t("company")}</p>
-                </div>
-              </Reveal>
-              <Reveal delay={0.4} variant="slide-up">
-                <div className="border-border border-t pt-8">
-                  <h3 className="mb-2 font-mono text-muted-foreground text-xs uppercase tracking-widest">{t("codebases")}</h3>
-                  <a
-                    href={CONSTANTS.SOCIAL_LINKS.find((l) => l.name === "GitHub")?.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block font-bold text-foreground transition-colors hover:text-primary"
-                  >
-                    {"GitHub"}
-                  </a>
-                </div>
-              </Reveal>
-              <Reveal delay={0.5} variant="slide-up">
-                <div className="border-border border-t pt-8">
-                  <h3 className="mb-2 font-mono text-muted-foreground text-xs uppercase tracking-widest">{t("network")}</h3>
-                  <a
-                    href={CONSTANTS.SOCIAL_LINKS.find((l) => l.name === "LinkedIn")?.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block font-bold text-foreground transition-colors hover:text-primary"
-                  >
-                    {"LinkedIn"}
-                  </a>
-                </div>
-              </Reveal>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-6 md:gap-16 lg:col-span-8">
-            <div className="flex flex-col gap-2">
-              {t.rich("title", {
-                line1: (chunks) => (
-                  <Reveal variant="text-mask">
-                    <h2 className="font-black font-sans text-4xl text-foreground uppercase leading-[0.95] tracking-tighter md:text-6xl">
-                      {chunks}
-                    </h2>
-                  </Reveal>
-                ),
-                line2: (chunks) => (
-                  <Reveal variant="text-mask" delay={0.1}>
-                    <h2 className="font-black font-sans text-4xl text-foreground uppercase leading-[0.95] tracking-tighter md:text-6xl">
-                      {chunks}
-                    </h2>
-                  </Reveal>
-                ),
-                line3: (chunks) => (
-                  <Reveal variant="text-mask" delay={0.2}>
-                    <h2 className="font-black font-sans text-4xl text-muted-foreground uppercase leading-[0.95] tracking-tighter md:text-6xl">
-                      {chunks}
-                    </h2>
-                  </Reveal>
-                ),
-              })}
-            </div>
-
-            <Reveal variant="blur-slide" delay={0.3}>
-              <p className="border-primary border-l-2 pl-6 font-normal text-foreground leading-relaxed md:text-2xl">
+        <div className="frame relative z-10 md:grid md:grid-cols-12 md:gap-x-6">
+          <article className="-mx-(--gutter) bg-background px-(--gutter) pt-10 pb-4 md:col-span-7 md:col-start-6 md:mx-0 md:-mt-[42svh] md:px-[clamp(2rem,3.4vw,4.5rem)] md:py-[clamp(2.5rem,4vw,5rem)] md:shadow-[0_40px_90px_-50px_rgb(13_21_38/60%)]">
+            <Reveal>
+              <p className="type-lead text-foreground text-lead">
                 {t.rich("description", {
-                  strong: (chunks) => <strong className="font-bold text-foreground">{chunks}</strong>,
+                  strong: (chunks) => <strong className="font-semibold">{chunks}</strong>,
                 })}
               </p>
             </Reveal>
 
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-12">
-              <Reveal variant="slide-up" delay={0.4}>
-                <div className="border-border border-t pt-6">
-                  <span className="mb-4 block font-mono text-primary text-xs uppercase tracking-widest">{t("backgroundTitle")}</span>
-                  <p className="text-muted-foreground text-sm leading-relaxed md:text-base">
-                    {t.rich("backgroundText", {
-                      strong: (chunks) => <strong className="text-foreground">{chunks}</strong>,
-                    })}
-                  </p>
-                </div>
+            <div className="mt-[clamp(2rem,3.4vw,4rem)] grid gap-x-6 gap-y-8 border-border border-t pt-5 md:grid-cols-2">
+              <Reveal>
+                <h3 className="type-label text-foreground">{t("backgroundTitle")}</h3>
+                <p className="type-body mt-3">
+                  {t.rich("backgroundText", {
+                    strong: (chunks) => <strong>{chunks}</strong>,
+                  })}
+                </p>
               </Reveal>
-
-              <Reveal variant="slide-up" delay={0.5}>
-                <div className="border-border border-t pt-6">
-                  <span className="mb-4 block font-mono text-primary text-xs uppercase tracking-widest">{t("expertiseTitle")}</span>
-                  <p className="text-muted-foreground text-sm leading-relaxed md:text-base">
-                    {t.rich("expertiseText", {
-                      strong: (chunks) => <strong className="text-foreground">{chunks}</strong>,
-                    })}
-                  </p>
-                </div>
+              <Reveal delay={0.08}>
+                <h3 className="type-label text-foreground">{t("expertiseTitle")}</h3>
+                <p className="type-body mt-3">
+                  {t.rich("expertiseText", {
+                    strong: (chunks) => <strong>{chunks}</strong>,
+                  })}
+                </p>
               </Reveal>
             </div>
+          </article>
+        </div>
+      </div>
 
-            <Reveal variant="blur-slide" delay={0.6}>
-              <div className="rounded-sm border border-border bg-foreground/5 p-4 md:p-8">
-                <p className="text-muted-foreground italic leading-relaxed">{t("quote")}</p>
-              </div>
-            </Reveal>
+      <div data-nav-ground="ink" className="ground-ink relative z-10">
+        <div className="frame pt-[clamp(3.5rem,7vw,8rem)] pb-[clamp(3.5rem,7vw,8rem)]">
+          <Reveal variant="slide-right">
+            <blockquote className="type-display text-[clamp(2.125rem,5vw,7rem)] text-foreground [text-wrap:pretty] md:w-[88%]">
+              {t("quote")}
+            </blockquote>
+          </Reveal>
 
-            <div className="mt-4 border-border border-t pt-6 md:mt-8 md:pt-12">
-              <Reveal delay={0.7}>
-                <h3 className="mb-6 font-mono text-foreground text-xs uppercase tracking-widest md:mb-8">{t("coreTechnologies")}</h3>
-              </Reveal>
-              <div className="flex flex-wrap gap-x-6 gap-y-4 md:gap-x-12">
-                {[
-                  "React",
-                  "Next.js",
-                  "TypeScript",
-                  "Node.js",
-                  "Go (Golang)",
-                  "Python",
-                  "PostgreSQL",
-                  "Docker",
-                  "Kubernetes",
-                  "AI / LLMs",
-                ].map((tech, i) => (
-                  <Reveal key={tech} delay={0.8 + i * 0.05} variant="slide-right" className="inline-block">
-                    <span className="cursor-default font-bold font-sans text-base text-foreground/40 transition-colors hover:text-foreground md:text-3xl">
-                      {tech}
-                    </span>
+          <div className="mt-[clamp(2.5rem,5vw,6rem)] border-foreground border-t pt-3">
+            <p className="type-label text-foreground">{t("termsLabel")}</p>
+            <ol className="mt-[clamp(1.5rem,2.6vw,3rem)] grid gap-x-6 gap-y-8 md:grid-cols-3">
+              {COMMITMENTS.map((commitment) => (
+                <li key={commitment}>
+                  <Reveal>
+                    <h3 className="type-title text-[clamp(1.5rem,2.3vw,3.25rem)] text-foreground">{t(`${commitment}Title`)}</h3>
+                    <p className="type-body mt-3 max-w-[42ch]">{t(`${commitment}Body`)}</p>
                   </Reveal>
-                ))}
-              </div>
-            </div>
+                </li>
+              ))}
+            </ol>
           </div>
+
+          <dl className="mt-[clamp(3rem,6vw,7rem)] grid grid-cols-2 gap-x-6 gap-y-8 border-foreground border-t pt-3 md:grid-cols-4">
+            <div>
+              <dt className="type-label">{t("education")}</dt>
+              <dd className={LEDGER_VALUE}>{t("degree")}</dd>
+              <dd className="type-label mt-1">{t("university")}</dd>
+            </div>
+            <div>
+              <dt className="type-label">{t("experience")}</dt>
+              <dd className={LEDGER_VALUE}>{t("years")}</dd>
+              <dd className="type-label mt-1">{t("company")}</dd>
+            </div>
+            <div>
+              <dt className="type-label">{t("codebases")}</dt>
+              <dd className={LEDGER_VALUE}>
+                <LedgerLink href={github} label="GitHub" />
+              </dd>
+            </div>
+            <div>
+              <dt className="type-label">{t("network")}</dt>
+              <dd className={LEDGER_VALUE}>
+                <LedgerLink href={linkedin} label="LinkedIn" />
+              </dd>
+            </div>
+          </dl>
         </div>
       </div>
     </section>

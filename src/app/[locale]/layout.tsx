@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
+import Script from "next/script"
 import type { JSX } from "react"
 
 import { Analytics } from "@vercel/analytics/next"
@@ -16,7 +17,7 @@ import { TranslationsProvider } from "~/src/providers/translations-provider"
 
 import { routing } from "~/src/integrations/next-intl/i18n.routing"
 
-import { fontMono, fontSans } from "~/src/lib/fonts"
+import { fontDisplay, fontMono, fontSans } from "~/src/lib/fonts"
 import { cn } from "~/src/lib/utils"
 
 import { Toaster } from "~/src/components/shadcn/sonner"
@@ -47,10 +48,13 @@ export default async function RootLayout({ children, params }: Readonly<LayoutPr
   return (
     <html
       lang={locale}
-      className={cn(fontSans.variable, fontMono.variable, "bg-background text-foreground antialiased")}
+      className={cn(fontSans.variable, fontDisplay.variable, fontMono.variable, "bg-background text-foreground antialiased")}
       suppressHydrationWarning
     >
       <body className="flex min-h-screen flex-col">
+        <Script id="js-flag" strategy="beforeInteractive">
+          {"document.documentElement.classList.add('js')"}
+        </Script>
         <TranslationsProvider>
           <ThemeProvider>
             <TooltipProvider>
