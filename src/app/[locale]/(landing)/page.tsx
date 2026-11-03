@@ -43,7 +43,8 @@ export default function LandingPage(): JSX.Element {
       <SkillsSection />
       <AiSection />
       <PersonSection />
-      <CertificationsSection />
+      {/* Preview deployments show the certificates still in progress; production waits for each verification link. */}
+      <CertificationsSection includeUnverified={process.env.VERCEL_ENV === "preview"} />
       <WorkSection />
       <ConsultSection />
       <InsightsSection />
