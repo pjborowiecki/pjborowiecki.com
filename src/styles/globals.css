@@ -582,6 +582,23 @@ html:not(.js) .figure-fade {
   display: contents;
 }
 
+/* Phones: a closer crop, so his face carries the screen, and the name in two lines across his chest. */
+@media (max-width: 639px) {
+  .hero-subject {
+    top: calc(var(--nav-height) * 0.62);
+    height: min(88svh, 148vw);
+  }
+
+  .hero-fade {
+    height: 56svh;
+    background: linear-gradient(to top, var(--emerald-deep) 46%, transparent);
+  }
+
+  .hero-name {
+    margin-bottom: 1rem;
+  }
+}
+
 @media (min-width: 900px) and (min-aspect-ratio: 11 / 10) {
   .hero-subject {
     top: max(calc(var(--nav-height) * 0.74), 3.4svh);

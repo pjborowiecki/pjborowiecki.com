@@ -76,7 +76,7 @@ export function PhilosophySection(): JSX.Element {
     <section id="philosophy" ref={rootRef} data-nav-ground="board" className="relative live:h-[400svh] bg-board">
       <div className="live:sticky live:top-0 live:h-svh live:overflow-hidden">
         {/* Photograph, on top of the board until the camera has passed through it */}
-        <div data-photo className="live:absolute relative live:inset-0 live:z-10 aspect-[3/2] live:aspect-auto overflow-hidden">
+        <div data-photo className="live:absolute relative live:inset-0 live:z-10 aspect-[4/5] live:aspect-auto overflow-hidden md:aspect-[3/2]">
           <div data-photo-image className="absolute inset-0 origin-[100%_44%] md:origin-[89%_44%]">
             <Image
               fill
@@ -87,13 +87,14 @@ export function PhilosophySection(): JSX.Element {
               className="object-cover object-[76%_40%] md:object-[50%_40%]"
             />
           </div>
+          {/* Phones set the words on the paper at his feet, clear of his face; wider screens put them beside him. */}
           <div
             aria-hidden
-            className="absolute inset-0 bg-linear-to-b from-background/85 via-30% via-background/30 to-55% to-transparent md:bg-linear-to-r md:from-background/85 md:via-22% md:via-background/45 md:to-44%"
+            className="absolute inset-0 bg-linear-to-t from-12% from-background/95 via-36% via-background/70 to-60% to-transparent md:bg-linear-to-r md:from-0% md:from-background/85 md:via-22% md:via-background/45 md:to-44%"
           />
           <div
             data-opening
-            className="frame absolute inset-x-0 top-[calc(var(--nav-height)+1rem)] md:top-[calc(var(--nav-height)+clamp(1rem,5svh,4rem))]"
+            className="frame absolute inset-x-0 bottom-[clamp(1.75rem,5svh,3rem)] md:top-[calc(var(--nav-height)+clamp(1rem,5svh,4rem))] md:bottom-auto"
           >
             <p className="type-label text-foreground">{t("label")}</p>
             <h2 className="type-display mt-3 max-w-[11ch] text-[clamp(2.75rem,6.5vw,9.5rem)] text-foreground">{t("title")}</h2>
@@ -107,7 +108,8 @@ export function PhilosophySection(): JSX.Element {
               <SystemDiagram ref={diagramRef} className="mx-auto size-full max-h-full overflow-visible text-[#0d1526]" />
             </div>
 
-            <div className="relative side:order-1 side:col-span-4 flex live:h-[clamp(15rem,38svh,19rem)] side:live:h-svh flex-col side:live:justify-center live:pt-3 side:live:pt-0">
+            {/* Stacked, a hairline and some air keep the words from running into the drawing above them. */}
+            <div className="relative side:order-1 side:col-span-4 flex live:h-[clamp(15rem,38svh,19rem)] side:live:h-svh flex-col side:live:justify-center live:mt-5 side:live:mt-0 live:border-foreground/15 live:border-t side:live:border-t-0 live:pt-6 side:live:pt-0">
               <div className="relative flex side:live:h-[60svh] live:flex-1 side:live:flex-none flex-col gap-10 live:gap-0">
                 <div data-step className="live:absolute live:inset-x-0 live:top-0">
                   <h3 className="type-display text-[clamp(1.875rem,3.7vw,5.25rem)] text-foreground">{t("messTitle")}</h3>

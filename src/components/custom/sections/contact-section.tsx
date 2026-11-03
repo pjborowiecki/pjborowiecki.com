@@ -38,14 +38,15 @@ function Choice<T extends string>({ label, name, note, onChange, options, value 
   return (
     <fieldset>
       <legend className="type-label text-foreground">{label}</legend>
-      <div className="mt-2.5 flex flex-wrap gap-2">
+      {/* Phones get an even two-column grid of equal tiles rather than a ragged run of pills. */}
+      <div className="mt-2.5 grid grid-cols-2 gap-1.5 sm:flex sm:flex-wrap sm:gap-2">
         {options.map((option) => (
           <button
             key={option}
             type="button"
             aria-pressed={value === option}
             onClick={() => onChange(value === option ? null : option)}
-            className="border border-input px-3.5 py-2 text-[clamp(0.875rem,0.95vw,1.0625rem)] tracking-[-0.005em] transition-colors duration-200 hover:border-foreground aria-pressed:border-emerald aria-pressed:bg-emerald aria-pressed:text-cream"
+            className="flex min-h-11 items-center border border-input px-3 py-2 text-left text-[0.875rem] leading-snug tracking-[-0.005em] transition-colors duration-200 hover:border-foreground aria-pressed:border-emerald aria-pressed:bg-emerald aria-pressed:text-cream sm:min-h-0 sm:px-3.5 sm:text-[clamp(0.875rem,0.95vw,1.0625rem)] sm:leading-normal"
           >
             {name(option)}
           </button>
@@ -119,7 +120,7 @@ export function ContactSection(): JSX.Element {
             <Reveal variant="slide-right">
               <p className="type-label text-champagne">{t("label")}</p>
             </Reveal>
-            <SplitHeading className="type-display mt-4 text-[clamp(3.25rem,7.6vw,11rem)] text-cream">{t("start")}</SplitHeading>
+            <SplitHeading className="type-display mt-4 text-[clamp(3.25rem,7.6vw,11rem)] text-cream max-md:text-[2.75rem]">{t("start")}</SplitHeading>
             <Reveal className="mt-[clamp(1.25rem,2.4vw,2.75rem)]">
               <p className="type-lead max-w-[30ch] text-[clamp(1.1875rem,1.65vw,2.125rem)] text-cream">{t("interested")}</p>
             </Reveal>
@@ -127,7 +128,7 @@ export function ContactSection(): JSX.Element {
         </div>
 
         <Reveal variant="scale-in" className="md:col-span-7">
-          <div data-light-ground className="surface-paper p-[clamp(1.5rem,3vw,4rem)] shadow-[0_50px_100px_-50px_rgb(0_0_0/65%)]">
+          <div data-light-ground className="surface-paper p-[clamp(1.5rem,3vw,4rem)] shadow-[0_50px_100px_-50px_rgb(0_0_0/65%)] max-sm:p-5">
             <div className="flex items-baseline justify-between gap-6 border-foreground border-b pb-3">
               <h3 className="type-title text-[clamp(1.5rem,2.2vw,3rem)]">{t("formTitle")}</h3>
               <p className="type-label hidden sm:block">{t("formNote")}</p>

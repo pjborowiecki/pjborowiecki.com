@@ -9,7 +9,7 @@ import { gsap, MOTION_OK, useGSAP } from "~/src/lib/gsap"
 
 import { CtaLink } from "~/src/components/custom/cta-link"
 import { createHeroStudio, type HeroStudio } from "~/src/components/custom/hero-studio"
-import { NAME_STEM_ORIGIN, NameMark } from "~/src/components/custom/name-mark"
+import { NAME_STEM_ORIGIN, NameMark, NameMarkStacked } from "~/src/components/custom/name-mark"
 import { RollText } from "~/src/components/custom/roll-text"
 
 // Portrait: the supplied headshot. Its sleeve and shoulder, cropped by the original frame, were completed with a
@@ -66,17 +66,20 @@ export function HeroSection(): JSX.Element {
         studio = createHeroStudio({ box, canvas, fadeAnchor: name, stage, onFail: showPoster, onReady: lightsUp })
         if (!studio) showPoster()
 
-        // The name rises out of its own baseline, then the mark is allowed to overflow for the dive.
-        const mark = q<SVGSVGElement>("[data-name-mark]")[0]
-        gsap.set(mark, { overflow: "hidden" })
-        gsap.from(q("[data-word]"), {
+        // The name rises out of its own baseline, then the mark is allowed to overflow for the dive. Phones draw it in two
+        // lines, so there is more than one mark.
+        const marks = q<SVGSVGElement>("[data-name-mark]")
+        gsap.set(marks, { overflow: "hidden" })
+        // Only the words on screen take part, so the stagger is not spent on the layout that is hidden.
+        const words = q<SVGPathElement>("[data-word]").filter((word) => word.getBoundingClientRect().width > 0)
+        gsap.from(words, {
           y: 880,
           duration: 1.5,
           ease: "expo.out",
           stagger: 0.09,
           delay: 0.25,
           onComplete: () => {
-            gsap.set(mark, { overflow: "visible" })
+            gsap.set(marks, { overflow: "visible" })
           },
         })
 
@@ -95,7 +98,7 @@ export function HeroSection(): JSX.Element {
               onUpdate: (self) => {
                 if (markOpen || self.progress === 0) return
                 markOpen = true
-                gsap.set(mark, { overflow: "visible" })
+                gsap.set(marks, { overflow: "visible" })
               },
               onToggle: (self) => studio?.setVisible(self.isActive || self.progress === 0),
             },
@@ -112,6 +115,8 @@ export function HeroSection(): JSX.Element {
             0,
           )
           .to(q("[data-name-zoom]"), { scale: NAME_FLOOD_SCALE, svgOrigin: NAME_STEM_ORIGIN, duration: 1, ease: "expo.in" }, 0)
+          // On phones the first line has no "B" to dive through, so it clears with the copy.
+          .to(q("[data-name-rest]"), { autoAlpha: 0, duration: 0.3, ease: "power1.in" }, 0.05)
 
         return () => {
           studio?.destroy()
@@ -150,10 +155,10 @@ export function HeroSection(): JSX.Element {
                 {t("practiceLabel")}
               </p>
               <p className="type-label cover:hidden text-champagne">{t("engagementsShort")}</p>
-              <p className="hero-role type-display cover:mt-[clamp(0.75rem,1.05vw,1.5rem)] mt-2 cover:text-[min(2.6vw,4.6svh)] text-[clamp(1.75rem,7.4vw,2.75rem)] leading-[1.03]! tracking-[-0.034em]!">
+              <p className="hero-role type-display cover:mt-[clamp(0.75rem,1.05vw,1.5rem)] mt-2 cover:text-[min(2.6vw,4.6svh)] text-[clamp(1.375rem,6.1vw,2.75rem)] leading-[1.03]! tracking-[-0.034em]! max-sm:leading-[1.1]!">
                 {t("role")}
               </p>
-              <p className="hero-para type-body cover:mt-[clamp(0.6rem,0.9vw,1.25rem)] mt-3 cover:text-[clamp(0.875rem,min(0.98vw,1.72svh),1.25rem)] text-[0.9375rem] text-cream/88 leading-[1.48] [&_strong]:font-medium [&_strong]:text-cream">
+              <p className="hero-para type-body max-sm:hidden cover:mt-[clamp(0.6rem,0.9vw,1.25rem)] mt-3 cover:text-[clamp(0.875rem,min(0.98vw,1.72svh),1.25rem)] text-[0.9375rem] text-cream/88 leading-[1.48] [&_strong]:font-medium [&_strong]:text-cream">
                 {t.rich("building", {
                   strong: (chunks) => <strong>{chunks}</strong>,
                 })}
@@ -214,7 +219,8 @@ export function HeroSection(): JSX.Element {
             className="hero-name cover:absolute cover:right-(--gutter) cover:bottom-[clamp(0.75rem,2.4svh,2rem)] cover:left-(--gutter) z-20 -order-1 text-background"
           >
             <h1 className="sr-only">{t("name")}</h1>
-            <NameMark className="block h-auto w-full" />
+            <NameMark className="hidden h-auto w-full sm:block" />
+            <NameMarkStacked className="sm:hidden" />
           </div>
         </div>
       </div>
