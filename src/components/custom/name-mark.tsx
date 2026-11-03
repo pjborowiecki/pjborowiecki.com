@@ -4,6 +4,10 @@ import type { JSX } from "react"
 // any width and can be zoomed through without ever rasterising.
 const VIEW_BOX = "45 -700 7568 712"
 
+// The same outlines in two lines, "PIOTR J." over "BOROWIECKI", each cropped to its own box so both sit flush left.
+const FIRST_LINE_VIEW_BOX = "45 -700 2817 712"
+const SECOND_LINE_VIEW_BOX = "3105 -700 4508 712"
+
 /** A point inside the stem of the "B". Scaling the name around it floods the screen with the colour of the letters. */
 export const NAME_STEM_ORIGIN = "3180 -344"
 
@@ -22,5 +26,28 @@ export function NameMark({ className }: Readonly<{ className?: string }>): JSX.E
         ))}
       </g>
     </svg>
+  )
+}
+
+/**
+ * Phones: the name in two lines, so it reads at the size of a name rather than a caption. Only the second line holds the
+ * "B", so only it is zoomed through; the first line is marked to clear out of the way.
+ */
+export function NameMarkStacked({ className }: Readonly<{ className?: string }>): JSX.Element {
+  return (
+    <div className={className}>
+      {/* 2817 / 4508: the first line is drawn at the same scale as the second. */}
+      <svg aria-hidden="true" data-name-mark viewBox={FIRST_LINE_VIEW_BOX} className="block h-auto w-[62.49%]" fill="currentColor">
+        <g data-name-rest>
+          <path data-word d={WORDS[0]} />
+          <path data-word d={WORDS[1]} />
+        </g>
+      </svg>
+      <svg aria-hidden="true" data-name-mark viewBox={SECOND_LINE_VIEW_BOX} className="mt-[3%] block h-auto w-full" fill="currentColor">
+        <g data-name-zoom>
+          <path data-word d={WORDS[2]} />
+        </g>
+      </svg>
+    </div>
   )
 }
