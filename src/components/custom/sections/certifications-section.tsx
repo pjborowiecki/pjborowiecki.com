@@ -34,8 +34,9 @@ export function CertificationsSection({ includeUnverified = false }: Readonly<Ce
 
   useGSAP(
     () => {
-      // More panels than fit: the section holds still once it fills the screen and the row slides through.
-      gsap.matchMedia().add(`${MOTION_OK} and (min-width: 768px)`, () => {
+      // More panels than fit: the section holds still once it fills the screen and the row slides through. Phones too,
+      // so scrolling down cannot pass the row by without seeing it move.
+      gsap.matchMedia().add(MOTION_OK, () => {
         const outer = outerRef.current
         const root = rootRef.current
         const track = trackRef.current
@@ -79,7 +80,7 @@ export function CertificationsSection({ includeUnverified = false }: Readonly<Ce
     <div ref={outerRef} id="certifications" data-nav-ground="emerald" className="relative z-10 bg-[#084f3a]">
       <section
         ref={rootRef}
-        className="ground-emerald relative pt-[clamp(2rem,4vw,4.5rem)] md:live:sticky md:live:flex md:live:min-h-svh md:live:flex-col"
+        className="ground-emerald relative pt-[clamp(2rem,4vw,4.5rem)] max-md:live:pt-[calc(var(--nav-bar-height)+1.5rem)] live:sticky live:flex live:min-h-svh live:flex-col"
       >
         <SectionHead label={t("label")} title={t("title")} />
 
@@ -87,11 +88,11 @@ export function CertificationsSection({ includeUnverified = false }: Readonly<Ce
           <p className="type-lead max-w-[44ch] text-foreground text-lead">{t("intro")}</p>
         </Reveal>
 
-        {/* Phones: the same row of panels, swiped sideways and snapping to each one, with the next one in view. */}
-        <div className="mt-[clamp(2.5rem,5vw,6rem)] max-md:snap-x max-md:snap-mandatory max-md:overflow-x-auto max-md:overscroll-x-contain max-md:[scrollbar-width:none] md:live:flex md:live:flex-1 md:live:overflow-hidden max-md:[&::-webkit-scrollbar]:hidden">
+        {/* Phones show the next panel at the edge. Without scroll motion the row is swiped by hand instead, snapping to each one. */}
+        <div className="mt-[clamp(2.5rem,5vw,6rem)] max-md:snap-x max-md:snap-mandatory max-md:overflow-x-auto max-md:overscroll-x-contain max-md:[scrollbar-width:none] live:flex live:flex-1 live:overflow-hidden max-md:[&::-webkit-scrollbar]:hidden">
           <ul
             ref={trackRef}
-            className="grid w-full border-border border-t max-md:flex max-md:w-max md:live:flex md:live:w-fit md:live:min-w-full md:grid-cols-2 md:live:will-change-transform xl:grid-cols-4"
+            className="grid w-full border-border border-t max-md:flex max-md:w-max live:flex live:w-fit live:min-w-full live:will-change-transform md:grid-cols-2 xl:grid-cols-4"
           >
             {listed.map(({ id, issuer, logo, name, url }, index) => (
               <li
