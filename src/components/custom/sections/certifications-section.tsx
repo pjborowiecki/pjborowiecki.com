@@ -13,15 +13,21 @@ import { SectionHead } from "~/src/components/custom/section-head"
 
 import { CERTIFICATIONS } from "~/src/data"
 
-// A certificate goes live only once it has a verification link. In development the rest show as a marked preview, so
-// the section can be judged before the exams are passed and cannot ship early by accident.
-const LISTED = CERTIFICATIONS.filter((certification) => certification.url || process.env.NODE_ENV === "development")
+// On the live site a certificate shows only once it has a verification link. In development and on Vercel preview
+// deployments the rest show too, marked as previews, so the section can be judged before the exams are passed and
+// cannot reach production early by accident.
+interface CertificationsSectionProps {
+  includeUnverified?: boolean
+}
 
 /** Pixels of scroll per pixel of sideways travel. */
 const SCROLL_PER_PIXEL = 1.1
 
-export function CertificationsSection(): JSX.Element | null {
+export function CertificationsSection({ includeUnverified = false }: Readonly<CertificationsSectionProps>): JSX.Element | null {
   const t = useTranslations("custom.certifications")
+  const listed = CERTIFICATIONS.filter(
+    (certification) => certification.url || includeUnverified || process.env.NODE_ENV === "development",
+  )
   const outerRef = useRef<HTMLDivElement>(null)
   const rootRef = useRef<HTMLElement>(null)
   const trackRef = useRef<HTMLUListElement>(null)
@@ -67,7 +73,7 @@ export function CertificationsSection(): JSX.Element | null {
     { scope: outerRef },
   )
 
-  if (LISTED.length === 0) return null
+  if (listed.length === 0) return null
 
   return (
     <div ref={outerRef} id="certifications" data-nav-ground="emerald" className="relative z-10 bg-[#084f3a]">
@@ -81,16 +87,17 @@ export function CertificationsSection(): JSX.Element | null {
           <p className="type-lead max-w-[44ch] text-foreground text-lead">{t("intro")}</p>
         </Reveal>
 
-        <div className="mt-[clamp(2.5rem,5vw,6rem)] md:live:flex md:live:flex-1 md:live:overflow-hidden">
+        {/* Phones: the same row of panels, swiped sideways and snapping to each one, with the next one in view. */}
+        <div className="mt-[clamp(2.5rem,5vw,6rem)] max-md:snap-x max-md:snap-mandatory max-md:overflow-x-auto max-md:overscroll-x-contain max-md:[scrollbar-width:none] md:live:flex md:live:flex-1 md:live:overflow-hidden max-md:[&::-webkit-scrollbar]:hidden">
           <ul
             ref={trackRef}
-            className="grid w-full border-border border-t md:live:flex md:live:w-fit md:live:min-w-full md:grid-cols-2 md:live:will-change-transform xl:grid-cols-4"
+            className="grid w-full border-border border-t max-md:flex max-md:w-max md:live:flex md:live:w-fit md:live:min-w-full md:grid-cols-2 md:live:will-change-transform xl:grid-cols-4"
           >
-            {LISTED.map(({ id, issuer, logo, name, url }, index) => (
+            {listed.map(({ id, issuer, logo, name, url }, index) => (
               <li
                 key={id}
                 data-dark-ground
-                className="group relative flex min-h-0 overflow-hidden border-border border-b px-(--gutter) py-[clamp(1.25rem,2.2vw,2.75rem)] md:min-h-[clamp(19rem,54svh,42rem)] md:live:w-[50vw] md:live:shrink-0 md:live:grow md:live:not-first:border-l md:even:border-l xl:live:w-[25vw] xl:not-first:border-l xl:px-[clamp(1.25rem,2vw,2.75rem)] xl:last:pr-(--gutter) xl:first:pl-(--gutter)"
+                className="group relative flex min-h-0 overflow-hidden border-border border-b px-(--gutter) py-[clamp(1.25rem,2.2vw,2.75rem)] max-md:w-[84vw] max-md:shrink-0 max-md:snap-start max-md:not-first:border-l md:min-h-[clamp(19rem,54svh,42rem)] md:live:w-[50vw] md:live:shrink-0 md:live:grow md:live:not-first:border-l md:even:border-l xl:live:w-[25vw] xl:not-first:border-l xl:px-[clamp(1.25rem,2vw,2.75rem)] xl:last:pr-(--gutter) xl:first:pl-(--gutter)"
               >
                 {/* Hover: the panel fills with paper from the floor up, as in Expertise. */}
                 <span
@@ -107,7 +114,7 @@ export function CertificationsSection(): JSX.Element | null {
                   </div>
 
                   <div>
-                    <h3 className="type-display text-[clamp(2.125rem,2.85vw,4.25rem)]">{name}</h3>
+                    <h3 className="type-display text-[clamp(2.125rem,2.85vw,4.25rem)] max-md:text-[1.75rem]">{name}</h3>
                     <p className="type-body mt-4 text-current opacity-85">{t(`${id}Body`)}</p>
                     <div className="mt-5 flex items-end justify-between gap-4">
                       {url ? (
