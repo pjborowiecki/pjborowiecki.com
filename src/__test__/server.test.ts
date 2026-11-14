@@ -78,6 +78,17 @@ describe("security headers", () => {
   })
 })
 
+describe("hosts", () => {
+  it("sends www visitors to the bare domain, keeping the path and query", async () => {
+    const response = await worker.fetch(new Request("https://www.pjborowiecki.com/pl-PL?ref=card"), env)
+
+    expect(response.status).toBe(HTTP_STATUS.PERMANENT_REDIRECT)
+    expect(response.headers.get("location")).toBe("https://pjborowiecki.com/pl-PL?ref=card")
+    expect(response.headers.get("strict-transport-security")).toBe("max-age=31536000; includeSubDomains")
+    expect(fetchHandler).not.toHaveBeenCalled()
+  })
+})
+
 describe("documents", () => {
   it("redirects a language alias to its canonical locale before rendering", async () => {
     const response = await worker.fetch(new Request("http://localhost/pl?ref=card"), env)
