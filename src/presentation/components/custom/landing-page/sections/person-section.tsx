@@ -11,12 +11,9 @@ import { Reveal } from "~/src/presentation/components/custom/landing-page/compon
 import { RollText } from "~/src/presentation/components/custom/landing-page/components/roll-text"
 import { SplitHeading } from "~/src/presentation/components/custom/landing-page/components/split-heading"
 
-import { GITHUB_PROFILE_URL, LINKEDIN_PROFILE_URL } from "~/src/presentation/branding"
+import { ANGULAR_PROJECTS_URL, GITHUB_PROFILE_URL, LINKEDIN_PROFILE_URL, REACT_PROJECTS_URL } from "~/src/presentation/branding"
 
 const LEAD_CLASSNAME = "type-lead max-w-[32ch] text-[clamp(1.375rem,1.8vw,2.375rem)] text-foreground"
-
-const REACT_PROJECTS_URL = "https://reactprojects.com"
-const ANGULAR_PROJECTS_URL = "https://angularprojects.com"
 
 const SAASY_LAND = PROJECTS.find((project) => project.id === PROJECT_ID.SAASYLAND)
 
@@ -161,7 +158,7 @@ export const PersonSection = (): JSX.Element => {
           <p className="mt-[clamp(0.75rem,1.2vw,1.5rem)] max-w-[60ch] type-body">{t("story3")}</p>
           <a
             className="group mt-[clamp(1.25rem,2vw,2.25rem)] inline-flex items-center gap-2 border-b border-foreground pb-0.5 font-medium tracking-[-0.012em]"
-            href={sectionHref(SECTION_IDS.OFFER)}
+            href={sectionHref(SECTION_IDS.CONTACT)}
           >
             <RollText>{t("link")}</RollText>
             <ArrowRightIcon className="size-[1.1em] transition-transform duration-300 group-hover:translate-x-1" />

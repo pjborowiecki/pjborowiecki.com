@@ -1,3 +1,5 @@
+import { SAASY_LAND_URL } from "~/src/presentation/branding"
+
 export const PROJECT_DISCIPLINE = {
   AI: "ai",
   ARCHITECTURE: "architecture",
@@ -41,7 +43,11 @@ export interface Project {
   readonly year: string
 }
 
-export const SAASYLAND_GITHUB_STARS = 430
+export const SAASYLAND_GITHUB_STARS = 440
+
+export const ARKA_GITHUB_STARS = 160
+
+const ARKA_REPOSITORY_URL = "https://github.com/pjborowiecki/ARKA-Veterinary-Clinic-Page-and-Appointment-Booking-System"
 
 const PLACEHOLDER_IMAGE = "project-placeholder"
 
@@ -73,7 +79,7 @@ export const PROJECTS: readonly Project[] = [
     isFeatured: true,
     techStack: ["TanStack Start", "Bun", "Cloudflare", "Drizzle", "Better Auth", "Polar", "Vitest", "Playwright"],
     title: "SaaSyLand.com",
-    url: "https://saasyland.com",
+    url: SAASY_LAND_URL,
     year: "2023",
   },
   {
@@ -128,13 +134,15 @@ export const PROJECTS: readonly Project[] = [
   },
   {
     discipline: PROJECT_DISCIPLINE.PRODUCTS,
+    github: { stars: ARKA_GITHUB_STARS, url: ARKA_REPOSITORY_URL },
     id: PROJECT_ID.ARKA,
     image: PLACEHOLDER_IMAGE,
-    isDraft: true,
+    isDraft: false,
     isFeatured: false,
-    techStack: ["React", "Python", "LangChain", "Pinecone", "Docker", "FastAPI"],
+    techStack: ["Next.js", "TypeScript", "Auth.js", "PostgreSQL", "Drizzle", "Tailwind CSS"],
     title: "Arka-Weterynaria.pl",
-    year: "2024",
+    url: ARKA_REPOSITORY_URL,
+    year: "2023",
   },
 ]
 

@@ -22,27 +22,15 @@ test("explains what is missing before sending anything", async ({ page }) => {
   await expect(form.getByLabel(contact.fieldName)).toHaveAttribute("aria-invalid", "true")
 })
 
-test("sends an enquiry with the chosen need and budget", async ({ page }) => {
+test("sends a message and empties the form", async ({ page }) => {
   const form = page.locator("#contact-form")
 
-  await form.getByRole("radio", { name: contact.needs.audit }).click()
-  await expect(form.getByRole("radio", { name: contact.needs.audit })).toBeChecked()
   await form.getByLabel(contact.fieldName).fill("Ada Lovelace")
   await form.getByLabel(contact.fieldCompany).fill("Analytical Engines")
   await form.getByLabel(contact.fieldEmail).fill("ada@gmail.com")
-  await form.getByLabel(contact.fieldDetails).fill("We would like an audit of our checkout before peak season.")
-  await form.getByRole("radio", { name: contact.budgets.from40k }).click()
+  await form.getByLabel(contact.fieldDetails).fill("I enjoyed reading about your payments work and would like to talk.")
   await form.getByRole("button", { name: contact.send }).click()
 
   await expect(page.getByText(contact.success)).toBeVisible()
   await expect(form.getByLabel(contact.fieldName)).toHaveValue("")
-})
-
-test("lets a choice be cleared by pressing it again", async ({ page }) => {
-  const need = page.locator("#contact-form").getByRole("radio", { name: contact.needs.ai })
-
-  await need.click()
-  await expect(need).toBeChecked()
-  await need.click()
-  await expect(need).not.toBeChecked()
 })

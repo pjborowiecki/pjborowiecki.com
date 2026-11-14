@@ -61,9 +61,9 @@ test.describe("on a phone", () => {
     await gotoHydrated(page, "/")
 
     await page.getByRole("button", { name: navigation.menu }).click()
-    await page.locator("#mobile-menu").getByRole("link", { name: navigation.items.insights }).click()
+    await page.locator("#mobile-menu").getByRole("link", { name: navigation.items.work }).click()
 
     await expect(page.locator("#mobile-menu")).toBeHidden()
-    await expect(page.locator("#insights")).toBeInViewport()
+    await expect(page.locator("#work")).toBeInViewport()
   })
 })

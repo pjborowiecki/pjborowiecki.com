@@ -15,7 +15,7 @@ import { NAME_STEM_ORIGIN, NameMark, NameMarkStacked } from "~/src/presentation/
 import { ResponsiveImage } from "~/src/presentation/components/custom/landing-page/components/responsive-image"
 import { RollText } from "~/src/presentation/components/custom/landing-page/components/roll-text"
 
-const ENGAGEMENTS = ["engagementAi", "engagementArchitecture", "engagementAdvisory"] as const
+const FOCUS_AREAS = ["focusPayments", "focusProducts", "focusAi"] as const
 const CREDENTIALS = ["credentialCompany", "credentialDegree", "basedIn"] as const
 
 const PORTRAIT = { name: "hero-subject", sizes: "(min-width: 900px) 50vw, 100vw" } as const
@@ -165,9 +165,9 @@ const HeroIntro = (): JSX.Element => {
   return (
     <div className="hero-copy z-10 cover:flex cover:flex-col" data-copy>
       <p className="hidden border-b border-cream/22 pb-[clamp(0.5rem,0.85vw,1rem)] type-label text-champagne cover:block">
-        {t("practiceLabel")}
+        {t("introLabel")}
       </p>
-      <p className="type-label text-champagne cover:hidden">{t("engagementsShort")}</p>
+      <p className="type-label text-champagne cover:hidden">{t("focusShort")}</p>
       <p className="hero-role mt-2 type-display text-[clamp(1.375rem,6.1vw,2.75rem)] leading-[1.03]! tracking-[-0.034em]! max-sm:leading-[1.1]! cover:mt-[clamp(0.75rem,1.05vw,1.5rem)] cover:text-[min(2.6vw,4.6svh)]">
         {t("role")}
       </p>
@@ -188,27 +188,27 @@ const HeroIntro = (): JSX.Element => {
       </dl>
 
       <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-3 ground-tokens cover:mt-auto cover:pt-[clamp(0.75rem,1.1vw,1.5rem)]">
-        <CtaLink href={sectionHref(SECTION_IDS.OFFER)}>{t("contactMe")}</CtaLink>
+        <CtaLink href={sectionHref(SECTION_IDS.WORK)}>{t("viewWork")}</CtaLink>
         <a
           className="border-b border-cream/70 pb-0.5 text-[0.9375rem] font-medium tracking-[-0.012em]"
-          href={sectionHref(SECTION_IDS.WORK)}
+          href={sectionHref(SECTION_IDS.CONTACT)}
         >
-          <RollText>{t("viewWork")}</RollText>
+          <RollText>{t("getInTouch")}</RollText>
         </a>
       </div>
     </div>
   )
 }
 
-const HeroEngagements = (): JSX.Element => {
+const HeroFocus = (): JSX.Element => {
   const t = useTranslations("pages.landing.hero")
 
   return (
     <div className="hero-copy z-10 hidden cover:block" data-copy>
-      <p className="border-b border-cream/22 pb-[clamp(0.5rem,0.85vw,1rem)] type-label text-champagne">{t("engagementsLabel")}</p>
+      <p className="border-b border-cream/22 pb-[clamp(0.5rem,0.85vw,1rem)] type-label text-champagne">{t("focusLabel")}</p>
       <ol>
-        {ENGAGEMENTS.map((engagement, index) => (
-          <li className="border-cream/22 not-last:border-b" key={engagement}>
+        {FOCUS_AREAS.map((area, index) => (
+          <li className="border-cream/22 not-last:border-b" key={area}>
             <a
               className="group grid grid-cols-[2.1vw_1fr] pt-[clamp(0.6rem,1.05vw,1.35rem)] pb-[clamp(0.7rem,1.25vw,1.6rem)]"
               href={sectionHref(SECTION_IDS.SKILLS)}
@@ -218,10 +218,10 @@ const HeroEngagements = (): JSX.Element => {
               </span>
               <span className="block">
                 <span className="block type-title text-[min(2vw,3.5svh)] transition-transform duration-500 ease-out group-hover:translate-x-1.5">
-                  {t(`${engagement}Title`)}
+                  {t(`${area}Title`)}
                 </span>
                 <span className="mt-[0.5vw] block text-[clamp(0.8125rem,min(0.9vw,1.6svh),1.1875rem)] leading-[1.42] tracking-[-0.011em] text-pretty text-cream/80">
-                  {t(`${engagement}Desc`)}
+                  {t(`${area}Desc`)}
                 </span>
               </span>
             </a>
@@ -291,7 +291,7 @@ export const HeroSection = (): JSX.Element => {
           <div className="hero-flanks">
             <HeroIntro />
             <div aria-hidden className="hidden cover:block" />
-            <HeroEngagements />
+            <HeroFocus />
           </div>
 
           <div

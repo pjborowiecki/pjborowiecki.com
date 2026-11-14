@@ -4,7 +4,7 @@ import { useTranslations } from "use-intl/react"
 
 import { MOTION_OK, gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
 
-import { NAV_GROUND, SECTION_IDS, sectionHref } from "~/src/data/marketing"
+import { NAV_GROUND, SECTION_IDS } from "~/src/data/marketing"
 
 import { CtaLink } from "~/src/presentation/components/custom/landing-page/components/cta-link"
 import {
@@ -13,6 +13,8 @@ import {
   type HarnessState,
 } from "~/src/presentation/components/custom/landing-page/components/harness-diagram"
 import { Reveal } from "~/src/presentation/components/custom/landing-page/components/reveal"
+
+import { APP_GITHUB_URL } from "~/src/presentation/branding"
 
 const STEPS = ["mess", "guardrails", "harness", "judgment"] as const
 
@@ -198,7 +200,7 @@ export const AiSection = (): JSX.Element => {
       <div className="frame pt-[clamp(3rem,6vw,7rem)] pb-(--section-y)">
         <Reveal className="flex flex-wrap items-end justify-between gap-x-10 gap-y-6 border-t border-border pt-[clamp(1.5rem,2.5vw,3rem)]">
           <p className="max-w-[46ch] type-lead text-lead text-foreground">{t("closing")}</p>
-          <CtaLink href={sectionHref(SECTION_IDS.OFFER)}>{t("cta")}</CtaLink>
+          <CtaLink href={APP_GITHUB_URL}>{t("cta")}</CtaLink>
         </Reveal>
       </div>
     </section>

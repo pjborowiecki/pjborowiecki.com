@@ -1,12 +1,8 @@
 {
-  "copyright": "© 2026 PJBorowiecki Systems",
+  "copyright": "© 2026 Piotr J. Borowiecki",
   "footerElsewhere": "Elsewhere",
   "footerExplore": "Explore",
-  "footerLine": "Software and AI for companies that can’t afford to get it wrong.",
-  "footerServices": "Services",
+  "footerLine": "Full-stack software engineer. Payments, complete products and AI-assisted engineering.",
   "location": "Krakow, PL",
-  "serviceAdvisory": "Technical leadership",
-  "serviceAi": "AI & automation",
-  "serviceArchitecture": "System architecture",
-  "serviceProduct": "Product development"
+  "footerProjects": "Projects"
 }

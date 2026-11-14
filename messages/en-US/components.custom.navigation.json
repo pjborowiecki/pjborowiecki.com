@@ -6,11 +6,10 @@
   "close": "Close",
   "letsTalk": "Let’s talk",
   "items": {
-    "philosophy": "Philosophy",
+    "philosophy": "Approach",
     "expertise": "Expertise",
     "ai": "AI",
     "about": "About",
-    "work": "Selected work",
-    "insights": "Insights"
+    "work": "Selected work"
   }
 }

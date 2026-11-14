@@ -33,7 +33,7 @@ describe.each(PAGES)("the $locale landing page", ({ landing, locale, path }) => 
       expect(html).toContain(`id="${id}"`)
     }
     expect(html).toContain(landing.contact.formTitle)
-    expect(html).toContain(landing.consult.cta)
+    expect(html).toContain(landing.person.closingLead)
   })
 
   it("describes itself to search engines and social cards from its own messages", async () => {

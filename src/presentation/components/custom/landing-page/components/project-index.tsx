@@ -34,6 +34,10 @@ const DISCIPLINES = PROJECT_DISCIPLINES.filter(
 
 const FILTERS: readonly Filter[] = [ALL, ...DISCIPLINES]
 
+const FEWEST_DISCIPLINES_TO_FILTER = 2
+
+const HAS_FILTERS = DISCIPLINES.length >= FEWEST_DISCIPLINES_TO_FILTER
+
 const LIST_RISE: gsap.TweenVars = {
   autoAlpha: 0,
   clearProps: "transform,opacity,visibility",
@@ -135,28 +139,30 @@ export const ProjectIndex = (): JSX.Element | undefined => {
           {t("otherTitle")}
         </SplitHeading>
 
-        <Reveal className="mt-[clamp(1.5rem,3vw,3.5rem)]">
-          <fieldset className="flex flex-wrap gap-x-[clamp(1rem,2vw,2.5rem)] gap-y-1">
-            <legend className="sr-only">{t("filterLabel")}</legend>
-            {FILTERS.map((key) => (
-              <Button
-                aria-pressed={filter === key}
-                className="group/filter relative py-2 text-[clamp(0.9375rem,0.95vw,1.125rem)] font-medium tracking-[-0.011em] text-muted-foreground transition-colors duration-200 hover:text-foreground aria-pressed:text-foreground"
-                key={key}
-                onPress={() => {
-                  choose(key)
-                }}
-              >
-                {t(FILTER_LABELS[key])}
-                <sup className="ml-1 text-[0.7em] tabular-nums">{listProjects(key).length}</sup>
-                <span
-                  aria-hidden
-                  className="absolute bottom-0 left-0 h-0.5 w-full origin-left scale-x-0 bg-emerald transition-transform duration-500 ease-out group-aria-pressed/filter:scale-x-100"
-                />
-              </Button>
-            ))}
-          </fieldset>
-        </Reveal>
+        {HAS_FILTERS && (
+          <Reveal className="mt-[clamp(1.5rem,3vw,3.5rem)]">
+            <fieldset className="flex flex-wrap gap-x-[clamp(1rem,2vw,2.5rem)] gap-y-1">
+              <legend className="sr-only">{t("filterLabel")}</legend>
+              {FILTERS.map((key) => (
+                <Button
+                  aria-pressed={filter === key}
+                  className="group/filter relative py-2 text-[clamp(0.9375rem,0.95vw,1.125rem)] font-medium tracking-[-0.011em] text-muted-foreground transition-colors duration-200 hover:text-foreground aria-pressed:text-foreground"
+                  key={key}
+                  onPress={() => {
+                    choose(key)
+                  }}
+                >
+                  {t(FILTER_LABELS[key])}
+                  <sup className="ml-1 text-[0.7em] tabular-nums">{listProjects(key).length}</sup>
+                  <span
+                    aria-hidden
+                    className="absolute bottom-0 left-0 h-0.5 w-full origin-left scale-x-0 bg-emerald transition-transform duration-500 ease-out group-aria-pressed/filter:scale-x-100"
+                  />
+                </Button>
+              ))}
+            </fieldset>
+          </Reveal>
+        )}
 
         <ul className="mt-[clamp(1rem,1.6vw,2rem)] border-t border-border" ref={listRef}>
           {visible.map((project) => (

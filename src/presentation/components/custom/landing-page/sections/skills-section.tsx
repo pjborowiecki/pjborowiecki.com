@@ -13,22 +13,22 @@ import { Marquee } from "~/src/presentation/components/custom/landing-page/compo
 import { Reveal } from "~/src/presentation/components/custom/landing-page/components/reveal"
 import { SplitHeading } from "~/src/presentation/components/custom/landing-page/components/split-heading"
 
-const DISCIPLINES = ["ai", "beSystems", "feArch", "strategy"] as const satisfies readonly Discipline[]
+const DISCIPLINES = ["payments", "interfaces", "products", "ai"] as const satisfies readonly Discipline[]
 const ITEMS = ["Item1", "Item2", "Item3", "Item4", "Item5"] as const
 
-const METHODS = ["eventSourcing", "cqrs", "cleanArchitecture", "ddd", "tdd", "microFrontends", "graphql", "wasm"] as const
+const PRACTICES = ["iso20022", "accessibility", "localisation", "testing", "websockets", "authBilling", "xmlJson", "agentic"] as const
 
 const CORE_TECHNOLOGIES = [
-  "React",
-  "Next.js",
   "TypeScript",
+  "React",
+  "TanStack",
   "Node.js",
-  "Go (Golang)",
+  "Bun",
+  "Go",
   "Python",
+  "Java",
   "PostgreSQL",
-  "Docker",
-  "Kubernetes",
-  "AI / LLMs",
+  "Cloudflare Workers",
 ] as const
 
 const WIDE_MOTION = `${MOTION_OK} and (min-width: 768px)`
@@ -40,7 +40,7 @@ const TRACK_SCROLL: ScrollTrigger.Vars = { end: "bottom bottom", invalidateOnRef
 const FIRST_ORDINAL = 1
 const ORDINAL_DIGITS = 2
 
-const METHODS_MARQUEE = { copies: 4, duration: 90 } as const
+const PRACTICES_MARQUEE = { copies: 4, duration: 90 } as const
 
 const slideTrack = (outer: HTMLDivElement, track: HTMLDivElement): (() => void) => {
   const distance = (): number => track.scrollWidth - globalThis.innerWidth
@@ -85,7 +85,7 @@ const DisciplinePanel = ({ discipline, index }: DisciplinePanelProps): JSX.Eleme
           <span aria-hidden className="type-label text-current">
             {String(index + FIRST_ORDINAL).padStart(ORDINAL_DIGITS, "0")}
           </span>
-          <span className="text-right type-label text-champagne group-hover:text-emerald">{t(`${discipline}For`)}</span>
+          <span className="text-right type-label text-champagne group-hover:text-emerald">{t(`${discipline}Where`)}</span>
         </div>
         <h3 className="mt-[clamp(0.75rem,3svh,4.5rem)] type-display text-[clamp(2.25rem,4.5vw,6.25rem)] md:live:text-[max(1.875rem,min(3.9vw,6.8svh))]">
           {t(discipline)}
@@ -133,19 +133,19 @@ const SkillsMarquees = (): JSX.Element => {
         ))}
       </Marquee>
 
-      <h3 className="sr-only">{t("methods")}</h3>
+      <h3 className="sr-only">{t("practicesTitle")}</h3>
       <Marquee
         className="marquee-fade mt-[clamp(0.5rem,1.2vw,1.5rem)]"
-        copies={METHODS_MARQUEE.copies}
+        copies={PRACTICES_MARQUEE.copies}
         direction="right"
-        duration={METHODS_MARQUEE.duration}
+        duration={PRACTICES_MARQUEE.duration}
       >
-        {METHODS.map((method) => (
+        {PRACTICES.map((practice) => (
           <span
             className="flex cursor-default items-center text-[clamp(0.9375rem,1.05vw,1.25rem)] font-medium tracking-[-0.01em] whitespace-nowrap text-foreground/65 transition-colors duration-200 after:mx-[1em] after:size-[3px] after:rounded-full after:bg-emerald after:content-[''] hover:text-foreground"
-            key={method}
+            key={practice}
           >
-            {t(method)}
+            {t(`practices.${practice}`)}
           </span>
         ))}
       </Marquee>

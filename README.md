@@ -4,7 +4,7 @@ Source code for [pjborowiecki.com](https://pjborowiecki.com), the personal websi
 
 The site is small; the engineering around it is held to the standard of production client work. Strict types and lint with no suppressions, a 100% coverage gate, browser tests with an accessibility scan, a preview deployment for every pull request, verified deploys and tagged releases, and performance decisions that were measured before they were made.
 
-[![The pjborowiecki.com landing page: the headline "I deliver software and integrate AI for companies that can't afford to get it wrong", a portrait, three engagement types and the name set in large type](.github/assets/landing-page.webp)](https://pjborowiecki.com)
+[![The pjborowiecki.com landing page: the headline "I build software where small mistakes are expensive", a portrait, three areas of focus and the name set in large type](.github/assets/landing-page.webp)](https://pjborowiecki.com)
 
 The landing page in November 2026.
 
@@ -38,10 +38,10 @@ Work happens on short-lived branches that reach `main` through pull requests. On
 ## Features
 
 - **Two languages.** English at `/` and Polish at `/pl-PL`. `/pl`, `/en` and `/en-US` redirect to their canonical URL with a `308`, the chosen language is remembered in a cookie, and every page carries canonical and `hreflang` links. Every string exists in both locales, which `bun run check` enforces.
-- **One composed landing page.** Thirteen sections, from the hero to the contact form, each reading its own translations and data.
+- **One composed landing page.** Nine sections, from the hero to the contact form, each reading its own translations and data. The certifications section appears only once a certificate can be checked on the issuer's own record.
 - **Motion with a reason.** GSAP with ScrollTrigger and SplitText, Lenis as the only smooth scroll, a WebGL shader behind the hero and canvas drawings for the system diagrams. With `prefers-reduced-motion: reduce` the page renders its final state instead of animating.
 - **Accessible by construction.** Interactive controls are React Aria components, the page has a skip link and full keyboard navigation, and the browser suite runs an axe-core WCAG 2.2 AA scan of both locales.
-- **A contact form without API keys.** It validates with the same Zod schema in the browser and on the server, limits each client address, refuses domains that cannot receive mail and sends through a Worker binding.
+- **A contact form without API keys.** Name, company, email and message, validated with the same Zod schema in the browser and on the server. It limits each client address, refuses domains that cannot receive mail and sends through a Worker binding.
 
 ## Technology
 
@@ -152,7 +152,7 @@ Route files compose pages; components read their own translations and data; vend
 
 ### Animation code that must not load on the server
 
-GSAP's ticker schedules a timer as soon as the module is imported, and the Workers runtime forbids timers during module initialisation. Prerendering failed with "Disallowed operation called within global scope" the moment a section imported GSAP. Guarding every import would have spread the problem across thirteen sections. Instead, [`scripts/server-motion.ts`](scripts/server-motion.ts) is a Vite plugin that resolves `~/src/integrations/gsap/gsap.config` to [`gsap.server.ts`](src/integrations/gsap/gsap.server.ts), a module of inert stand-ins, in the `ssr` environment only. Components import motion from one place, the client gets the real library, and the Worker contains no GSAP at all.
+GSAP's ticker schedules a timer as soon as the module is imported, and the Workers runtime forbids timers during module initialisation. Prerendering failed with "Disallowed operation called within global scope" the moment a section imported GSAP. Guarding every import would have spread the problem across every animated section. Instead, [`scripts/server-motion.ts`](scripts/server-motion.ts) is a Vite plugin that resolves `~/src/integrations/gsap/gsap.config` to [`gsap.server.ts`](src/integrations/gsap/gsap.server.ts), a module of inert stand-ins, in the `ssr` environment only. Components import motion from one place, the client gets the real library, and the Worker contains no GSAP at all.
 
 ### Pages that paint before JavaScript
 
@@ -273,7 +273,7 @@ The decisions behind these numbers are described in [Problems worth talking abou
 Kept here rather than hidden, because an accurate map is more useful than a flattering one.
 
 - The `Content-Security-Policy` restricts `base-uri`, `frame-ancestors` and `object-src` only. A `script-src` policy would need hashes or nonces for the inline hydration scripts that TanStack Start writes into prerendered pages.
-- Mobile Total Blocking Time is 200 ms in the lab. Hydrating thirteen animated sections still produces long tasks on a throttled CPU.
+- Mobile Total Blocking Time is 200 ms in the lab. Hydrating the animated sections still produces long tasks on a throttled CPU.
 - The contact rate limit counts per client address only, so a sender spread over many addresses is not slowed by it.
 - The MX check fails open: while DNS over HTTPS is unreachable, a message from a domain that cannot receive replies gets through.
 - Scroll choreography, the WebGL hero and the canvas drawings are outside the unit coverage gate. The browser suite exercises them, but asserts behaviour, not frames.

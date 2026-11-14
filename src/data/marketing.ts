@@ -2,14 +2,10 @@ export const SECTION_IDS = {
   ABOUT: "about",
   AI: "ai",
   CERTIFICATIONS: "certifications",
-  CONSULT: "consult",
   CONTACT: "contact",
   HERO: "hero",
-  INSIGHTS: "insights",
   INTRO: "intro",
-  OFFER: "offer",
   PHILOSOPHY: "philosophy",
-  PRICING: "pricing",
   SKILLS: "skills",
   WORK: "work",
 } as const
@@ -38,7 +34,6 @@ export const NAV_ITEMS = [
   { key: "ai", section: SECTION_IDS.AI },
   { key: "about", section: SECTION_IDS.ABOUT },
   { key: "work", section: SECTION_IDS.WORK },
-  { key: "insights", section: SECTION_IDS.INSIGHTS },
 ] as const
 
 export type NavItem = (typeof NAV_ITEMS)[number]
