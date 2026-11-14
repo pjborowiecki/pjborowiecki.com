@@ -419,11 +419,14 @@ const collectElements = (
   return { base, dots, header, links, next, top }
 }
 
+const pageAround = (header: HTMLElement | null): Element[] =>
+  [...(header?.parentElement?.children ?? [])].filter((element) => element !== header)
+
 const lockPageUnderMenu = ({ close, header, lenis, returnFocus }: MenuLock): (() => void) => {
   lenis?.stop()
 
   const root = document.documentElement
-  const main = document.querySelector("main")
+  const outside = pageAround(header)
   const previousOverflow = root.style.overflow
 
   const onKeyDown = (event: KeyboardEvent): void => {
@@ -450,7 +453,10 @@ const lockPageUnderMenu = ({ close, header, lenis, returnFocus }: MenuLock): (()
     root.style.overflow = "hidden"
   }
 
-  main?.setAttribute("inert", "")
+  for (const element of outside) {
+    element.setAttribute("inert", "")
+  }
+
   header?.addEventListener("click", onHeaderClick)
   globalThis.addEventListener("keydown", onKeyDown)
   globalThis.addEventListener("resize", onResize)
@@ -459,7 +465,9 @@ const lockPageUnderMenu = ({ close, header, lenis, returnFocus }: MenuLock): (()
     header?.removeEventListener("click", onHeaderClick)
     globalThis.removeEventListener("keydown", onKeyDown)
     globalThis.removeEventListener("resize", onResize)
-    main?.removeAttribute("inert")
+    for (const element of outside) {
+      element.removeAttribute("inert")
+    }
     root.style.overflow = previousOverflow
     lenis?.start()
   }
