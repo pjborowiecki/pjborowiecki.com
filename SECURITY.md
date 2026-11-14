@@ -2,12 +2,11 @@
 
 ## Supported versions
 
-| Version                                                                                | Supported |
-| -------------------------------------------------------------------------------------- | --------- |
-| [pjborowiecki.com](https://pjborowiecki.com) and `main`                                | Yes       |
-| [preview.pjborowiecki.com](https://preview.pjborowiecki.com)                           | Yes       |
-| [new.pjborowiecki.com](https://new.pjborowiecki.com), a frozen copy of earlier content | Yes       |
-| Earlier releases and commits                                                           | No        |
+| Version                                                      | Supported |
+| ------------------------------------------------------------ | --------- |
+| [pjborowiecki.com](https://pjborowiecki.com) and `main`      | Yes       |
+| [preview.pjborowiecki.com](https://preview.pjborowiecki.com) | Yes       |
+| Earlier releases and commits                                 | No        |
 
 Merges to `main` deploy to pjborowiecki.com once CI passes, so a fix reaches the site with the next release.
 
@@ -33,6 +32,6 @@ Please allow reasonable time to fix a confirmed issue before you disclose it.
 
 ## Scope
 
-In scope: the three sites above, including the contact form, and the code in this repository.
+In scope: both sites above, including the contact form, and the code in this repository.
 
 Out of scope: vulnerabilities in third-party services such as Cloudflare and GitHub, unless this repository's configuration causes them, and scanner output without a demonstrated impact.

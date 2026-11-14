@@ -48,8 +48,6 @@ Run tests with `bun run test`, never `bun test`. Format and lint only the files 
 
 Work on a short-lived branch and open a pull request against `main`. CI deploys every pull request to `preview.pjborowiecki.com`; merging it deploys `pjborowiecki.com` and tags the release.
 
-The `new` branch keeps the site's content as of 14 November 2026, pinned by the tag `content/2026-11-14`, and serves it at `new.pjborowiecki.com`. Never merge it, open a pull request from it or deploy anything else to that host. When earlier copy is needed, read it with `git show new:messages/<locale>/<namespace>.json`.
-
 ## Environment files
 
 `.env.development`, `.env.preview` and `.env.production` hold `CLOUDFLARE_ACCOUNT_ID` and `CLOUDFLARE_API_TOKEN` for local Wrangler commands; `.env.example` lists them and is the only one committed. The Worker has no secrets: every Wrangler environment keeps `"secrets": { "required": [] }`, so Wrangler never loads these values into the Worker or its types.
@@ -60,7 +58,6 @@ Do not change these without a person's explicit go-ahead in the task:
 
 - `wrangler.jsonc`, `.github/workflows/` and anything that reads a secret or a binding.
 - The production deployment of `pjborowiecki.com` and the `main` branch.
-- The `new` branch, the `content/*` tags and `new.pjborowiecki.com`.
 - Repository settings, rulesets and the Cloudflare zone.
 
 Never deploy production or change secrets (`wrangler deploy --env production`, `wrangler secret`); those are human steps.

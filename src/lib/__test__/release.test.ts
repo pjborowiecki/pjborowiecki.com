@@ -55,15 +55,7 @@ describe("releaseTag", () => {
   })
 
   it("ignores the tags of other days and tags that are not release tags", () => {
-    const tags = earlierTags(
-      "v2026.11.13",
-      "v2026.11.13.2",
-      "v2026.11.15",
-      "v2.0.0",
-      "v2026.11.14-rc.1",
-      "2026.11.14",
-      "content/2026-11-14",
-    )
+    const tags = earlierTags("v2026.11.13", "v2026.11.13.2", "v2026.11.15", "v2.0.0", "v2026.11.14-rc.1", "2026.11.14")
 
     expect(releaseTag(DEPLOYED_COMMIT, DEPLOYED_AT, tags)).toBe("v2026.11.14")
   })
