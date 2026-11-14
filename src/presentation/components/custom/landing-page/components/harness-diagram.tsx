@@ -3,7 +3,7 @@ import { type JSX, type Ref, useId, useImperativeHandle, useLayoutEffect, useRef
 import { useTranslations } from "use-intl/react"
 
 import { cn } from "~/src/lib/cn"
-import { half } from "~/src/lib/numbers"
+import { clampUnit, half, mix, noise, smoothstep } from "~/src/lib/numbers"
 
 export interface HarnessState {
   draw: number
@@ -100,7 +100,6 @@ const CREAM: Rgb = { blue: 228, green: 240, red: 245 }
 const SIGNAL: Rgb = { blue: 125, green: 143, red: 255 }
 const CHAMPAGNE: Rgb = { blue: 144, green: 198, red: 226 }
 
-const RANDOM = { frequency: 12.9898, scale: 43_758.5453 } as const
 const SEED_OFFSET = { freqA: 53, freqB: 71, phaseA: 11, phaseB: 37, shuffle: 1, spread: 91 } as const
 const PHASE_RANGE = 6.28
 const WAVE_A = { base: 3, range: 6 } as const
@@ -111,7 +110,6 @@ const BUNDLE = { amplitude: 0.4, middle: 0.54, spread: 0.34 } as const
 const SURVIVOR_LANE = { gap: 0.032, minGap: 9 } as const
 const COMB = { after: 0.06, before: 0.03, straighten: 0.75 } as const
 const WAVE = { lead: 0.04, primary: 0.62, primaryDrift: 0.55, ramp: 0.14, secondary: 0.38, secondaryDrift: 0.4 } as const
-const HERMITE = { cubic: 2, square: 3 } as const
 
 const SURVIVOR_STROKE = { from: 1, to: 2.1 } as const
 const SURVIVOR_ALPHA = { from: 0.45, to: 1 } as const
@@ -140,27 +138,11 @@ const CHAMPAGNE_CSS = toCss(CHAMPAGNE)
 const CREAM_CSS = toCss(CREAM)
 const SIGNAL_CSS = toCss(SIGNAL)
 
-const random = (seed: number): number => {
-  const raw = Math.sin(seed * RANDOM.frequency) * RANDOM.scale
-
-  return raw - Math.floor(raw)
-}
-
-const clamp = (value: number): number => Math.min(FULL, Math.max(0, value))
-
-const mix = (from: number, to: number, amount: number): number => from + (to - from) * amount
-
-const smooth = (from: number, to: number, value: number): number => {
-  const progress = clamp((value - from) / (to - from))
-
-  return progress * progress * (HERMITE.square - HERMITE.cubic * progress)
-}
-
 const blend = (from: Rgb, to: Rgb, amount: number): string =>
   `rgb(${String(Math.round(mix(from.red, to.red, amount)))} ${String(Math.round(mix(from.green, to.green, amount)))} ${String(Math.round(mix(from.blue, to.blue, amount)))})`
 
 const SHUFFLED = Array.from({ length: STRANDS }, (_, index) => index).toSorted(
-  (left, right) => random(left + SEED_OFFSET.shuffle) - random(right + SEED_OFFSET.shuffle),
+  (left, right) => noise(left + SEED_OFFSET.shuffle) - noise(right + SEED_OFFSET.shuffle),
 )
 
 const fateFor = (rank: number): Fate => {
@@ -184,12 +166,12 @@ const planStrand = (strand: number): StrandPlan => {
 
   return {
     fate: fateFor(rank),
-    freqA: WAVE_A.base + random(strand + SEED_OFFSET.freqA) * WAVE_A.range,
-    freqB: WAVE_B.base + random(strand + SEED_OFFSET.freqB) * WAVE_B.range,
+    freqA: WAVE_A.base + noise(strand + SEED_OFFSET.freqA) * WAVE_A.range,
+    freqB: WAVE_B.base + noise(strand + SEED_OFFSET.freqB) * WAVE_B.range,
     rank,
-    seedA: random(strand + SEED_OFFSET.phaseA) * PHASE_RANGE,
-    seedB: random(strand + SEED_OFFSET.phaseB) * PHASE_RANGE,
-    spread: random(strand + SEED_OFFSET.spread) - SPREAD_CENTER,
+    seedA: noise(strand + SEED_OFFSET.phaseA) * PHASE_RANGE,
+    seedB: noise(strand + SEED_OFFSET.phaseB) * PHASE_RANGE,
+    spread: noise(strand + SEED_OFFSET.spread) - SPREAD_CENTER,
   }
 }
 
@@ -212,13 +194,13 @@ const reachOf = (plan: StrandPlan, gates: HarnessState["gates"]): number => {
     return FULL
   }
 
-  return mix(FULL, GATE_AT[plan.fate], smooth(0, FULL, gates[plan.fate]))
+  return mix(FULL, GATE_AT[plan.fate], smoothstep(0, FULL, gates[plan.fate]))
 }
 
 const combOrder = (gates: HarnessState["gates"], progress: number): number =>
-  (gates[FATE.guardrails] * smooth(GUARDRAILS_AT - COMB.before, GUARDRAILS_AT + COMB.after, progress) +
-    gates[FATE.harness] * smooth(HARNESS_AT - COMB.before, HARNESS_AT + COMB.after, progress) +
-    gates[FATE.judgment] * smooth(JUDGMENT_AT - COMB.before, JUDGMENT_AT + COMB.after, progress)) /
+  (gates[FATE.guardrails] * smoothstep(GUARDRAILS_AT - COMB.before, GUARDRAILS_AT + COMB.after, progress) +
+    gates[FATE.harness] * smoothstep(HARNESS_AT - COMB.before, HARNESS_AT + COMB.after, progress) +
+    gates[FATE.judgment] * smoothstep(JUDGMENT_AT - COMB.before, JUDGMENT_AT + COMB.after, progress)) /
   GATE_COUNT
 
 const fillStrand = (plan: StrandPlan, { height, width }: HarnessSize, state: HarnessState): void => {
@@ -235,7 +217,7 @@ const fillStrand = (plan: StrandPlan, { height, width }: HarnessSize, state: Har
       amplitude *
         (WAVE.primary * Math.sin(plan.seedA + progress * plan.freqA + state.time * WAVE.primaryDrift) +
           WAVE.secondary * Math.sin(plan.seedB + progress * plan.freqB - state.time * WAVE.secondaryDrift)) *
-        smooth(0, WAVE.ramp, progress + WAVE.lead)
+        smoothstep(0, WAVE.ramp, progress + WAVE.lead)
     const index = sample * POINT_STRIDE
 
     POINTS[index] = progress * width
@@ -277,7 +259,7 @@ const strokeStopped = (context: CanvasRenderingContext2D, color: string, stopped
   context.globalAlpha = mix(STOPPED_ALPHA.from, STOPPED_ALPHA.to, stopped)
   context.stroke()
 
-  const tip = smooth(TIP.from, TIP.to, stopped)
+  const tip = smoothstep(TIP.from, TIP.to, stopped)
 
   if (tip > 0) {
     context.beginPath()
@@ -351,7 +333,7 @@ const findOverlayParts = (overlay: SVGSVGElement): OverlayParts => ({
 
 const updateOverlay = ({ gates, production }: OverlayParts, state: HarnessState): void => {
   for (let gate = 0; gate < gates.length; gate += NEXT) {
-    gates[gate]?.setAttribute("opacity", clamp((state.gates[gate] ?? 0) * GATE_FADE_IN).toFixed(OPACITY_DECIMALS))
+    gates[gate]?.setAttribute("opacity", clampUnit((state.gates[gate] ?? 0) * GATE_FADE_IN).toFixed(OPACITY_DECIMALS))
   }
 
   for (const element of production) {

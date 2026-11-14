@@ -14,16 +14,15 @@ import {
 } from "~/src/data/system-diagram"
 import { DIAGRAM_LAYOUTS } from "~/src/data/system-diagram-layouts"
 
+import { clampUnit, mix } from "~/src/lib/numbers"
 import {
   type CoreGeometry,
   type CurveWobble,
   DIAGRAM_GEOMETRY,
-  clamp,
   easeNode,
   formatCoordinate,
   formatCubicPath,
   measureWobble,
-  mix,
 } from "~/src/lib/system-diagram-geometry"
 
 interface NodeBinding {
@@ -208,14 +207,14 @@ const applyNode = ({ group, index, place, spec }: NodeBinding, state: DiagramSta
     )
   }
 
-  let opacity = clamp(state.draw * NODE_REVEAL.rate - index * NODE_REVEAL.stagger)
+  let opacity = clampUnit(state.draw * NODE_REVEAL.rate - index * NODE_REVEAL.stagger)
 
   if (spec.born !== undefined) {
-    opacity *= clamp((state.order - spec.born) / NODE_FADE)
+    opacity *= clampUnit((state.order - spec.born) / NODE_FADE)
   }
 
   if (spec.dies !== undefined) {
-    opacity *= FULL - clamp((state.order - spec.dies) / NODE_FADE)
+    opacity *= FULL - clampUnit((state.order - spec.dies) / NODE_FADE)
   }
 
   group.style.opacity = String(opacity)
@@ -247,13 +246,13 @@ const applyCoreEdge = (binding: CoreBinding, state: DiagramState, isOrderChanged
       path.setAttribute("d", morphCoreEdge(binding, shape.loose, state.order))
     }
 
-    path.setAttribute("stroke-dashoffset", formatCoordinate(FULL - clamp(state.draw * CORE_DRAW.rate - stagger * CORE_DRAW.stagger)))
+    path.setAttribute("stroke-dashoffset", formatCoordinate(FULL - clampUnit(state.draw * CORE_DRAW.rate - stagger * CORE_DRAW.stagger)))
     path.setAttribute("opacity", "1")
 
     return
   }
 
-  const drawn = clamp((state.order - (shape.edge.born ?? 0)) / CORE_GROW)
+  const drawn = clampUnit((state.order - (shape.edge.born ?? 0)) / CORE_GROW)
 
   path.setAttribute("stroke-dashoffset", drawn.toFixed(DASH_DECIMALS) === DASH_COMPLETE ? "0" : (FULL - drawn).toFixed(DASH_DECIMALS))
   path.setAttribute("opacity", drawn > 0 ? "1" : "0")
@@ -279,7 +278,7 @@ const applyTangleEdge = (binding: TangleBinding, state: DiagramState, gone: numb
   const endX = mix(to.tangle.x, to.at.x, toEase)
   const endY = mix(to.tangle.y, to.at.y, toEase)
   const rise = (endY - startY) * TANGLE_MIDPOINT
-  const drawn = clamp(state.draw * TANGLE_DRAW.rate - TANGLE_DRAW.delay - stagger * TANGLE_DRAW.stagger)
+  const drawn = clampUnit(state.draw * TANGLE_DRAW.rate - TANGLE_DRAW.delay - stagger * TANGLE_DRAW.stagger)
 
   path.setAttribute(
     "d",
@@ -290,8 +289,8 @@ const applyTangleEdge = (binding: TangleBinding, state: DiagramState, gone: numb
 }
 
 const applyShape = (scene: DiagramScene, state: DiagramState, isOrderChanged: boolean): void => {
-  const gone = clamp(state.order * TANGLE_CLEAR_RATE)
-  const structure = String(clamp((state.order - STRUCTURE_REVEAL.start) / STRUCTURE_REVEAL.span))
+  const gone = clampUnit(state.order * TANGLE_CLEAR_RATE)
+  const structure = String(clampUnit((state.order - STRUCTURE_REVEAL.start) / STRUCTURE_REVEAL.span))
 
   for (const node of scene.nodes) {
     applyNode(node, state, isOrderChanged)
@@ -321,7 +320,8 @@ const applyFinding = ({ closes, group }: FindingBinding, state: DiagramState): b
 
   if (group) {
     group.style.opacity = String(
-      clamp((state.draw - FINDING_REVEAL.start) / FINDING_REVEAL.span) * (FULL - clamp((progress - threshold) / FINDING_CLOSE_SPAN)),
+      clampUnit((state.draw - FINDING_REVEAL.start) / FINDING_REVEAL.span) *
+        (FULL - clampUnit((progress - threshold) / FINDING_CLOSE_SPAN)),
     )
   }
 
@@ -349,10 +349,10 @@ const applyFindings = (scene: DiagramScene, frame: DiagramFrame, state: DiagramS
 }
 
 const applyBus = (scene: DiagramScene, state: DiagramState): void => {
-  const handover = clamp((state.bus - STATUS_SWAP.start) / STATUS_SWAP.span)
+  const handover = clampUnit((state.bus - STATUS_SWAP.start) / STATUS_SWAP.span)
 
   if (scene.late) {
-    scene.late.style.opacity = String(clamp(state.bus * LATE_RATE))
+    scene.late.style.opacity = String(clampUnit(state.bus * LATE_RATE))
   }
 
   scene.rail?.setAttribute("stroke-dashoffset", (FULL - state.bus).toFixed(DASH_DECIMALS))

@@ -1,3 +1,5 @@
+import { clampUnit, noise } from "~/src/lib/numbers"
+
 export type Discipline = "ai" | "interfaces" | "payments" | "products"
 
 type Point = readonly [number, number]
@@ -100,9 +102,6 @@ type Sweep = (typeof SWEEP)[keyof typeof SWEEP]
 
 const NEXT = 1
 const FIRST_DEPTH = 1
-const FULL = 1
-
-const NOISE = { frequency: 12.9898, scale: 43_758.5453 } as const
 
 const SYSTEMS_LEVEL = { edge: 3, ground: 0, rails: 1, services: 2 } as const
 
@@ -144,12 +143,6 @@ const FLOW_UNIT = 34
 const FLOW_GRID_EDGE = 7
 const CROSS = { halfHeight: 3, halfWidth: 5 } as const
 const FLAG = { drop: 7, height: 14, reach: 22 } as const
-
-const noise = (seed: number): number => {
-  const raw = Math.sin(seed * NOISE.frequency) * NOISE.scale
-
-  return raw - Math.floor(raw)
-}
 
 const projector =
   ({ scale = 1, x: originX, y: originY }: Origin): Project =>
@@ -289,7 +282,7 @@ const laneAt = (index: number): Lane => ({
 })
 
 const strandPoint = (at: Project, lane: Lane, along: number): Point => {
-  const loose = Math.max(0, Math.min(FULL, (along - AI_GATES.first) / AI_STRAND.comb))
+  const loose = clampUnit((along - AI_GATES.first) / AI_STRAND.comb)
   const wander = Math.sin(along * AI_STRAND.wanderFrequency + lane.seed * AI_STRAND.wanderSeed) * AI_STRAND.wander * loose
   const rise = Math.cos(along * AI_STRAND.riseFrequency + lane.seed * AI_STRAND.riseSeed) * AI_STRAND.rise * loose
 

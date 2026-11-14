@@ -24,7 +24,7 @@ Run tests with `bun run test`, never `bun test`. Format and lint only the files 
 ## Where code goes
 
 - `src/routes/`: route files that compose pages, with `NAMESPACE`, one `Promise.all` loader and `pageHead`. Copy `src/routes/_landing.index.tsx`.
-- `src/presentation/components/custom/`: one component per file; landing sections in `landing-page/sections/`, their parts in `landing-page/components/`; components read their own translations and data.
+- `src/presentation/components/custom/`: one widget per file, with the parts only it uses; landing sections in `landing-page/sections/`, their parts in `landing-page/components/`; components read their own translations and data.
 - `src/presentation/components/shadcn/`: React Aria shadcn primitives of the `aria-lyra` style, added with the shadcn CLI and imported directly.
 - `src/integrations/<vendor>/`: vendor configuration. `src/lib/`: utilities and server functions. `src/data/`: data and constants several files share.
 - `messages/<locale>/<namespace>.json`: every string in `en-US` and `pl-PL`.
