@@ -18,6 +18,9 @@
   "env": {
     "development": {
       "name": "pjborowiecki-development",
+      "secrets": {
+        "required": [],
+      },
       "send_email": [
         {
           "name": "EMAIL",
@@ -37,6 +40,9 @@
     },
     "preview": {
       "name": "pjborowiecki-preview",
+      "secrets": {
+        "required": [],
+      },
       "routes": [
         {
           "pattern": "preview.pjborowiecki.com",
@@ -61,6 +67,9 @@
     },
     "test": {
       "name": "pjborowiecki-test",
+      "secrets": {
+        "required": [],
+      },
       "send_email": [
         {
           "name": "EMAIL",
@@ -79,6 +88,9 @@
     },
     "production": {
       "name": "pjborowiecki",
+      "secrets": {
+        "required": [],
+      },
       "routes": [
         {
           "pattern": "pjborowiecki.com",
