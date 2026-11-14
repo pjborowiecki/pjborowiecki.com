@@ -5,23 +5,7 @@
   "email": "Email:",
   "company": "Firma:",
   "details": "Szczegóły",
-  "need": "Od czego zacząć:",
-  "budget": "Przewidywany budżet:",
-  "subject": "Nowe zapytanie od {name}",
-  "subjectWithCompany": "Nowe zapytanie od {name} ({company})",
-  "notProvided": "Nie podano",
-  "needs": {
-    "audit": "Audyt techniczny",
-    "ai": "Ocena gotowości na AI",
-    "project": "Projekt o stałym zakresie",
-    "ongoing": "Stałe doradztwo"
-  },
-  "budgets": {
-    "retainer": "300–1000 USD / mies.",
-    "from15k": "15–40 tys. USD",
-    "from40k": "40–100 tys. USD",
-    "from100k": "100–500 tys. USD",
-    "from500k": "500 tys. USD+",
-    "undecided": "Do ustalenia"
-  }
+  "subject": "Nowa wiadomość od {name}",
+  "subjectWithCompany": "Nowa wiadomość od {name} ({company})",
+  "notProvided": "Nie podano"
 }

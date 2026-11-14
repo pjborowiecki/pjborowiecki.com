@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vite-plus/test"
 
-import { ARTICLES } from "~/src/data/articles"
 import { CERTIFICATIONS } from "~/src/data/certifications"
 import { LIGHT_NAV_GROUNDS, NAV_GROUND, NAV_ITEMS, SECTION_IDS, sectionHref } from "~/src/data/marketing"
 import { FEATURED_PROJECTS, PROJECTS, PROJECT_DISCIPLINES, SAASYLAND_GITHUB_STARS } from "~/src/data/projects"
@@ -42,14 +41,7 @@ describe("projects", () => {
   })
 })
 
-describe("articles and certifications", () => {
-  it("dates and translates every insight", () => {
-    for (const { id, publishedOn } of ARTICLES) {
-      expect(Number.isNaN(Date.parse(publishedOn))).toBe(false)
-      expect(landing.insights.articles[id].title.length).toBeGreaterThan(0)
-    }
-  })
-
+describe("certifications", () => {
   it("lists each certification once", () => {
     expect(new Set(CERTIFICATIONS.map(({ id }) => id)).size).toBe(CERTIFICATIONS.length)
   })

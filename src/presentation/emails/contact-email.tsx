@@ -41,12 +41,6 @@ export const ContactEmail = ({ message, messages }: ContactEmailProps): JSX.Elem
               <Text className="text-base">
                 <strong>{t("company")}</strong> {message.company === "" ? t("notProvided") : message.company}
               </Text>
-              <Text className="text-base">
-                <strong>{t("need")}</strong> {message.need === undefined ? t("notProvided") : t(`needs.${message.need}`)}
-              </Text>
-              <Text className="text-base">
-                <strong>{t("budget")}</strong> {message.budget === undefined ? t("notProvided") : t(`budgets.${message.budget}`)}
-              </Text>
               <Hr className="my-6 border-gray-300" />
               <Heading className="m-0 mb-4 text-xl font-bold">{t("details")}</Heading>
               <Text className="text-base whitespace-pre-wrap">{message.details}</Text>

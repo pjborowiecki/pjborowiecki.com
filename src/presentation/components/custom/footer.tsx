@@ -2,17 +2,23 @@ import type { JSX } from "react"
 
 import { useTranslations } from "use-intl/react"
 
-import { NAV_ITEMS, SECTION_IDS, sectionHref } from "~/src/data/marketing"
+import { NAV_ITEMS, sectionHref } from "~/src/data/marketing"
 
 import { ArrowUpRightIcon } from "~/src/presentation/components/custom/icons"
 import { NameMark } from "~/src/presentation/components/custom/landing-page/components/name-mark"
 import { RollText } from "~/src/presentation/components/custom/landing-page/components/roll-text"
 
-import { CONTACT_EMAIL, SOCIAL_PROFILES } from "~/src/presentation/branding"
+import { CONTACT_EMAIL, PROJECT_SITES, SOCIAL_PROFILES } from "~/src/presentation/branding"
 
-const SERVICES = ["serviceAi", "serviceArchitecture", "serviceProduct", "serviceAdvisory"] as const
 const COLUMN_HEAD = "type-label pb-3 text-champagne"
 const COLUMN_LINK = "inline-block py-1 font-medium text-[clamp(0.9375rem,1vw,1.1875rem)] tracking-[-0.011em]"
+
+const ExternalLink = ({ children, href }: { readonly children: string; readonly href: string }): JSX.Element => (
+  <a className={`group ${COLUMN_LINK} inline-flex items-center gap-1`} href={href} rel="noopener noreferrer" target="_blank">
+    <RollText>{children}</RollText>
+    <ArrowUpRightIcon className="size-[0.85em] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+  </a>
+)
 
 export const Footer = (): JSX.Element => {
   const t = useTranslations()
@@ -47,13 +53,11 @@ export const Footer = (): JSX.Element => {
           </nav>
 
           <div className="md:col-span-2">
-            <p className={COLUMN_HEAD}>{t("components.custom.footer.footerServices")}</p>
+            <p className={COLUMN_HEAD}>{t("components.custom.footer.footerProjects")}</p>
             <ul>
-              {SERVICES.map((service) => (
-                <li key={service}>
-                  <a className={COLUMN_LINK} href={sectionHref(SECTION_IDS.SKILLS)}>
-                    <RollText>{t(`components.custom.footer.${service}`)}</RollText>
-                  </a>
+              {PROJECT_SITES.map((site) => (
+                <li key={site.name}>
+                  <ExternalLink href={site.url}>{site.name}</ExternalLink>
                 </li>
               ))}
             </ul>
@@ -64,15 +68,7 @@ export const Footer = (): JSX.Element => {
             <ul>
               {SOCIAL_PROFILES.map((link) => (
                 <li key={link.name}>
-                  <a
-                    className={`group ${COLUMN_LINK} inline-flex items-center gap-1`}
-                    href={link.url}
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    <RollText>{link.name}</RollText>
-                    <ArrowUpRightIcon className="size-[0.85em] transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-                  </a>
+                  <ExternalLink href={link.url}>{link.name}</ExternalLink>
                 </li>
               ))}
               <li className={`${COLUMN_LINK} text-muted-foreground`}>{t("components.custom.footer.location")}</li>

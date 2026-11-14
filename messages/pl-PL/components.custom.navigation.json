@@ -6,11 +6,10 @@
   "close": "Zamknij",
   "letsTalk": "Porozmawiajmy",
   "items": {
-    "philosophy": "Filozofia",
+    "philosophy": "Podejście",
     "expertise": "Ekspertyza",
     "ai": "AI",
     "about": "O mnie",
-    "work": "Wybrane projekty",
-    "insights": "Spostrzeżenia"
+    "work": "Wybrane projekty"
   }
 }

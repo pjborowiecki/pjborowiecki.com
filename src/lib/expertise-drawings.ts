@@ -1,4 +1,4 @@
-export type Discipline = "ai" | "beSystems" | "feArch" | "strategy"
+export type Discipline = "ai" | "interfaces" | "payments" | "products"
 
 export type Point = readonly [number, number]
 
@@ -140,8 +140,8 @@ const AI_STRAND = {
   wanderSeed: 1.7,
 } as const
 
-const STRATEGY_UNIT = 34
-const STRATEGY_GRID_EDGE = 7
+const FLOW_UNIT = 34
+const FLOW_GRID_EDGE = 7
 const CROSS = { halfHeight: 3, halfWidth: 5 } as const
 const FLAG = { drop: 7, height: 14, reach: 22 } as const
 
@@ -221,7 +221,7 @@ const cylinder = (at: Project, drum: Drum): string[] => {
   ]
 }
 
-const systemsDrawing = (): Layer[] => {
+const stackDrawing = (): Layer[] => {
   const at = projector({ x: 260, y: 158 })
   const size = 140
   const step = 52
@@ -329,7 +329,7 @@ const aiDrawing = (): Layer[] => {
   ]
 }
 
-const productDrawing = (): Layer[] => {
+const interfaceDrawing = (): Layer[] => {
   const at = projector({ scale: 1.06, x: 180, y: 166 })
 
   const browser: Layer = {
@@ -387,13 +387,13 @@ const flag = ([goalX, goalY]: Point): string =>
     [goalX, goalY + FLAG.height],
   ])
 
-const strategyDrawing = (): Layer[] => {
+const flowDrawing = (): Layer[] => {
   const at = projector({ x: 250, y: 48 })
-  const grid = (cell: Cell, height = 0): Point => at({ x: cell.x * STRATEGY_UNIT, y: cell.y * STRATEGY_UNIT, z: height })
+  const grid = (cell: Cell, height = 0): Point => at({ x: cell.x * FLOW_UNIT, y: cell.y * FLOW_UNIT, z: height })
 
-  const gridLines = Array.from({ length: STRATEGY_GRID_EDGE + NEXT }, (_, index) => [
-    path([grid({ x: index, y: 0 }), grid({ x: index, y: STRATEGY_GRID_EDGE })]),
-    path([grid({ x: 0, y: index }), grid({ x: STRATEGY_GRID_EDGE, y: index })]),
+  const gridLines = Array.from({ length: FLOW_GRID_EDGE + NEXT }, (_, index) => [
+    path([grid({ x: index, y: 0 }), grid({ x: index, y: FLOW_GRID_EDGE })]),
+    path([grid({ x: 0, y: index }), grid({ x: FLOW_GRID_EDGE, y: index })]),
   ]).flat()
   const route = [
     { x: 0, y: 5 },
@@ -433,7 +433,7 @@ const numbered = (layers: readonly Layer[]): DrawingLayer[] =>
 
 export const DRAWINGS: Readonly<Record<Discipline, readonly DrawingLayer[]>> = {
   ai: numbered(aiDrawing()),
-  beSystems: numbered(systemsDrawing()),
-  feArch: numbered(productDrawing()),
-  strategy: numbered(strategyDrawing()),
+  interfaces: numbered(interfaceDrawing()),
+  payments: numbered(flowDrawing()),
+  products: numbered(stackDrawing()),
 }

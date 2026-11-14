@@ -11,7 +11,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vite-plus/test"
 import { getTestMessages } from "~/src/integrations/use-intl/__test__/fixtures/messages"
 import type { SupportedLocale } from "~/src/integrations/use-intl/i18n.config"
 
-import { CONTACT_BUDGET, CONTACT_ERROR, CONTACT_NEED, CONTACT_VALIDATION_PARAMS } from "~/src/data/contact"
+import { CONTACT_ERROR, CONTACT_VALIDATION_PARAMS } from "~/src/data/contact"
 
 import * as contact from "~/src/lib/contact"
 
@@ -47,10 +47,10 @@ const renderForm = (locale: SupportedLocale = "en-US"): ReturnType<typeof userEv
   return userEvent.setup()
 }
 
-const fillValidEnquiry = async (user: ReturnType<typeof userEvent.setup>): Promise<void> => {
+const fillValidMessage = async (user: ReturnType<typeof userEvent.setup>): Promise<void> => {
   await user.type(screen.getByLabelText(copy.fieldName), "Ada Lovelace")
   await user.type(screen.getByLabelText(copy.fieldEmail), "ada@example.org")
-  await user.type(screen.getByLabelText(copy.fieldDetails), "An audit, please.")
+  await user.type(screen.getByLabelText(copy.fieldDetails), "Could we talk about payments?")
 }
 
 beforeEach(() => {
@@ -90,12 +90,10 @@ describe("ContactForm", () => {
     ).toBeInTheDocument()
   })
 
-  it("sends the enquiry with the choices and the page's language, then resets", async () => {
+  it("sends the message in the page's language, then resets", async () => {
     vi.mocked(getRequest).mockReturnValue(new Request("http://127.0.0.1:3001/pl-PL"))
     const user = renderForm("pl-PL")
 
-    await user.click(screen.getByRole("radio", { name: polishCopy.needs.audit }))
-    await user.click(screen.getByRole("radio", { name: polishCopy.budgets.from40k }))
     await user.type(screen.getByLabelText(polishCopy.fieldName), "Jan")
     await user.type(screen.getByLabelText(polishCopy.fieldEmail), "jan@example.org")
     await user.type(screen.getByLabelText(polishCopy.fieldDetails), "Dzień dobry")
@@ -103,23 +101,21 @@ describe("ContactForm", () => {
 
     expect(submissions).toStrictEqual([
       {
-        budget: CONTACT_BUDGET.FROM_40K,
         company: "",
         details: "Dzień dobry",
         email: "jan@example.org",
         locale: "pl-PL",
         name: "Jan",
-        need: CONTACT_NEED.AUDIT,
       },
     ])
     expect(toastPromise).toHaveBeenCalledOnce()
   })
 
-  it("shows that the enquiry is on its way while it is being sent", async () => {
+  it("shows that the message is on its way while it is being sent", async () => {
     const delivery = Promise.withResolvers<void>()
     outcome.result = () => delivery.promise
     const user = renderForm()
-    await fillValidEnquiry(user)
+    await fillValidMessage(user)
 
     await user.click(screen.getByRole("button", { name: copy.send }))
 
@@ -131,19 +127,9 @@ describe("ContactForm", () => {
     expect(await screen.findByRole("button", { name: copy.send })).not.toHaveAttribute("data-pending")
   })
 
-  it("clears a choice that is pressed again", async () => {
-    const user = renderForm()
-    const need = screen.getByRole("radio", { name: copy.needs.ai })
-
-    await user.click(need)
-    expect(need).toBeChecked()
-    await user.click(need)
-    expect(need).not.toBeChecked()
-  })
-
   it("announces success and empties the form", async () => {
     const user = renderForm()
-    await fillValidEnquiry(user)
+    await fillValidMessage(user)
 
     await user.click(screen.getByRole("button", { name: copy.send }))
 
@@ -160,10 +146,10 @@ describe("ContactForm", () => {
     [new Error(CONTACT_ERROR.INVALID_EMAIL), copy.errors.INVALID_EMAIL],
     [new Error("unexpected"), copy.errors.SEND_FAILED],
     ["not an error", copy.errors.SEND_FAILED],
-  ])("explains a failed enquiry: %s", async (failure, message) => {
+  ])("explains a failed message: %s", async (failure, message) => {
     outcome.result = () => Promise.reject(new Error(CONTACT_ERROR.SEND_FAILED))
     const user = renderForm()
-    await fillValidEnquiry(user)
+    await fillValidMessage(user)
 
     await user.click(screen.getByRole("button", { name: copy.send }))
 

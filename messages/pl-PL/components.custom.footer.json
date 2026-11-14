@@ -1,12 +1,8 @@
 {
-  "copyright": "© 2026 PJBorowiecki Systems",
+  "copyright": "© 2026 Piotr J. Borowiecki",
   "footerElsewhere": "W sieci",
   "footerExplore": "Nawigacja",
-  "footerLine": "Oprogramowanie i AI dla firm, które nie mogą sobie pozwolić na błąd.",
-  "footerServices": "Usługi",
+  "footerLine": "Inżynier oprogramowania full-stack. Płatności, kompletne produkty i inżynieria wspomagana AI.",
   "location": "Kraków, PL",
-  "serviceAdvisory": "Przywództwo techniczne",
-  "serviceAi": "AI i automatyzacja",
-  "serviceArchitecture": "Architektura systemów",
-  "serviceProduct": "Tworzenie produktów"
+  "footerProjects": "Projekty"
 }

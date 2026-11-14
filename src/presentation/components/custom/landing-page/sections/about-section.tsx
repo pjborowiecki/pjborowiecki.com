@@ -12,7 +12,7 @@ import { SectionHead } from "~/src/presentation/components/custom/landing-page/c
 
 import { GITHUB_PROFILE_URL, LINKEDIN_PROFILE_URL } from "~/src/presentation/branding"
 
-const COMMITMENTS = ["direct", "scope", "risk"] as const
+const PRINCIPLES = ["ownership", "quality", "candour"] as const
 
 const LEDGER_VALUE = "type-title mt-2 text-[clamp(1.5rem,2.5vw,3.25rem)] text-foreground"
 
@@ -88,13 +88,13 @@ const AboutTerms = (): JSX.Element => {
         </Reveal>
 
         <div className="mt-[clamp(2.5rem,5vw,6rem)] border-t border-foreground pt-3">
-          <p className="type-label text-foreground">{t("termsLabel")}</p>
+          <p className="type-label text-foreground">{t("principlesLabel")}</p>
           <ol className="mt-[clamp(1.5rem,2.6vw,3rem)] grid gap-x-6 gap-y-8 md:grid-cols-3">
-            {COMMITMENTS.map((commitment) => (
-              <li key={commitment}>
+            {PRINCIPLES.map((principle) => (
+              <li key={principle}>
                 <Reveal>
-                  <h3 className="type-title text-[clamp(1.5rem,2.3vw,3.25rem)] text-foreground">{t(`${commitment}Title`)}</h3>
-                  <p className="mt-3 max-w-[42ch] type-body">{t(`${commitment}Body`)}</p>
+                  <h3 className="type-title text-[clamp(1.5rem,2.3vw,3.25rem)] text-foreground">{t(`${principle}Title`)}</h3>
+                  <p className="mt-3 max-w-[42ch] type-body">{t(`${principle}Body`)}</p>
                 </Reveal>
               </li>
             ))}

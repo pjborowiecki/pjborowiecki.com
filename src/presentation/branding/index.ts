@@ -11,6 +11,16 @@ export const APP_GITHUB_URL = `https://github.com/${APP_GITHUB_OWNER}/${APP_GITH
 export const GITHUB_PROFILE_URL = `https://github.com/${APP_GITHUB_OWNER}`
 export const LINKEDIN_PROFILE_URL = "https://www.linkedin.com/in/pjborowiecki"
 
+export const SAASY_LAND_URL = "https://saasyland.com"
+export const REACT_PROJECTS_URL = "https://reactprojects.com"
+export const ANGULAR_PROJECTS_URL = "https://angularprojects.com"
+
+export const PROJECT_SITES = [
+  { name: "SaaSy Land", url: SAASY_LAND_URL },
+  { name: "ReactProjects", url: REACT_PROJECTS_URL },
+  { name: "AngularProjects", url: ANGULAR_PROJECTS_URL },
+] as const
+
 export const SOCIAL_PROFILES = [
   { name: "LinkedIn", url: LINKEDIN_PROFILE_URL },
   { name: "GitHub", url: GITHUB_PROFILE_URL },

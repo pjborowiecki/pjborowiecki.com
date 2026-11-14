@@ -5,23 +5,7 @@
   "email": "Email:",
   "company": "Company:",
   "details": "Details",
-  "need": "Where to start:",
-  "budget": "Expected budget:",
-  "subject": "New enquiry from {name}",
-  "subjectWithCompany": "New enquiry from {name} ({company})",
-  "notProvided": "Not given",
-  "needs": {
-    "audit": "Technical audit",
-    "ai": "AI readiness assessment",
-    "project": "Fixed-scope project",
-    "ongoing": "Ongoing advisory"
-  },
-  "budgets": {
-    "retainer": "$300–1,000 / month",
-    "from15k": "$15–40k",
-    "from40k": "$40–100k",
-    "from100k": "$100–500k",
-    "from500k": "$500k+",
-    "undecided": "To be scoped"
-  }
+  "subject": "New message from {name}",
+  "subjectWithCompany": "New message from {name} ({company})",
+  "notProvided": "Not given"
 }

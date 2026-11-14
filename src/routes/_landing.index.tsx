@@ -10,14 +10,10 @@ import { pageHead } from "~/src/lib/seo"
 import { AboutSection } from "~/src/presentation/components/custom/landing-page/sections/about-section"
 import { AiSection } from "~/src/presentation/components/custom/landing-page/sections/ai-section"
 import { CertificationsSection } from "~/src/presentation/components/custom/landing-page/sections/certifications-section"
-import { ConsultSection } from "~/src/presentation/components/custom/landing-page/sections/consult-section"
 import { ContactSection } from "~/src/presentation/components/custom/landing-page/sections/contact-section"
 import { HeroSection } from "~/src/presentation/components/custom/landing-page/sections/hero-section"
-import { InsightsSection } from "~/src/presentation/components/custom/landing-page/sections/insights-section"
-import { OfferSection } from "~/src/presentation/components/custom/landing-page/sections/offer-section"
 import { PersonSection } from "~/src/presentation/components/custom/landing-page/sections/person-section"
 import { PhilosophySection } from "~/src/presentation/components/custom/landing-page/sections/philosophy-section"
-import { PricingSection } from "~/src/presentation/components/custom/landing-page/sections/pricing-section"
 import { SkillsSection } from "~/src/presentation/components/custom/landing-page/sections/skills-section"
 import { WorkSection } from "~/src/presentation/components/custom/landing-page/sections/work-section"
 
@@ -33,10 +29,6 @@ const LandingPage = (): JSX.Element => (
     <PersonSection />
     <CertificationsSection />
     <WorkSection />
-    <ConsultSection />
-    <InsightsSection />
-    <OfferSection />
-    <PricingSection />
     <ContactSection />
   </>
 )

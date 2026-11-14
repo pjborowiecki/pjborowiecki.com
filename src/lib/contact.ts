@@ -12,7 +12,7 @@ import { z } from "zod/v4"
 import { I18N } from "~/src/integrations/use-intl/i18n.config"
 import { loadNamespace } from "~/src/integrations/use-intl/i18n.messages"
 
-import { CONTACT_BUDGETS, CONTACT_ERROR, CONTACT_NEEDS, CONTACT_VALIDATION_PARAMS } from "~/src/data/contact"
+import { CONTACT_ERROR, CONTACT_VALIDATION_PARAMS } from "~/src/data/contact"
 import { IP_ADDRESS_HEADER } from "~/src/data/http"
 
 import { acceptsMail, emailDomain } from "~/src/lib/mail-exchange"
@@ -27,12 +27,10 @@ const UNKNOWN_CLIENT = "unknown"
 const CONTACT_MUTATION_KEY = ["contact", "submit"] as const
 
 export const contactFormSchema = z.object({
-  budget: z.enum(CONTACT_BUDGETS).optional(),
   company: z.string().trim().max(CONTACT_VALIDATION_PARAMS.companyTooLong.max, "companyTooLong"),
   details: z.string().trim().min(REQUIRED_LENGTH, "detailsRequired").max(CONTACT_VALIDATION_PARAMS.detailsTooLong.max, "detailsTooLong"),
   email: z.email("emailRequired"),
   name: z.string().trim().min(REQUIRED_LENGTH, "nameRequired").max(CONTACT_VALIDATION_PARAMS.nameTooLong.max, "nameTooLong"),
-  need: z.enum(CONTACT_NEEDS).optional(),
 })
 
 export const contactMessageSchema = contactFormSchema.extend({ locale: z.enum(I18N.SUPPORTED_LOCALES) })
