@@ -20,35 +20,45 @@
 }
 
 :root {
-  --background: #f4f0e6;
-  --foreground: #0d1526;
-  --card: #fbf8f1;
-  --card-foreground: #0d1526;
-  --popover: #fbf8f1;
-  --popover-foreground: #0d1526;
-  --primary: #0a6247;
-  --primary-foreground: #f5f0e4;
-  --secondary: #e8e2d3;
-  --secondary-foreground: #0d1526;
-  --muted: #e8e2d3;
-  --muted-foreground: #525666;
-  --accent: #e8e2d3;
-  --accent-foreground: #0d1526;
-  --destructive: #c8281e;
-  --border: rgb(13 21 38 / 14%);
-  --input: rgb(13 21 38 / 24%);
-  --ring: #0a6247;
-  --radius: 0.125rem;
-
   --emerald-lit: #22a87c;
   --emerald: #0a6247;
   --emerald-deep: #032c20;
+  --forest: #084f3a;
+  --forest-deep: #06402e;
   --cream: #f5f0e4;
   --champagne: #e2c690;
-
-  --navy: #101c36;
-  --board: #f4f0e6;
+  --paper: #f4f0e6;
+  --sand: #e8e2d3;
+  --navy: #0d1526;
+  --slate: #525666;
+  --ink: #121412;
+  --graphite: #0a1316;
+  --bronze: #1c120c;
   --signal: #c8281e;
+
+  --background: var(--paper);
+  --foreground: var(--navy);
+  --card: #fbf8f1;
+  --card-foreground: var(--navy);
+  --popover: var(--card);
+  --popover-foreground: var(--navy);
+  --primary: var(--emerald);
+  --primary-foreground: var(--cream);
+  --secondary: var(--sand);
+  --secondary-foreground: var(--navy);
+  --muted: var(--sand);
+  --muted-foreground: var(--slate);
+  --accent: var(--sand);
+  --accent-foreground: var(--navy);
+  --destructive: var(--signal);
+  --border: --alpha(var(--navy) / 14%);
+  --input: --alpha(var(--navy) / 24%);
+  --ring: var(--emerald);
+  --radius: 0.125rem;
+
+  --grain: url("../assets/images/grain.png");
+  --grain-size: 220px;
+  --board: var(--paper);
 
   --gutter: clamp(1.25rem, 3.3vw, 4rem);
   --nav-height: 4.5rem;
@@ -65,6 +75,9 @@
   --text-display: clamp(2.875rem, 7.6vw, 10.5rem);
   --text-lead: clamp(1.25rem, 1.9vw, 2.375rem);
   --color-navy: var(--navy);
+  --color-forest: var(--forest);
+  --color-graphite: var(--graphite);
+  --color-bronze: var(--bronze);
   --color-emerald: var(--emerald);
   --color-emerald-deep: var(--emerald-deep);
   --color-emerald-lit: var(--emerald-lit);
@@ -113,7 +126,7 @@
   }
   ::selection {
     background: var(--emerald);
-    color: #f5f0e4;
+    color: var(--cream);
   }
   :focus-visible {
     outline: 2px solid var(--ring);
@@ -122,8 +135,8 @@
 }
 
 @utility grain-texture {
-  background-image: url("../assets/images/grain.png");
-  background-size: 220px 220px;
+  background-image: var(--grain);
+  background-size: var(--grain-size) var(--grain-size);
 }
 
 @utility frame {
@@ -184,8 +197,8 @@
 @utility ground-tokens {
   --foreground: var(--cream);
   --muted-foreground: #b6d2c5;
-  --border: rgb(245 240 228 / 22%);
-  --input: rgb(245 240 228 / 38%);
+  --border: --alpha(var(--cream) / 22%);
+  --input: --alpha(var(--cream) / 38%);
   --ring: var(--cream);
   --signal: var(--champagne);
   --cta-bg: var(--cream);
@@ -194,42 +207,31 @@
 }
 
 @utility ground-emerald {
-  --foreground: var(--cream);
-  --muted-foreground: #b6d2c5;
-  --border: rgb(245 240 228 / 22%);
-  --input: rgb(245 240 228 / 38%);
-  --ring: var(--cream);
-  --signal: var(--champagne);
-  --cta-bg: var(--cream);
-  --cta-ink: var(--emerald-deep);
-  --cta-hover: var(--champagne);
-  background-color: #084f3a;
-  background-image: url("../assets/images/grain.png");
-  background-size: 220px 220px;
+  @apply grain-texture ground-tokens;
+  background-color: var(--forest);
   color: var(--foreground);
 }
 
 @utility ground-ink {
   --foreground: var(--cream);
   --muted-foreground: #b3b6ad;
-  --border: rgb(245 240 228 / 18%);
-  --input: rgb(245 240 228 / 34%);
+  --border: --alpha(var(--cream) / 18%);
+  --input: --alpha(var(--cream) / 34%);
   --ring: var(--cream);
   --signal: #ff8f7d;
   --cta-bg: var(--cream);
-  --cta-ink: #121412;
+  --cta-ink: var(--ink);
   --cta-hover: var(--champagne);
-  background-color: #121412;
-  background-image: url("../assets/images/grain.png");
-  background-size: 220px 220px;
+  @apply grain-texture;
+  background-color: var(--ink);
   color: var(--foreground);
 }
 
 @utility surface-paper {
-  --foreground: #0d1526;
-  --muted-foreground: #525666;
-  --border: rgb(13 21 38 / 16%);
-  --input: rgb(13 21 38 / 28%);
+  --foreground: var(--navy);
+  --muted-foreground: var(--slate);
+  --border: --alpha(var(--navy) / 16%);
+  --input: --alpha(var(--navy) / 28%);
   --ring: var(--emerald);
   --signal: #b3261e;
   --cta-bg: var(--emerald);
@@ -240,19 +242,17 @@
 }
 
 .ground-lit {
-  --lit-stops: #1b9a70 0%, #0a6247 50%, #032c20 100%;
+  --lit-stops: #1b9a70 0%, var(--emerald) 50%, var(--emerald-deep) 100%;
   --lit-size: 64% 100svh;
   --lit-above-seam: 25svh;
-  background-image:
-    url("../assets/images/grain.png"), radial-gradient(var(--lit-size) at 74% calc(100% - var(--lit-above-seam)), var(--lit-stops));
+  background-image: var(--grain), radial-gradient(var(--lit-size) at 74% calc(100% - var(--lit-above-seam)), var(--lit-stops));
   background-size:
-    220px 220px,
+    var(--grain-size) var(--grain-size),
     100% 100%;
 }
 
 .ground-lit-tail {
-  background-image:
-    url("../assets/images/grain.png"), radial-gradient(var(--lit-size) at 74% calc(0% - var(--lit-above-seam)), var(--lit-stops));
+  background-image: var(--grain), radial-gradient(var(--lit-size) at 74% calc(0% - var(--lit-above-seam)), var(--lit-stops));
 }
 
 @variant max-md {
@@ -294,7 +294,7 @@
   --nav-rule: transparent;
   --nav-accent: var(--champagne);
   --cta-bg: var(--cream);
-  --cta-ink: #121412;
+  --cta-ink: var(--ink);
   --cta-hover: var(--champagne);
   --ring: var(--cream);
   background-color: var(--nav-bar);
@@ -306,40 +306,40 @@
 .nav-layer[data-tone="paper"],
 .nav-layer[data-tone="board"] {
   --nav-accent: var(--emerald);
-  --cta-bg: #121412;
+  --cta-bg: var(--ink);
   --cta-ink: var(--cream);
   --cta-hover: var(--emerald);
   --ring: var(--emerald);
-  color: #0d1526;
+  color: var(--navy);
 }
 
 .nav-layer[data-tone="paper"],
 .nav-layer[data-tone="board"] {
-  --nav-bar: #f4f0e6;
-  --nav-rule: rgb(13 21 38 / 12%);
+  --nav-bar: var(--paper);
+  --nav-rule: --alpha(var(--navy) / 12%);
 }
 
 .nav-layer[data-tone="emerald"] {
-  --nav-bar: #084f3a;
-  --nav-rule: rgb(245 240 228 / 16%);
+  --nav-bar: var(--forest);
+  --nav-rule: --alpha(var(--cream) / 16%);
 }
 
 .nav-layer[data-tone="lit"] {
-  --nav-bar: #06402e;
-  --nav-rule: rgb(245 240 228 / 16%);
+  --nav-bar: var(--forest-deep);
+  --nav-rule: --alpha(var(--cream) / 16%);
 }
 
 .nav-layer[data-tone="ink"] {
-  --nav-bar: #121412;
-  --nav-rule: rgb(245 240 228 / 14%);
+  --nav-bar: var(--ink);
+  --nav-rule: --alpha(var(--cream) / 14%);
 }
 
 .nav-layer[data-tone="bronze"] {
-  --nav-bar: #1c120c;
+  --nav-bar: var(--bronze);
 }
 
 .nav-layer[data-tone="graphite"] {
-  --nav-bar: #0a1316;
+  --nav-bar: var(--graphite);
 }
 
 html:not(.js) .nav {
@@ -372,8 +372,8 @@ html:not(.js) .nav {
   justify-content: center;
   border-radius: 9999px;
   background-color: var(--cream);
-  box-shadow: 0 0 0 1px rgb(13 21 38 / 14%);
-  color: #121412;
+  box-shadow: 0 0 0 1px --alpha(var(--navy) / 14%);
+  color: var(--ink);
   opacity: 0;
   pointer-events: none;
   translate: 0 0.75rem;
@@ -387,8 +387,8 @@ html:not(.js) .nav {
 }
 
 .back-to-top[data-on="light"] {
-  background-color: #121412;
-  box-shadow: 0 0 0 1px rgb(245 240 228 / 18%);
+  background-color: var(--ink);
+  box-shadow: 0 0 0 1px --alpha(var(--cream) / 18%);
   color: var(--cream);
 }
 
@@ -472,8 +472,8 @@ html:not(.js) .figure-fade {
 
 .hero-stage {
   background:
-    url("../assets/images/grain.png") 0 0 / 220px 220px,
-    radial-gradient(70% 78% at 50% 30%, #22a87c 0%, #0a6247 52%, #032c20 100%);
+    var(--grain) 0 0 / var(--grain-size) var(--grain-size),
+    radial-gradient(70% 78% at 50% 30%, var(--emerald-lit) 0%, var(--emerald) 52%, var(--emerald-deep) 100%);
   background-color: var(--emerald-deep);
 }
 

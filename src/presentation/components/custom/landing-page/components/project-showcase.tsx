@@ -29,14 +29,14 @@ interface ShowcaseTone {
 
 const SAASYLAND_TONE: ShowcaseTone = {
   ground:
-    "bg-[#0a1316] bg-[linear-gradient(to_bottom,#0a1316_var(--nav-bar-height),transparent_24%),radial-gradient(85%_95%_at_66%_38%,#176a70_0%,#0c3238_44%,#0a1316_100%)] [--tone:#62d6d0]",
+    "bg-graphite bg-[linear-gradient(to_bottom,var(--graphite)_var(--nav-bar-height),transparent_24%),radial-gradient(85%_95%_at_66%_38%,#176a70_0%,#0c3238_44%,var(--graphite)_100%)] [--tone:#62d6d0]",
   nav: NAV_GROUND.GRAPHITE,
 }
 
 const TONES: Partial<Record<ProjectId, ShowcaseTone>> = {
   [PROJECT_ID.MARTE]: {
     ground:
-      "bg-[#1c120c] bg-[linear-gradient(to_bottom,#1c120c_var(--nav-bar-height),transparent_24%),radial-gradient(85%_95%_at_66%_40%,#8a5531_0%,#4d2e1a_44%,#1c120c_100%)] [--tone:#e6bd83]",
+      "bg-bronze bg-[linear-gradient(to_bottom,var(--bronze)_var(--nav-bar-height),transparent_24%),radial-gradient(85%_95%_at_66%_40%,#8a5531_0%,#4d2e1a_44%,var(--bronze)_100%)] [--tone:#e6bd83]",
     nav: NAV_GROUND.BRONZE,
   },
   [PROJECT_ID.SAASYLAND]: SAASYLAND_TONE,

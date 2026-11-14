@@ -11,7 +11,7 @@ import { MEDIA } from "~/src/data/media"
 const SCROLL_LERP = 0.11
 const MS_PER_SECOND = 1000
 const DISSOLVE_PAST_SCREENS = 1.5
-const FALLBACK_GROUND = "#032c20"
+const FALLBACK_GROUND = "var(--emerald-deep)"
 const TRANSPARENT = "rgba(0, 0, 0, 0)"
 const PIN_SPACER = ".pin-spacer"
 const IN_PAGE_LINK = 'a[href^="#"]'

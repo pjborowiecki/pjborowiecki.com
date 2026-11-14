@@ -136,7 +136,7 @@ export const PhilosophySection = (): JSX.Element => {
         <div className="relative frame pt-14 pb-20 live:absolute live:inset-0 live:max-w-none live:pt-0 live:pb-0">
           <div className="grid gap-y-10 side:grid-cols-12 side:gap-x-6 live:h-full live:[grid-template-rows:minmax(0,1fr)_auto] live:gap-y-0 side:live:grid-rows-1">
             <div className="side:order-2 side:col-span-8 side:col-start-5 live:pt-[calc(var(--nav-height)+0.25rem)] side:live:flex side:live:h-svh side:live:items-center side:live:pt-[calc(var(--nav-height)+0.75rem)] side:live:pb-6">
-              <SystemDiagram className="mx-auto size-full max-h-full overflow-visible text-[#0d1526]" ref={diagramRef} />
+              <SystemDiagram className="mx-auto size-full max-h-full overflow-visible text-navy" ref={diagramRef} />
             </div>
 
             <div className="relative flex flex-col side:order-1 side:col-span-4 live:mt-5 live:h-[clamp(15rem,38svh,19rem)] live:border-t live:border-foreground/15 live:pt-6 side:live:mt-0 side:live:h-svh side:live:justify-center side:live:border-t-0 side:live:pt-0">

@@ -2,8 +2,11 @@ import { type JSX, useRef } from "react"
 
 import { gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
 
+import { COLOR_TOKEN } from "~/src/data/colors"
 import { LIGHT_NAV_GROUNDS } from "~/src/data/marketing"
 import { MEDIA } from "~/src/data/media"
+
+import { readColorToken } from "~/src/lib/color-tokens"
 
 const FINE_POINTER_MOTION = `${MEDIA.MOTION_OK} and ${MEDIA.FINE_POINTER}`
 const INTERACTIVE = "a, button, [role='button'], input, textarea"
@@ -12,10 +15,6 @@ const TONED = "[data-tone]"
 const LIGHT_GROUND = "[data-light-ground]"
 const DARK_GROUND =
   "#hero, .ground-emerald, [data-dark-ground], [data-nav-ground='graphite'], [data-nav-ground='bronze'], [data-nav-ground='ink'], [data-ground='emerald']"
-const INK_ON_DARK = "#f5f0e4"
-const INK_ON_LIGHT = "#0d1526"
-const CHAMPAGNE = "#e2c690"
-const CHAMPAGNE_CLEAR = "rgba(226,198,144,0)"
 
 const RING_REST_SIZE = 40
 const RING_FULL_SIZE = 112
@@ -45,6 +44,13 @@ interface CursorParts {
   readonly dot: HTMLDivElement
   readonly label: HTMLSpanElement
   readonly ring: HTMLDivElement
+}
+
+interface CursorPalette {
+  readonly champagne: string
+  readonly champagneClear: string
+  readonly inkOnDark: string
+  readonly inkOnLight: string
 }
 
 const readNavTone = (target: Element): string => {
@@ -81,7 +87,20 @@ const resolveCursorState = (target: Element): CursorState => {
   return CURSOR_STATE.REST
 }
 
+const readPalette = (): CursorPalette => {
+  const champagne = readColorToken(COLOR_TOKEN.CHAMPAGNE)
+  const [red, green, blue] = gsap.utils.splitColor(champagne)
+
+  return {
+    champagne,
+    champagneClear: `rgba(${String(red)},${String(green)},${String(blue)},0)`,
+    inkOnDark: readColorToken(COLOR_TOKEN.CREAM),
+    inkOnLight: readColorToken(COLOR_TOKEN.NAVY),
+  }
+}
+
 const followPointer = ({ dot, label, ring }: CursorParts): (() => void) => {
+  const palette = readPalette()
   const dotX = gsap.quickTo(dot, "x", DOT_FOLLOW)
   const dotY = gsap.quickTo(dot, "y", DOT_FOLLOW)
   const ringX = gsap.quickTo(ring, "x", RING_FOLLOW)
@@ -108,14 +127,14 @@ const followPointer = ({ dot, label, ring }: CursorParts): (() => void) => {
 
     const state = resolveCursorState(event.target)
     const isNamed = state === CURSOR_STATE.NAMED
-    const ink = isOverDark(event.target) ? INK_ON_DARK : INK_ON_LIGHT
+    const ink = isOverDark(event.target) ? palette.inkOnDark : palette.inkOnLight
 
     label.textContent = readCursorLabel(event.target)
     gsap.to(dot, { ...DOT_CHANGE, backgroundColor: ink, scale: DOT_SCALE[state] })
     gsap.to(ring, {
       ...RING_CHANGE,
-      backgroundColor: isNamed ? CHAMPAGNE : CHAMPAGNE_CLEAR,
-      borderColor: isNamed ? CHAMPAGNE : ink,
+      backgroundColor: isNamed ? palette.champagne : palette.champagneClear,
+      borderColor: isNamed ? palette.champagne : ink,
       scale: RING_SCALE[state],
     })
     gsap.to(label, { ...LABEL_CHANGE, autoAlpha: LABEL_ALPHA[state] })
