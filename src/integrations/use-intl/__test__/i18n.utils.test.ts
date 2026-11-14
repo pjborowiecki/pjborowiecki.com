@@ -3,7 +3,7 @@ import { getRequest } from "@tanstack/react-start/server"
 import { afterEach, describe, expect, it, vi } from "vite-plus/test"
 
 import { ROOT_NAMESPACES, loadNamespace, messagesQueryOptions, preloadNamespaces } from "~/src/integrations/use-intl/i18n.messages"
-import { buildMessageTree } from "~/src/integrations/use-intl/i18n.tree"
+import { type NamespaceEntry, buildMessageTree } from "~/src/integrations/use-intl/i18n.tree"
 import { LOCALE_REWRITE, getCurrentLocale } from "~/src/integrations/use-intl/i18n.utils"
 
 afterEach(() => {
@@ -62,6 +62,15 @@ describe("message namespaces", () => {
       ]),
     ).toStrictEqual({ errors: { global: { title: "Something went wrong" }, title: "Errors" } })
     expect(parent).toStrictEqual({ title: "Errors" })
+  })
+
+  it("merges a parent namespace's nested messages with those of a child namespace in either order", () => {
+    const child: NamespaceEntry = ["errors.global", { title: "Something went wrong" }]
+    const parent: NamespaceEntry = ["errors", { global: { retry: "Try again" } }]
+    const merged = { errors: { global: { retry: "Try again", title: "Something went wrong" } } }
+
+    expect(buildMessageTree([child, parent])).toStrictEqual(merged)
+    expect(buildMessageTree([parent, child])).toStrictEqual(merged)
   })
 
   it("keeps each locale and namespace separate in one query cache", async () => {
