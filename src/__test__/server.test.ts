@@ -1,5 +1,6 @@
 import { env } from "cloudflare:workers"
 
+import { createHash } from "node:crypto"
 import { readFileSync } from "node:fs"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vite-plus/test"
 
@@ -58,6 +59,28 @@ describe("security headers", () => {
 
     expect(response.headers.get("content-security-policy")).toBe("default-src 'self'")
     expect(response.headers.get("x-frame-options")).toBe("DENY")
+  })
+
+  it("allows exactly the inline scripts of a page it renders", async () => {
+    const hydration = 'self.$_TSR={"matches":[]}'
+    const page = `<html><head><meta charSet="utf-8"/></head><body><script>${hydration}</script><script type="module" src="/assets/entry.js"></script></body></html>`
+    fetchHandler.mockResolvedValueOnce(htmlPage(page, HTTP_STATUS.NOT_FOUND))
+
+    const response = await worker.fetch(new Request("http://localhost/missing"), env)
+
+    expect(response.status).toBe(HTTP_STATUS.NOT_FOUND)
+    expect(response.headers.get("content-security-policy")).toBe(
+      `${SECURITY_HEADERS["content-security-policy"]}; script-src 'self' https://static.cloudflareinsights.com 'sha256-${createHash("sha256").update(hydration).digest("base64")}'`,
+    )
+    await expect(response.text()).resolves.toBe(page)
+  })
+
+  it("leaves the script policy of a prerendered page to the policy embedded in it", async () => {
+    vi.spyOn(env.ASSETS, "fetch").mockResolvedValueOnce(htmlPage())
+
+    const response = await worker.fetch(new Request("http://localhost/"), env)
+
+    expect(response.headers.get("content-security-policy")).toBe(SECURITY_HEADERS["content-security-policy"])
   })
 
   it("asks browsers to keep using HTTPS only on HTTPS responses", async () => {
