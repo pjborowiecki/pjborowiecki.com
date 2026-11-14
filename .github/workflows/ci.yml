@@ -55,7 +55,7 @@ jobs:
   deploy-preview:
     name: Deploy preview
     needs: [verify, e2e]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/preview'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/preview' && vars.CLOUDFLARE_ACCOUNT_ID != ''
     permissions:
       contents: read
       deployments: write
@@ -67,7 +67,7 @@ jobs:
   deploy-production:
     name: Deploy production
     needs: [verify, e2e]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.CLOUDFLARE_ACCOUNT_ID != ''
     permissions:
       contents: read
       deployments: write
