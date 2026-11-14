@@ -242,7 +242,7 @@ The `release` job tags the deployed commit `vYYYY.MM.DD` with the UTC date (`.2`
 
 ### Repository rules
 
-- `main` accepts changes only through pull requests, merged by squash or rebase into a linear history, after the checks above pass and the pull request has deployed to `Preview`. It cannot be deleted or force-pushed.
+- `main` accepts changes only through pull requests, merged by squash or rebase into a linear history. A pull request needs both CI checks above, GitGuardian's secret scan and CodeRabbit's review to pass and a successful deploy to `Preview`, and GitHub Copilot reviews every push. `main` cannot be deleted or force-pushed.
 - The `new` branch cannot be deleted or force-pushed; `v*` release tags and `content/*` tags cannot be deleted or moved.
 - Secret scanning with push protection, CodeQL and Dependabot alerts are on.
 
