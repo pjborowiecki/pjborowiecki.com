@@ -1,0 +1,16 @@
+{
+  "home": "Na górę strony",
+  "skip": "Przejdź do treści",
+  "primaryNav": "Główna",
+  "menu": "Menu",
+  "close": "Zamknij",
+  "letsTalk": "Porozmawiajmy",
+  "items": {
+    "philosophy": "Filozofia",
+    "expertise": "Ekspertyza",
+    "ai": "AI",
+    "about": "O mnie",
+    "work": "Wybrane projekty",
+    "insights": "Spostrzeżenia"
+  }
+}

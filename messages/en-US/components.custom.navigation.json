@@ -1,0 +1,16 @@
+{
+  "home": "Back to top",
+  "skip": "Skip to content",
+  "primaryNav": "Primary",
+  "menu": "Menu",
+  "close": "Close",
+  "letsTalk": "Let’s talk",
+  "items": {
+    "philosophy": "Philosophy",
+    "expertise": "Expertise",
+    "ai": "AI",
+    "about": "About",
+    "work": "Selected work",
+    "insights": "Insights"
+  }
+}
