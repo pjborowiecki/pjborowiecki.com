@@ -27,13 +27,12 @@ The landing page in November 2026.
 
 ## Sites and branches
 
-| Site                                                         | Deployed from                  | Purpose                                                       |
-| ------------------------------------------------------------ | ------------------------------ | ------------------------------------------------------------- |
-| [pjborowiecki.com](https://pjborowiecki.com)                 | `main`, by CI                  | Production. `www.pjborowiecki.com` redirects here.            |
-| [preview.pjborowiecki.com](https://preview.pjborowiecki.com) | Every pull request, by CI      | Review of a change, live, before it is merged                 |
-| [new.pjborowiecki.com](https://new.pjborowiecki.com)         | The `new` branch, by hand only | The site's content as of 14 November 2026, kept for reference |
+| Site                                                         | Deployed from             | Purpose                                            |
+| ------------------------------------------------------------ | ------------------------- | -------------------------------------------------- |
+| [pjborowiecki.com](https://pjborowiecki.com)                 | `main`, by CI             | Production. `www.pjborowiecki.com` redirects here. |
+| [preview.pjborowiecki.com](https://preview.pjborowiecki.com) | Every pull request, by CI | Review of a change, live, before it is merged      |
 
-Work happens on short-lived branches that reach `main` through pull requests. Only production is indexed by search engines; the other two send `noindex, nofollow`.
+Work happens on short-lived branches that reach `main` through pull requests. Only production is indexed by search engines; preview sends `noindex, nofollow`.
 
 ## Features
 
@@ -117,7 +116,7 @@ Every Wrangler environment declares `"secrets": { "required": [] }`. With that d
 | `preview`     | `pjborowiecki-preview`     | `preview.pjborowiecki.com`                             | `1002`, `1012`                             |
 | `production`  | `pjborowiecki`             | `pjborowiecki.com` and `www.pjborowiecki.com`          | `1001`, `1011`                             |
 
-Every environment binds `EMAIL` (`send_email`), `CONTACT_RATE_LIMIT` (`ratelimits`, three messages a minute per client address and per sender) and `CONTACT_GLOBAL_RATE_LIMIT` (ten messages a minute for the whole site). Custom domains are declared as routes with `custom_domain: true`, so a deploy creates their DNS records; the zone holds no records for them otherwise. The `new` environment exists only on the `new` branch.
+Every environment binds `EMAIL` (`send_email`), `CONTACT_RATE_LIMIT` (`ratelimits`, three messages a minute per client address and per sender) and `CONTACT_GLOBAL_RATE_LIMIT` (ten messages a minute for the whole site). Custom domains are declared as routes with `custom_domain: true`, so a deploy creates their DNS records; the zone holds no records for them otherwise.
 
 ### Email
 
@@ -177,10 +176,6 @@ Both bindings are declared in `wrangler.jsonc`, so there is no key to rotate or 
 ### Browser tests that wait for hydration
 
 A prerendered page looks interactive before React has attached its handlers. On slow CI runners, the browser suite clicked buttons in that window and the clicks were lost, so specs failed only in CI. The failure was reproduced locally with 10 to 20 times CPU throttling, and [`e2e/fixtures/hydration.ts`](e2e/fixtures/hydration.ts) now waits until every button and React Aria element carries React's props before a spec acts.
-
-### Keeping the earlier content
-
-The content of 14 November 2026 is preserved on the `new` branch and pinned by the tag `content/2026-11-14`. The branch adds the `new` environment and `bun run deploy:new`, and the configuration exists only there, so nothing on `main` can deploy over it. Repository rulesets forbid deleting or force-pushing the branch and deleting or moving the tag. Read the earlier copy from any checkout with `git show new:messages/en-US/pages.landing.json`.
 
 ## Engineering standards
 
@@ -245,13 +240,13 @@ The `release` job tags the deployed commit `vYYYY.MM.DD` with the UTC date (`.2`
 ### Repository rules
 
 - `main` accepts changes only through pull requests, merged by squash or rebase into a linear history. A pull request needs both CI checks above, GitGuardian's secret scan and CodeRabbit's review to pass and a successful deploy to `Preview`, and GitHub Copilot reviews every push. `main` cannot be deleted or force-pushed.
-- The `new` branch cannot be deleted or force-pushed; `v*` release tags and `content/*` tags cannot be deleted or moved.
+- `v*` release tags cannot be deleted or moved.
 - Only `main` can deploy to the GitHub `Production` environment or use the deploy token stored in it.
 - Secret scanning with push protection, CodeQL and Dependabot alerts are on.
 
 ### Manual deployment
 
-`bun run deploy:preview` and `bun run deploy:production` build, deploy and check an environment from a local checkout, with the credentials in `.env.preview` or `.env.production`. Production is normally deployed only by merging to `main`. `new.pjborowiecki.com` is deployed only from the `new` branch with `bun run deploy:new`.
+`bun run deploy:preview` and `bun run deploy:production` build, deploy and check an environment from a local checkout, with the credentials in `.env.preview` or `.env.production`. Production is normally deployed only by merging to `main`.
 
 ## Performance
 
