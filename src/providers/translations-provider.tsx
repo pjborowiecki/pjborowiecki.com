@@ -5,7 +5,8 @@ import { useMatches } from "@tanstack/react-router"
 import { IntlProvider } from "use-intl/react"
 
 import { I18N } from "~/src/integrations/use-intl/i18n.config"
-import { ROOT_NAMESPACES, buildMessageTree, messagesQueryOptions } from "~/src/integrations/use-intl/i18n.messages"
+import { ROOT_NAMESPACES, messagesQueryOptions } from "~/src/integrations/use-intl/i18n.messages"
+import { buildMessageTree } from "~/src/integrations/use-intl/i18n.tree"
 import { getCurrentLocale } from "~/src/integrations/use-intl/i18n.utils"
 
 export const TranslationsProvider = ({ children }: Readonly<{ children: ReactNode }>): JSX.Element => {

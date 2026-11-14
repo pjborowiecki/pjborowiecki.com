@@ -8,7 +8,7 @@ import { useTranslations } from "use-intl/react"
 
 import { getCurrentLocale } from "~/src/integrations/use-intl/i18n.utils"
 
-import { CONTACT_ERROR, type ContactError } from "~/src/data/contact"
+import { CONTACT_ERROR, CONTACT_FORM_ID, type ContactError } from "~/src/data/contact"
 
 import { cn } from "~/src/lib/cn"
 import { type ContactForm as ContactFormValues, contactFormSchema, submitContactMessageMutation } from "~/src/lib/contact"
@@ -52,7 +52,7 @@ export const ContactForm = (): JSX.Element => {
   return (
     <form
       className="mt-[clamp(1.25rem,2.2vw,2.5rem)]"
-      id="contact-form"
+      id={CONTACT_FORM_ID}
       noValidate
       onSubmit={(event) => {
         event.preventDefault()

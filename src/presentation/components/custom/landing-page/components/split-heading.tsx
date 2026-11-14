@@ -1,6 +1,8 @@
 import { type JSX, createElement, useRef } from "react"
 
-import { MOTION_OK, SplitText, gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
+import { SplitText, gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
+
+import { MEDIA } from "~/src/data/media"
 
 interface SplitHeadingProps {
   readonly as?: "h2" | "h3" | "p"
@@ -17,7 +19,7 @@ export const SplitHeading = ({ as = "h2", children, className }: SplitHeadingPro
 
   useGSAP(
     () => {
-      gsap.matchMedia().add(MOTION_OK, () => {
+      gsap.matchMedia().add(MEDIA.MOTION_OK, () => {
         const rise: { current?: gsap.core.Tween } = {}
 
         SplitText.create(ref.current, {

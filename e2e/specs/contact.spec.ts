@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test"
 
+import { CONTACT_FORM_ID } from "~/src/data/contact"
+
 import { gotoHydrated } from "../fixtures/hydration"
 import landing from "~/messages/en-US/pages.landing.json" with { type: "json" }
 
@@ -11,7 +13,7 @@ test.beforeEach(async ({ page }, testInfo) => {
 })
 
 test("explains what is missing before sending anything", async ({ page }) => {
-  const form = page.locator("#contact-form")
+  const form = page.locator(`#${CONTACT_FORM_ID}`)
 
   await form.getByRole("button", { name: contact.send }).click()
 
@@ -22,7 +24,7 @@ test("explains what is missing before sending anything", async ({ page }) => {
 })
 
 test("sends a message and empties the form", async ({ page }) => {
-  const form = page.locator("#contact-form")
+  const form = page.locator(`#${CONTACT_FORM_ID}`)
 
   await form.getByLabel(contact.fieldName).fill("Ada Lovelace")
   await form.getByLabel(contact.fieldCompany).fill("Analytical Engines")

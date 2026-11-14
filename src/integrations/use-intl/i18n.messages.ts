@@ -2,10 +2,7 @@ import { type QueryClient, queryOptions } from "@tanstack/react-query"
 import type { AbstractIntlMessages } from "use-intl"
 
 import type { SupportedLocale } from "~/src/integrations/use-intl/i18n.config"
-
-type MessageTree = Record<string, AbstractIntlMessages>
-
-export type NamespaceEntry = readonly [namespace: string, messages: AbstractIntlMessages]
+import { type NamespaceEntry, toNamespace } from "~/src/integrations/use-intl/i18n.tree"
 
 interface PageMetadata {
   description: string
@@ -13,12 +10,9 @@ interface PageMetadata {
 }
 
 const MESSAGES_QUERY_KEY = "i18n-messages"
-const NAMESPACE_SEPARATOR = "."
 
 const messageModules = import.meta.glob<AbstractIntlMessages>("../../../messages/*/*.json", { import: "default" })
 const metadataModules = import.meta.glob<PageMetadata>("../../../messages/*/*.json", { import: "metadata" })
-
-export const toNamespace = (path: string): string => path.replaceAll(/^.*\/|\.json$/gu, "")
 
 const rootMessagePaths = Object.keys(import.meta.glob(["../../../messages/*/components.*.json", "../../../messages/*/errors*.json"]))
 
@@ -52,37 +46,6 @@ export function loadNamespace({ locale, namespace }: { locale: SupportedLocale; 
   }
 
   return load()
-}
-
-const isMessageTree = (value: AbstractIntlMessages | string | undefined): value is MessageTree => typeof value === "object"
-
-const insertNamespace = ({ messages, namespace, tree }: { messages: AbstractIntlMessages; namespace: string; tree: MessageTree }): void => {
-  const separator = namespace.lastIndexOf(NAMESPACE_SEPARATOR)
-  const leaf = namespace.slice(separator + NAMESPACE_SEPARATOR.length)
-  const parents = namespace.slice(0, Math.max(separator, 0)).split(NAMESPACE_SEPARATOR).filter(Boolean)
-
-  let node = tree
-
-  for (const segment of parents) {
-    const existing = node[segment]
-    const child = isMessageTree(existing) ? { ...existing } : {}
-
-    node[segment] = child
-    node = child
-  }
-
-  const existing = node[leaf]
-  node[leaf] = isMessageTree(existing) ? { ...existing, ...messages } : messages
-}
-
-export const buildMessageTree = (entries: readonly NamespaceEntry[]): AbstractIntlMessages => {
-  const tree: MessageTree = {}
-
-  for (const [namespace, messages] of entries) {
-    insertNamespace({ messages, namespace, tree })
-  }
-
-  return tree
 }
 
 export const messagesQueryOptions = ({ locale, namespace }: { locale: SupportedLocale; namespace: string }) =>

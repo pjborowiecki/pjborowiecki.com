@@ -3,6 +3,7 @@ import { type JSX, type Ref, useId, useImperativeHandle, useLayoutEffect, useRef
 import { useTranslations } from "use-intl/react"
 
 import { cn } from "~/src/lib/cn"
+import { half } from "~/src/lib/numbers"
 
 export interface HarnessState {
   draw: number
@@ -51,7 +52,6 @@ interface OverlayParts {
 const FULL = 1
 const NEXT = 1
 const AFTER = 2
-const HALF = 0.5
 
 const GUARDRAILS_AT = 0.36
 const HARNESS_AT = 0.58
@@ -84,7 +84,7 @@ const STOPPED_AT_GUARDRAILS = 17
 const STOPPED_AT_HARNESS = 10
 const STOPPED_AT_JUDGMENT = 6
 const STRANDS = SURVIVORS + STOPPED_AT_GUARDRAILS + STOPPED_AT_HARNESS + STOPPED_AT_JUDGMENT
-const SURVIVOR_CENTER = (SURVIVORS - NEXT) * HALF
+const SURVIVOR_CENTER = half(SURVIVORS - NEXT)
 
 const POINT_STRIDE = 2
 const Y_OFFSET = 1

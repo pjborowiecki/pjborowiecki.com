@@ -3,6 +3,7 @@ import type { JSX, ReactNode } from "react"
 import { useTranslations } from "use-intl/react"
 
 import { NAV_GROUND, SECTION_IDS, sectionHref } from "~/src/data/marketing"
+import { MEDIA } from "~/src/data/media"
 import { SAASY_LAND_REPOSITORY } from "~/src/data/projects"
 
 import { ArrowRightIcon, ArrowUpRightIcon } from "~/src/presentation/components/custom/icons"
@@ -116,7 +117,7 @@ export const PersonSection = (): JSX.Element => {
             className="object-cover object-[50%_12%]"
             isFill
             name="about-standing"
-            sizes="(min-width: 768px) 50vw, 100vw"
+            sizes={`${MEDIA.MD} 50vw, 100vw`}
           />
         </div>
       </div>

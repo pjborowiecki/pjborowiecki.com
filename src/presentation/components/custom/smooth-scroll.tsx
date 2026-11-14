@@ -6,7 +6,8 @@ import { ScrollTrigger, gsap } from "~/src/integrations/gsap/gsap.config"
 
 import { shareLenis } from "~/src/hooks/use-lenis"
 
-const REDUCED_MOTION = "(prefers-reduced-motion: reduce)"
+import { MEDIA } from "~/src/data/media"
+
 const SCROLL_LERP = 0.11
 const MS_PER_SECOND = 1000
 const DISSOLVE_PAST_SCREENS = 1.5
@@ -197,7 +198,7 @@ export const SmoothScroll = (): JSX.Element => {
   const veilRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (globalThis.matchMedia(REDUCED_MOTION).matches) {
+    if (globalThis.matchMedia(MEDIA.REDUCED_MOTION).matches) {
       return
     }
 

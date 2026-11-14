@@ -1,6 +1,8 @@
 import { type JSX, type ReactNode, useRef } from "react"
 
-import { MOTION_OK, gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
+import { gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
+
+import { MEDIA } from "~/src/data/media"
 
 import { cn } from "~/src/lib/cn"
 
@@ -24,7 +26,7 @@ export const SectionHead = ({ className, isTitleHidden = false, label, meta, tit
 
   useGSAP(
     () => {
-      gsap.matchMedia().add(MOTION_OK, () => {
+      gsap.matchMedia().add(MEDIA.MOTION_OK, () => {
         gsap.from(ruleRef.current, { ...RULE_DRAW, scrollTrigger: { once: true, start: RULE_START, trigger: ruleRef.current } })
       })
     },

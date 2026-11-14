@@ -2,10 +2,11 @@ import { type JSX, useRef } from "react"
 
 import { useTranslations } from "use-intl/react"
 
-import { MOTION_OK, ScrollTrigger, gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
+import { ScrollTrigger, gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
 
 import { CERTIFICATIONS, type Certification } from "~/src/data/certifications"
 import { NAV_GROUND, SECTION_IDS } from "~/src/data/marketing"
+import { MEDIA } from "~/src/data/media"
 
 import { ArrowUpRightIcon, IssuerLogo } from "~/src/presentation/components/custom/icons"
 import { Reveal } from "~/src/presentation/components/custom/landing-page/components/reveal"
@@ -114,7 +115,7 @@ export const CertificationsSection = (): JSX.Element | undefined => {
 
   useGSAP(
     () => {
-      gsap.matchMedia().add(MOTION_OK, () => {
+      gsap.matchMedia().add(MEDIA.MOTION_OK, () => {
         const outer = outerRef.current
         const root = rootRef.current
         const track = trackRef.current

@@ -2,11 +2,13 @@ import { type JSX, useRef } from "react"
 
 import { useTranslations } from "use-intl/react"
 
-import { MOTION_OK, ScrollTrigger, gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
+import { ScrollTrigger, gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
 
 import { NAV_GROUND, SECTION_IDS } from "~/src/data/marketing"
+import { MEDIA } from "~/src/data/media"
 
 import type { Discipline } from "~/src/lib/expertise-drawings"
+import { ordinal } from "~/src/lib/numbers"
 
 import { ExpertiseFigure } from "~/src/presentation/components/custom/landing-page/components/expertise-figure"
 import { Marquee } from "~/src/presentation/components/custom/landing-page/components/marquee"
@@ -31,14 +33,11 @@ const CORE_TECHNOLOGIES = [
   "Cloudflare Workers",
 ] as const
 
-const WIDE_MOTION = `${MOTION_OK} and (min-width: 768px)`
+const WIDE_MOTION = `${MEDIA.MOTION_OK} and ${MEDIA.MD}`
 
 const SCROLL_PER_PIXEL = 1.1
 
 const TRACK_SCROLL: ScrollTrigger.Vars = { end: "bottom bottom", invalidateOnRefresh: true, scrub: 0.6, start: "top top" }
-
-const FIRST_ORDINAL = 1
-const ORDINAL_DIGITS = 2
 
 const PRACTICES_MARQUEE = { copies: 4, duration: 90 } as const
 
@@ -83,7 +82,7 @@ const DisciplinePanel = ({ discipline, index }: DisciplinePanelProps): JSX.Eleme
       <div className="relative transition-colors duration-300 group-hover:text-emerald-deep">
         <div className="flex items-baseline justify-between gap-6">
           <span aria-hidden className="type-label text-current">
-            {String(index + FIRST_ORDINAL).padStart(ORDINAL_DIGITS, "0")}
+            {ordinal(index)}
           </span>
           <span className="text-right type-label text-champagne group-hover:text-emerald">{t(`${discipline}Where`)}</span>
         </div>

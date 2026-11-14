@@ -2,9 +2,12 @@ import { type JSX, type RefObject, useEffect, useRef } from "react"
 
 import { useTranslations } from "use-intl/react"
 
-import { MOTION_OK, gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
+import { gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
 
-import { NAV_ITEMS, SECTION_IDS, sectionHref } from "~/src/data/marketing"
+import { MOBILE_MENU_ID, NAV_ITEMS, SECTION_IDS, sectionHref } from "~/src/data/marketing"
+import { MEDIA } from "~/src/data/media"
+
+import { half } from "~/src/lib/numbers"
 
 import { ArrowRightIcon, ArrowUpRightIcon } from "~/src/presentation/components/custom/icons"
 import { CtaLink } from "~/src/presentation/components/custom/landing-page/components/cta-link"
@@ -12,7 +15,6 @@ import { NameMark } from "~/src/presentation/components/custom/landing-page/comp
 
 import { CONTACT_EMAIL, SOCIAL_PROFILES } from "~/src/presentation/branding"
 
-const HALF = 2
 const DIAMETER_PER_RADIUS = 2
 const OPEN_SPEED = 1
 const CLOSE_SPEED = 1.7
@@ -28,8 +30,8 @@ interface MobileMenuProps {
 
 const growDiscFrom = (disc: HTMLElement, origin: HTMLElement | null): void => {
   const button = origin?.getBoundingClientRect()
-  const centreX = button ? button.left + button.width / HALF : globalThis.innerWidth
-  const centreY = button ? button.top + button.height / HALF : 0
+  const centreX = button ? button.left + half(button.width) : globalThis.innerWidth
+  const centreY = button ? button.top + half(button.height) : 0
   const radius = Math.hypot(Math.max(centreX, globalThis.innerWidth - centreX), Math.max(centreY, globalThis.innerHeight - centreY))
   const diameter = `${radius * DIAMETER_PER_RADIUS}px`
 
@@ -126,7 +128,7 @@ export const MobileMenu = ({ isOpen, onClosed, onNavigate, originRef }: MobileMe
 
   useGSAP(
     () => {
-      gsap.matchMedia().add(MOTION_OK, () => {
+      gsap.matchMedia().add(MEDIA.MOTION_OK, () => {
         timelineRef.current = buildMenuTimeline(discRef.current, () => {
           gsap.set(rootRef.current, { autoAlpha: 0 })
           onClosedRef.current()
@@ -175,7 +177,7 @@ export const MobileMenu = ({ isOpen, onClosed, onNavigate, originRef }: MobileMe
     <div
       aria-hidden={!isOpen}
       className="invisible fixed inset-0 overflow-hidden text-cream opacity-0 lg:hidden"
-      id="mobile-menu"
+      id={MOBILE_MENU_ID}
       inert={!isOpen}
       ref={rootRef}
     >

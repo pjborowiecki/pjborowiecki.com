@@ -2,9 +2,10 @@ import { type JSX, type RefObject, useRef } from "react"
 
 import { useTranslations } from "use-intl/react"
 
-import { MOTION_OK, gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
+import { gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
 
 import { NAV_GROUND, SECTION_IDS } from "~/src/data/marketing"
+import { MEDIA } from "~/src/data/media"
 import type { DiagramState, SystemDiagramHandle } from "~/src/data/system-diagram"
 
 import { ResponsiveImage } from "~/src/presentation/components/custom/landing-page/components/responsive-image"
@@ -41,7 +42,7 @@ const AT = {
   signoff: 4.7,
 } as const
 
-const PHOTO_SIZES = "(min-width: 768px) 130vw, 240vw"
+const PHOTO_SIZES = `${MEDIA.MD} 130vw, 240vw`
 
 const playScrollStory = (root: HTMLElement, diagram: RefObject<SystemDiagramHandle | null>): void => {
   const select = gsap.utils.selector(root)
@@ -96,7 +97,7 @@ export const PhilosophySection = (): JSX.Element => {
         return
       }
 
-      gsap.matchMedia().add(MOTION_OK, () => {
+      gsap.matchMedia().add(MEDIA.MOTION_OK, () => {
         playScrollStory(root, diagramRef)
       })
     },

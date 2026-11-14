@@ -7,8 +7,6 @@ gsap.registerPlugin(ScrollTrigger, SplitText, useGSAP)
 
 ScrollTrigger.config({ ignoreMobileResize: true })
 
-export { MOTION_OK } from "~/src/integrations/gsap/gsap.constants"
-
 export { useGSAP } from "@gsap/react"
 export { gsap } from "gsap"
 export { ScrollTrigger } from "gsap/ScrollTrigger"

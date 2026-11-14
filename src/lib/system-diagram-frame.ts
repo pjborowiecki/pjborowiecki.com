@@ -1,3 +1,4 @@
+import { MEDIA } from "~/src/data/media"
 import {
   DIAGRAM_FINDING_CLOSES,
   DIAGRAM_FINDING_KEYS,
@@ -115,7 +116,6 @@ const STATUS_SWAP = { span: 0.2, start: 0.4 } as const
 const STATUS_COUNT_GAP = 16
 
 const FLOW_START = 0.98
-const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)"
 
 const RESOLVED_DIAGRAM: DiagramState = { bus: 1, draw: 1, order: 1 }
 
@@ -391,7 +391,7 @@ const syncDiagramFlow = (svg: SVGSVGElement, frame: DiagramFrame): void => {
     return
   }
 
-  const reducedMotion = frame.reducedMotion ?? globalThis.matchMedia(REDUCED_MOTION_QUERY)
+  const reducedMotion = frame.reducedMotion ?? globalThis.matchMedia(MEDIA.REDUCED_MOTION)
   const isRunning = !reducedMotion.matches && frame.isVisible && frame.hasApplied && frame.applied.bus >= FLOW_START
 
   frame.reducedMotion = reducedMotion

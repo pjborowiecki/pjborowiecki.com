@@ -71,7 +71,7 @@ describe("ContactForm", () => {
 
     const name = screen.getByLabelText(copy.fieldName)
     expect(name).toHaveAttribute("aria-invalid", "true")
-    expect(name).toHaveAttribute("aria-describedby", "contact-form-name-error")
+    expect(name).toHaveAccessibleDescription(copy.validation.nameRequired)
     expect(screen.getByText(copy.validation.nameRequired)).toBeInTheDocument()
     expect(screen.getByText(copy.validation.emailRequired)).toBeInTheDocument()
     expect(screen.getByText(copy.validation.detailsRequired)).toBeInTheDocument()

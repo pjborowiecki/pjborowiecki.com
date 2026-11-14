@@ -1,7 +1,7 @@
 import type { AbstractIntlMessages } from "use-intl"
 
 import type { SupportedLocale } from "~/src/integrations/use-intl/i18n.config"
-import { type NamespaceEntry, buildMessageTree, toNamespace } from "~/src/integrations/use-intl/i18n.messages"
+import { type NamespaceEntry, buildMessageTree, toNamespace } from "~/src/integrations/use-intl/i18n.tree"
 
 const fixtures = import.meta.glob<AbstractIntlMessages>("../../../../../messages/*/*.json", { eager: true, import: "default" })
 

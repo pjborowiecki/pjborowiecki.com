@@ -8,6 +8,8 @@ import {
 } from "~/src/data/system-diagram"
 import { DIAGRAM_LAYOUTS } from "~/src/data/system-diagram-layouts"
 
+import { half } from "~/src/lib/numbers"
+
 export interface CoreGeometry {
   readonly edge: DiagramCoreEdge
   readonly loose: readonly number[] | undefined
@@ -112,7 +114,7 @@ const appendStraight = (flat: number[], from: DiagramPoint, to: DiagramPoint): v
 const appendCorner = (flat: number[], pen: DiagramPoint, { current, next, previous }: Corner): DiagramPoint => {
   const inLength = Math.hypot(current.x - previous.x, current.y - previous.y)
   const outLength = Math.hypot(next.x - current.x, next.y - current.y)
-  const radius = Math.min(CORNER_RADIUS, inLength / HALVES, outLength / HALVES)
+  const radius = Math.min(CORNER_RADIUS, half(inLength), half(outLength))
   const inX = (current.x - previous.x) / inLength
   const inY = (current.y - previous.y) / inLength
   const outX = (next.x - current.x) / outLength

@@ -4,12 +4,13 @@ import { useTranslations } from "use-intl/react"
 
 import { DIAGRAM_COLOR, DIAGRAM_TEXT, type DiagramLayout, type DiagramPoint } from "~/src/data/system-diagram"
 
+import { half } from "~/src/lib/numbers"
+
 interface LegendProps {
   readonly at: DiagramPoint
   readonly fontSize: number
 }
 
-const HALF = 2
 const CELL_CENTER = 0.5
 const PLATFORM_TITLE_INSET = 0.5
 const PLATFORM_INK = "#f5f0e4"
@@ -26,15 +27,15 @@ const Platform = ({ layout }: { readonly layout: DiagramLayout }): JSX.Element =
     <g stroke="none">
       <rect fill={DIAGRAM_COLOR.emerald} height={platform.height} rx={3} width={platform.width} x={platform.x} y={platform.y} />
       {PLATFORM_CELLS.map((cell, index) => (
-        <g key={cell} transform={`translate(${platform.x + cellWidth * (index + CELL_CENTER)} ${platform.y + platform.height / HALF})`}>
+        <g key={cell} transform={`translate(${platform.x + cellWidth * (index + CELL_CENTER)} ${platform.y + half(platform.height)})`}>
           {index > 0 && (
             <line
               stroke={PLATFORM_INK}
               strokeOpacity={0.24}
-              x1={-cellWidth / HALF}
-              x2={-cellWidth / HALF}
-              y1={-platform.height / HALF}
-              y2={platform.height / HALF}
+              x1={-half(cellWidth)}
+              x2={-half(cellWidth)}
+              y1={-half(platform.height)}
+              y2={half(platform.height)}
             />
           )}
           <text

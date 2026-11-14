@@ -1,10 +1,11 @@
 import { type JSX, useRef } from "react"
 
-import { MOTION_OK, gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
+import { gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
 
 import { LIGHT_NAV_GROUNDS } from "~/src/data/marketing"
+import { MEDIA } from "~/src/data/media"
 
-const FINE_POINTER_MOTION = `${MOTION_OK} and (pointer: fine)`
+const FINE_POINTER_MOTION = `${MEDIA.MOTION_OK} and ${MEDIA.FINE_POINTER}`
 const INTERACTIVE = "a, button, [role='button'], input, textarea"
 const NAMED = "[data-cursor]"
 const TONED = "[data-tone]"

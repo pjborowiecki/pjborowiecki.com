@@ -4,7 +4,8 @@ import { describe, expect, it } from "vite-plus/test"
 import * as zod from "zod"
 
 import { I18N } from "~/src/integrations/use-intl/i18n.config"
-import { loadNamespace, loadPageMetadata, toNamespace } from "~/src/integrations/use-intl/i18n.messages"
+import { loadNamespace, loadPageMetadata } from "~/src/integrations/use-intl/i18n.messages"
+import { toNamespace } from "~/src/integrations/use-intl/i18n.tree"
 
 const MESSAGES_DIRECTORY = resolve("messages")
 const STORED_MESSAGES_SCHEMA = zod.record(zod.string(), zod.unknown())

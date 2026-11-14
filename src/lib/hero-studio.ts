@@ -1,4 +1,5 @@
 import { imageSource } from "~/src/data/images"
+import { MEDIA } from "~/src/data/media"
 
 const VERTEX_SHADER = `
 attribute vec2 p;
@@ -120,7 +121,6 @@ const FULLSCREEN_TRIANGLE = [TRIANGLE_NEAR, TRIANGLE_NEAR, TRIANGLE_FAR, TRIANGL
 const TRIANGLE_VERTICES = 3
 const COORDINATES_PER_VERTEX = 2
 
-const COARSE_POINTER = "(pointer: coarse)"
 const PIXEL_RATIO = { coarse: 1.5, fallback: 1, fine: 1.75 } as const
 const MIN_CANVAS_SIZE = 1
 
@@ -447,7 +447,7 @@ export const createHeroStudio = (options: HeroStudioOptions): HeroStudio | undef
     return undefined
   }
 
-  const studio: Studio = { isCoarse: globalThis.matchMedia(COARSE_POINTER).matches, options, scene, state: createState() }
+  const studio: Studio = { isCoarse: globalThis.matchMedia(MEDIA.COARSE_POINTER).matches, options, scene, state: createState() }
   const { state } = studio
 
   const tick = (time: number): void => {

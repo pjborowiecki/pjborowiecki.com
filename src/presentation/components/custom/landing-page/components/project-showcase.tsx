@@ -3,9 +3,10 @@ import { type JSX, useRef } from "react"
 import { Button } from "react-aria-components"
 import { useTranslations } from "use-intl/react"
 
-import { MOTION_OK, gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
+import { gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
 
 import { NAV_GROUND, type NavGround } from "~/src/data/marketing"
+import { MEDIA } from "~/src/data/media"
 import { PROJECT_ID, type Project, type ProjectId } from "~/src/data/projects"
 
 import { cn } from "~/src/lib/cn"
@@ -15,8 +16,7 @@ import { ResponsiveImage } from "~/src/presentation/components/custom/landing-pa
 
 const PROOFS = ["Proof1", "Proof2", "Proof3"] as const
 const FEATURES = ["Feature1", "Feature2", "Feature3", "Feature4"] as const
-const COMPOSED = `${MOTION_OK} and (min-width: 900px) and (min-aspect-ratio: 11 / 10)`
-const FINE_POINTER = "(pointer: fine)"
+const COMPOSED = `${MEDIA.MOTION_OK} and ${MEDIA.COVER}`
 
 const LABEL_CLASSNAME = "text-[clamp(0.8125rem,min(0.84vw,1.42svh),1.0625rem)] font-medium leading-[1.35] tracking-[-0.004em]"
 const TEXT_CLASSNAME = "text-[clamp(0.9375rem,min(1vw,1.7svh),1.3125rem)] leading-[1.5] tracking-[-0.009em]"
@@ -137,7 +137,7 @@ const stepBackUnderNext = (hold: HTMLElement, select: gsap.utils.SelectorFunc): 
 }
 
 const followPointer = (select: gsap.utils.SelectorFunc): (() => void) | undefined => {
-  if (!globalThis.matchMedia(FINE_POINTER).matches) {
+  if (!globalThis.matchMedia(MEDIA.FINE_POINTER).matches) {
     return
   }
   const [panel] = select<HTMLElement>("[data-panel]")

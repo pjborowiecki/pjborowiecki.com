@@ -5,14 +5,14 @@ import { useTranslations } from "use-intl/react"
 import { NAV_GROUND, SECTION_IDS } from "~/src/data/marketing"
 import { FEATURED_PROJECTS, type Project } from "~/src/data/projects"
 
+import { padded } from "~/src/lib/numbers"
+
 import { CaseStudyPanel } from "~/src/presentation/components/custom/landing-page/components/case-study-panel"
 import { ProjectIndex } from "~/src/presentation/components/custom/landing-page/components/project-index"
 import { ProjectShowcase } from "~/src/presentation/components/custom/landing-page/components/project-showcase"
 import { SectionHead } from "~/src/presentation/components/custom/landing-page/components/section-head"
 
 const NEXT = 1
-const COUNT_DIGITS = 2
-const COUNT_PAD = "0"
 
 const findNextProject = (project: Project | undefined): Project | undefined => {
   if (project === undefined) {
@@ -34,7 +34,7 @@ export const WorkSection = (): JSX.Element => {
         <SectionHead
           isTitleHidden
           label={t("caseStudies")}
-          meta={<p className="type-label text-foreground">{`(${String(FEATURED_PROJECTS.length).padStart(COUNT_DIGITS, COUNT_PAD)})`}</p>}
+          meta={<p className="type-label text-foreground">{`(${padded(FEATURED_PROJECTS.length)})`}</p>}
           title={t("selected")}
         />
       </div>

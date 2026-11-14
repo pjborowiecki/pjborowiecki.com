@@ -1,6 +1,8 @@
 import { type JSX, type ReactNode, useRef } from "react"
 
-import { MOTION_OK, gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
+import { gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
+
+import { MEDIA } from "~/src/data/media"
 
 import { cn } from "~/src/lib/cn"
 
@@ -28,7 +30,7 @@ export const ImageReveal = ({ alt, caption, className, name, sizes }: ImageRevea
 
   useGSAP(
     () => {
-      gsap.matchMedia().add(MOTION_OK, () => {
+      gsap.matchMedia().add(MEDIA.MOTION_OK, () => {
         gsap.fromTo(frameRef.current, { ...FRAME_CLOSED }, { ...FRAME_OPEN, scrollTrigger: { ...FRAME_SCROLL, trigger: frameRef.current } })
         gsap.fromTo(
           imageRef.current,
