@@ -246,6 +246,7 @@ The `release` job tags the deployed commit `vYYYY.MM.DD` with the UTC date (`.2`
 
 - `main` accepts changes only through pull requests, merged by squash or rebase into a linear history. A pull request needs both CI checks above, GitGuardian's secret scan and CodeRabbit's review to pass and a successful deploy to `Preview`, and GitHub Copilot reviews every push. `main` cannot be deleted or force-pushed.
 - The `new` branch cannot be deleted or force-pushed; `v*` release tags and `content/*` tags cannot be deleted or moved.
+- Only `main` can deploy to the GitHub `Production` environment or use the deploy token stored in it.
 - Secret scanning with push protection, CodeQL and Dependabot alerts are on.
 
 ### Manual deployment
@@ -258,13 +259,15 @@ Lighthouse 13.6.0, median of five runs on 14 November 2026: this site at `previe
 
 | Metric                   | Mobile, Next.js | Mobile, this site | Desktop, Next.js | Desktop, this site |
 | ------------------------ | --------------- | ----------------- | ---------------- | ------------------ |
-| Performance score        | 63              | **97**            | 93               | **100**            |
-| First Contentful Paint   | 1.2 s           | 1.1 s             | 0.34 s           | 0.33 s             |
-| Largest Contentful Paint | 5.2 s           | **1.1 s**         | 1.0 s            | **0.33 s**         |
-| Total Blocking Time      | 580 ms          | **200 ms**        | 179 ms           | **24 ms**          |
+| Performance score        | 63              | **94**            | 93               | **100**            |
+| First Contentful Paint   | 1.2 s           | **0.96 s**        | 0.34 s           | 0.32 s             |
+| Largest Contentful Paint | 5.2 s           | **1.5 s**         | 1.0 s            | **0.52 s**         |
+| Total Blocking Time      | 580 ms          | **275 ms**        | 179 ms           | **18 ms**          |
 | Cumulative Layout Shift  | 0               | 0                 | 0                | 0                  |
-| Speed Index              | 4.5 s           | **2.7 s**         | 1.1 s            | **0.86 s**         |
+| Speed Index              | 4.5 s           | **1.8 s**         | 1.1 s            | **0.63 s**         |
 | Page weight              | 1.6 MB          | **1.1 MB**        | 1.8 MB           | **1.2 MB**         |
+
+The Largest Contentful Paint is the portrait. Before the portrait stopped waiting for the WebGL scene, it was hidden while the page loaded, so Lighthouse measured the headline instead and reported 1.1 s while the portrait itself appeared about 1.7 s later; showing it at once raised the measured value and brought the Speed Index from 2.7 s to 1.8 s.
 
 Mobile is Lighthouse's emulated Moto G Power on slow 4G. These are lab results on one machine, so scores vary between runs; compare several runs before judging a change. [Run PageSpeed Insights](https://pagespeed.web.dev/analysis?url=https%3A%2F%2Fpjborowiecki.com%2F) for current results.
 
@@ -274,9 +277,9 @@ The decisions behind these numbers are described in [Problems worth talking abou
 
 Kept here rather than hidden, because an accurate map is more useful than a flattering one.
 
-- Mobile Total Blocking Time is 200 ms in the lab. Hydrating the animated sections still produces long tasks on a throttled CPU.
+- Mobile Total Blocking Time is about 275 ms in the lab. Hydration evaluates roughly 950 KB of minified JavaScript at once: the framework, the landing route, the animation libraries and the class tables. Starting the WebGL scene later made no measurable difference, so the next step is splitting the sections below the fold and the contact form into chunks that load and hydrate after the first paint.
 - Scroll choreography, the WebGL hero and the canvas drawings are outside the unit coverage gate. The browser suite exercises them, but asserts behaviour, not frames.
-- Preview and production deploys share one Cloudflare API token. A token per environment would limit what a leaked preview credential could reach.
+- Cloudflare API tokens cannot be limited to one Worker, so the deploy token can reach both Workers. Only `main` can deploy to the GitHub `Production` environment, but the `Preview` environment holds the same token, so a workflow on any branch of this repository could reach production. Only the owner can push branches, and pull requests from forks and Dependabot get no secrets.
 
 ## Security
 
