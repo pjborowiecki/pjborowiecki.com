@@ -7,6 +7,8 @@ import { z } from "zod/v4"
 import { I18N } from "~/src/integrations/use-intl/i18n.config"
 import { localeLinks, localizePathname } from "~/src/integrations/use-intl/i18n.paths"
 
+import { embeddedPolicy, scriptPolicy } from "~/src/lib/content-security-policy"
+
 import { readWranglerEnvironment } from "./wrangler-config.ts"
 import { ROUTES } from "~/src/routes"
 
@@ -42,7 +44,7 @@ if (worker.name !== target.name) {
   throw new Error(`The Worker build is ${worker.name}, not the ${environment} Worker`)
 }
 
-const verifyLocalizedPage = (locale: (typeof I18N.SUPPORTED_LOCALES)[number], pathname: string): void => {
+const verifyLocalizedPage = async (locale: (typeof I18N.SUPPORTED_LOCALES)[number], pathname: string): Promise<void> => {
   const localized = localizePathname({ locale, pathname })
   const html = readFileSync(join(CLIENT_DIR, localized, "index.html"), "utf8")
 
@@ -63,13 +65,13 @@ const verifyLocalizedPage = (locale: (typeof I18N.SUPPORTED_LOCALES)[number], pa
   if (href === undefined || new URL(href).pathname !== localized) {
     throw new Error(`Incorrect canonical URL: ${localized}`)
   }
-}
 
-for (const locale of I18N.SUPPORTED_LOCALES) {
-  for (const pathname of LOCALIZED_PAGES) {
-    verifyLocalizedPage(locale, pathname)
+  if (embeddedPolicy(html) !== (await scriptPolicy(html))) {
+    throw new Error(`Missing or stale script policy: ${localized}`)
   }
 }
+
+await Promise.all(I18N.SUPPORTED_LOCALES.flatMap((locale) => LOCALIZED_PAGES.map((pathname) => verifyLocalizedPage(locale, pathname))))
 
 accessSync(FONTS_DIR)
 
@@ -95,4 +97,6 @@ for (const file of clientScripts) {
   }
 }
 
-process.stdout.write(`Verified the ${environment} Worker deployment config, prerendered locales, fonts and client assets.\n`)
+process.stdout.write(
+  `Verified the ${environment} Worker deployment config, prerendered locales and their script policies, fonts and client assets.\n`,
+)

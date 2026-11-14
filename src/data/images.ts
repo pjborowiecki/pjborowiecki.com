@@ -1,4 +1,4 @@
-import { z } from "zod/v4"
+import { z } from "~/src/integrations/zod/zod.config"
 
 const variantUrls = import.meta.glob<string>("/src/presentation/assets/images/optimized/*.webp", {
   eager: true,

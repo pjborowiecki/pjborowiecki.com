@@ -2,6 +2,8 @@ import { Glob } from "bun"
 import { existsSync, readFileSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
 
+import { embedScriptPolicy } from "~/src/lib/content-security-policy"
+
 const CLIENT_DIR = "dist/client"
 const PRELOAD_PATTERN = /<link rel="modulepreload" href="(?<hint>\/assets\/[^"]+)"(?: fetchpriority="low")?\/>/giu
 const MODULE_SCRIPT_PATTERN = /<script\b(?=[^>]*\btype="module")(?=[^>]*\bsrc="(?<entry>\/assets\/[^"]+)")[^>]*>/gu
@@ -14,6 +16,7 @@ if (pages.length === 0) {
 
 let strippedHints = 0
 let retainedHints = 0
+const optimizedPages: { readonly html: string; readonly path: string }[] = []
 
 for (const page of pages) {
   const path = join(CLIENT_DIR, page)
@@ -30,18 +33,23 @@ for (const page of pages) {
   retainedHints += entryHints.length
   strippedHints += hints.length - entryHints.length
 
-  writeFileSync(
-    path,
-    html.replaceAll(PRELOAD_PATTERN, (_tag, hint: string) =>
-      moduleEntries.has(hint) ? `<link rel="modulepreload" href="${hint}" fetchpriority="low"/>` : "",
-    ),
+  const optimized = html.replaceAll(PRELOAD_PATTERN, (_tag, hint: string) =>
+    moduleEntries.has(hint) ? `<link rel="modulepreload" href="${hint}" fetchpriority="low"/>` : "",
   )
+
+  optimizedPages.push({ html: optimized, path })
 }
+
+await Promise.all(
+  optimizedPages.map(async ({ html, path }) => {
+    writeFileSync(path, await embedScriptPolicy(html))
+  }),
+)
 
 if (strippedHints === 0 || retainedHints === 0) {
   throw new Error("Expected entry and dependency modulepreload hints in the pages — the build output shape has changed.")
 }
 
 console.log(
-  `Optimized ${pages.length} pages: ${retainedHints} entry modulepreload hints retained at low priority, ${strippedHints} dependency hints stripped.`,
+  `Optimized ${pages.length} pages: ${retainedHints} entry modulepreload hints retained at low priority, ${strippedHints} dependency hints stripped, script policies embedded.`,
 )

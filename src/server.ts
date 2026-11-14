@@ -4,6 +4,7 @@ import { extractLocaleFromPath, shouldIgnorePath } from "~/src/integrations/use-
 
 import { HTTP_STATUS } from "~/src/data/http"
 
+import { BASE_POLICY, CONTENT_SECURITY_POLICY_HEADER, documentPolicy } from "~/src/lib/content-security-policy"
 import { serializeCookie } from "~/src/lib/cookie"
 
 import { DOCUMENT_STYLESHEET, fontPreloads } from "~/src/presentation/document-assets"
@@ -11,7 +12,7 @@ import { DOCUMENT_STYLESHEET, fontPreloads } from "~/src/presentation/document-a
 const HTML = /^text\/html(?:\s*;|$)/iu
 
 const SECURITY_HEADERS = {
-  "Content-Security-Policy": "base-uri 'self'; frame-ancestors 'none'; object-src 'none'",
+  [CONTENT_SECURITY_POLICY_HEADER]: BASE_POLICY,
   "Cross-Origin-Opener-Policy": "same-origin",
   "Permissions-Policy": "browsing-topics=(), camera=(), geolocation=(), microphone=()",
   "Referrer-Policy": "strict-origin-when-cross-origin",
@@ -23,15 +24,30 @@ const STRICT_TRANSPORT_SECURITY = "max-age=31536000; includeSubDomains"
 
 const WWW_PREFIX = "www."
 
-const render = async (request: Request, env: Cloudflare.Env): Promise<Response> => {
+interface Rendered {
+  readonly isPrerendered: boolean
+  readonly response: Response
+}
+
+const isHtml = (response: Response): boolean => HTML.test(response.headers.get("Content-Type") ?? "")
+
+const render = async (request: Request, env: Cloudflare.Env): Promise<Rendered> => {
   if ((request.method === "GET" || request.method === "HEAD") && !shouldIgnorePath(new URL(request.url).pathname)) {
     const asset = await env.ASSETS.fetch(request)
     if (asset.status !== HTTP_STATUS.NOT_FOUND) {
-      return asset
+      return { isPrerendered: true, response: asset }
     }
   }
   const { default: handler } = await import("@tanstack/react-start/server-entry")
-  return handler.fetch(request)
+  return { isPrerendered: false, response: await handler.fetch(request) }
+}
+
+const withScriptPolicy = async (response: Response): Promise<Response> => {
+  const html = await response.text()
+  const page = new Response(html, response)
+  page.headers.set(CONTENT_SECURITY_POLICY_HEADER, await documentPolicy(html))
+
+  return page
 }
 
 const withSecurityHeaders = (response: Response, protocol: string): Response => {
@@ -56,11 +72,12 @@ const respond = async (request: Request, env: Cloudflare.Env): Promise<Response>
     return redirect
   }
 
-  const response = await render(request, env)
+  const rendered = await render(request, env)
+  const response = rendered.isPrerendered || !isHtml(rendered.response) ? rendered.response : await withScriptPolicy(rendered.response)
   const { pathname, protocol } = new URL(request.url)
 
-  const isHtml = response.status === HTTP_STATUS.OK && !shouldIgnorePath(pathname) && HTML.test(response.headers.get("Content-Type") ?? "")
-  if (!setCookie && !isHtml) {
+  const isPage = response.status === HTTP_STATUS.OK && !shouldIgnorePath(pathname) && isHtml(response)
+  if (!setCookie && !isPage) {
     return response
   }
 
@@ -70,7 +87,7 @@ const respond = async (request: Request, env: Cloudflare.Env): Promise<Response>
     page.headers.append("Set-Cookie", cookie)
   }
 
-  if (!isHtml) {
+  if (!isPage) {
     return page
   }
 
