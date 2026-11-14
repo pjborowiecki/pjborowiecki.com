@@ -2,7 +2,14 @@ import { getRequest } from "@tanstack/react-start/server"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vite-plus/test"
 
 import { executeMutation } from "~/src/platform/testing/lib/query"
-import { failEmailDelivery, getRateLimitKeys, getSentEmails, refuseRateLimit } from "~/src/platform/testing/mocks/cloudflare"
+import {
+  RATE_LIMIT_BINDING,
+  failEmailDelivery,
+  getRateLimitKeys,
+  getSentEmails,
+  refuseRateLimit,
+  refuseRateLimitKey,
+} from "~/src/platform/testing/mocks/cloudflare"
 
 import { CONTACT_ERROR } from "~/src/data/contact"
 import { IP_ADDRESS_HEADER } from "~/src/data/http"
@@ -10,10 +17,15 @@ import { IP_ADDRESS_HEADER } from "~/src/data/http"
 import { contactFormSchema, submitContactMessage, submitContactMessageMutation } from "~/src/lib/contact"
 import * as mailExchange from "~/src/lib/mail-exchange"
 
+import emailEnglish from "~/messages/en-US/emails.contact-email.json"
 import emailPolish from "~/messages/pl-PL/emails.contact-email.json"
 import { APP_DOMAIN, CONTACT_EMAIL } from "~/src/presentation/branding"
 
 const VISITOR_ADDRESS = "203.0.113.7"
+
+const ADDRESS_KEY = `address:${VISITOR_ADDRESS}`
+const SENDER_KEY = "sender:ada@example.org"
+const SITE_KEY = "all"
 
 const MESSAGE = {
   company: "Acme",
@@ -24,7 +36,7 @@ const MESSAGE = {
 } as const
 
 beforeEach(() => {
-  vi.spyOn(mailExchange, "acceptsMail").mockResolvedValue(true)
+  vi.spyOn(mailExchange, "checkMailExchange").mockResolvedValue(mailExchange.MAIL_EXCHANGE.ACCEPTS)
   vi.mocked(getRequest).mockReturnValue(
     new Request("https://preview.pjborowiecki.com/", { headers: { [IP_ADDRESS_HEADER]: VISITOR_ADDRESS } }),
   )
@@ -69,7 +81,9 @@ describe("submitContactMessage", () => {
     })
     expect(sent?.html).toContain(MESSAGE.details)
     expect(sent?.text).toContain(MESSAGE.company)
-    expect(getRateLimitKeys()).toStrictEqual([VISITOR_ADDRESS])
+    expect(sent?.text).not.toContain(emailEnglish.unverifiedDomain)
+    expect(getRateLimitKeys()).toStrictEqual([ADDRESS_KEY, SENDER_KEY])
+    expect(getRateLimitKeys(RATE_LIMIT_BINDING.GLOBAL)).toStrictEqual([SITE_KEY])
   })
 
   it("writes the email in the visitor's language and marks what they left out", async () => {
@@ -80,8 +94,24 @@ describe("submitContactMessage", () => {
     expect(sent?.text).toContain(emailPolish.notProvided)
   })
 
-  it("refuses a visitor who has sent too many messages", async () => {
-    refuseRateLimit()
+  it("refuses a client address that has sent too many messages", async () => {
+    refuseRateLimitKey(ADDRESS_KEY)
+
+    await expect(submitContactMessage({ data: MESSAGE })).rejects.toThrow(CONTACT_ERROR.RATE_LIMITED)
+    expect(getRateLimitKeys()).toStrictEqual([ADDRESS_KEY])
+    expect(getSentEmails()).toHaveLength(0)
+  })
+
+  it("refuses a sender who has sent too many messages, whatever address they come from", async () => {
+    refuseRateLimitKey(SENDER_KEY)
+
+    await expect(submitContactMessage({ data: { ...MESSAGE, email: "Ada@Example.org" } })).rejects.toThrow(CONTACT_ERROR.RATE_LIMITED)
+    expect(getRateLimitKeys(RATE_LIMIT_BINDING.GLOBAL)).toHaveLength(0)
+    expect(getSentEmails()).toHaveLength(0)
+  })
+
+  it("refuses every message once the site has received too many in a minute", async () => {
+    refuseRateLimit(RATE_LIMIT_BINDING.GLOBAL)
 
     await expect(submitContactMessage({ data: MESSAGE })).rejects.toThrow(CONTACT_ERROR.RATE_LIMITED)
     expect(getSentEmails()).toHaveLength(0)
@@ -92,14 +122,23 @@ describe("submitContactMessage", () => {
 
     await submitContactMessage({ data: MESSAGE })
 
-    expect(getRateLimitKeys()).toStrictEqual(["unknown"])
+    expect(getRateLimitKeys()).toStrictEqual(["address:unknown", SENDER_KEY])
   })
 
   it("refuses an address whose domain cannot receive mail", async () => {
-    vi.spyOn(mailExchange, "acceptsMail").mockResolvedValue(false)
+    vi.spyOn(mailExchange, "checkMailExchange").mockResolvedValue(mailExchange.MAIL_EXCHANGE.REFUSES)
 
     await expect(submitContactMessage({ data: MESSAGE })).rejects.toThrow(CONTACT_ERROR.INVALID_EMAIL)
     expect(getSentEmails()).toHaveLength(0)
+  })
+
+  it("sends a message whose domain could not be checked, and says so in the email", async () => {
+    vi.spyOn(mailExchange, "checkMailExchange").mockResolvedValue(mailExchange.MAIL_EXCHANGE.UNKNOWN)
+
+    await submitContactMessage({ data: MESSAGE })
+
+    const [sent] = getSentEmails()
+    expect(sent?.text).toContain(emailEnglish.unverifiedDomain)
   })
 
   it("reports a failed delivery without leaking the provider's error", async () => {

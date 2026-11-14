@@ -12,11 +12,12 @@ export const CONTACT_EMAIL_NAMESPACE = "emails.contact-email"
 const TAILWIND_CONFIG = { presets: [pixelBasedPreset] }
 
 interface ContactEmailProps {
+  readonly isSenderDomainVerified: boolean
   readonly message: ContactMessage
   readonly messages: typeof emailMessages
 }
 
-export const ContactEmail = ({ message, messages }: ContactEmailProps): JSX.Element => {
+export const ContactEmail = ({ isSenderDomainVerified, message, messages }: ContactEmailProps): JSX.Element => {
   const t = createTranslator({
     locale: message.locale,
     messages: { emails: { "contact-email": messages } },
@@ -38,6 +39,7 @@ export const ContactEmail = ({ message, messages }: ContactEmailProps): JSX.Elem
               <Text className="text-base">
                 <strong>{t("email")}</strong> {message.email}
               </Text>
+              {!isSenderDomainVerified && <Text className="text-base text-amber-700">{t("unverifiedDomain")}</Text>}
               <Text className="text-base">
                 <strong>{t("company")}</strong> {message.company === "" ? t("notProvided") : message.company}
               </Text>
