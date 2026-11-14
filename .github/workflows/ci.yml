@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - main
-      - preview
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -55,7 +54,10 @@ jobs:
   deploy-preview:
     name: Deploy preview
     needs: [verify, e2e]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/preview' && vars.CLOUDFLARE_ACCOUNT_ID != ''
+    if: >-
+      github.event_name == 'pull_request' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      github.actor != 'dependabot[bot]'
     permissions:
       contents: read
       deployments: write
@@ -67,7 +69,7 @@ jobs:
   deploy-production:
     name: Deploy production
     needs: [verify, e2e]
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.CLOUDFLARE_ACCOUNT_ID != ''
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
       contents: read
       deployments: write

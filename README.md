@@ -84,10 +84,12 @@ A change is done when `bun run check`, `bun run test:coverage`, `bun run build:t
 
 ## Deployment
 
-`wrangler.jsonc` declares four environments: `development`, `test`, `preview` (`preview.pjborowiecki.com`) and `production` (`pjborowiecki.com`).
+`wrangler.jsonc` declares four environments: `development`, `test`, `preview` (`preview.pjborowiecki.com`) and `production` (`pjborowiecki.com`, which `www.pjborowiecki.com` redirects to).
 
-- `bun run deploy:preview` builds, deploys and then checks that the live Worker answers both locales and `robots.txt`.
-- CI (`.github/workflows/ci.yml`) verifies every pull request and push, runs the browser suite, deploys `preview` on a push to the `preview` branch and `production` on a push to `main`. Deploying from CI needs the `CLOUDFLARE_API_TOKEN` secret in the GitHub `Preview` and `Production` environments and the `CLOUDFLARE_ACCOUNT_ID` repository variable; until that variable exists, the deploy jobs are skipped.
+- Changes reach `main` through pull requests. CI (`.github/workflows/ci.yml`) checks every pull request, runs the browser suite and deploys the pull request to `preview.pjborowiecki.com`, so it can be reviewed live before it is merged. A push to `main` deploys production.
+- Every deploy ends by checking that the live Worker answers both locales and `robots.txt`.
+- Deploying from CI needs the `CLOUDFLARE_API_TOKEN` secret in the GitHub `Preview` and `Production` environments and the `CLOUDFLARE_ACCOUNT_ID` repository variable. Pull requests from forks and from Dependabot are checked but not deployed, because they get no secrets.
+- `bun run deploy:preview` builds, deploys and checks the preview Worker from a local checkout.
 - Pages other than production send `noindex, nofollow`, so previews stay out of search results.
 
 ## Conventions

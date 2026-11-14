@@ -44,6 +44,10 @@ Run tests with `bun run test`, never `bun test`. Format and lint only the files 
 11. Stay on the latest dependency versions: adapt the code, or carry an upstream bug as a `bun patch` and report it upstream. Never pin back.
 12. Performance is measured, not assumed: compare production builds before and after a change to motion, images or the Worker.
 
+## Branches and deployments
+
+Work on a short-lived branch and open a pull request against `main`. CI deploys every pull request to `preview.pjborowiecki.com`; merging it deploys `pjborowiecki.com`.
+
 ## Human review required
 
 Do not change these without a person's explicit go-ahead in the task:
