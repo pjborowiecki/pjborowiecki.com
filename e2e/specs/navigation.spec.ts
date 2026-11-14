@@ -1,13 +1,12 @@
 import { expect, test } from "@playwright/test"
 
 import { gotoHydrated } from "../fixtures/hydration"
-
 import backToTop from "~/messages/en-US/components.custom.back-to-top.json" with { type: "json" }
 import navigation from "~/messages/en-US/components.custom.navigation.json" with { type: "json" }
 
 const PHONE = { height: 844, width: 390 } as const
 
-test("skips the hero and lands on the introduction from the keyboard", async ({ browserName, page }) => {
+test("skips the navigation and moves the keyboard into the main content", async ({ browserName, page }) => {
   await gotoHydrated(page, "/")
 
   await page.keyboard.press(browserName === "webkit" ? "Alt+Tab" : "Tab")
@@ -15,7 +14,9 @@ test("skips the hero and lands on the introduction from the keyboard", async ({ 
   await expect(skip).toBeFocused()
   await skip.press("Enter")
 
-  await expect(page.locator("#intro")).toBeInViewport()
+  await expect(page.locator("main")).toBeFocused()
+  await page.keyboard.press(browserName === "webkit" ? "Alt+Tab" : "Tab")
+  expect(await page.evaluate(() => document.activeElement?.closest("main") !== null)).toBe(true)
 })
 
 test("scrolls to a section from the primary navigation", async ({ page }) => {

@@ -1,111 +1,55 @@
 import { describe, expect, it } from "vite-plus/test"
 
-import { I18N } from "~/src/integrations/use-intl/i18n.config"
-import { parseLocaleCookie, resolveLocale } from "~/src/integrations/use-intl/i18n.middleware"
+import { localeRedirect } from "~/src/integrations/use-intl/i18n.middleware"
 
-const polishCookie = `${I18N.COOKIE_NAME}=pl-PL`
+const ALIAS = "https://pjborowiecki.com/pl?query=one"
+const CANONICAL = "https://pjborowiecki.com/pl-PL?query=one"
+const PERMANENT_REDIRECT = 308
 
-describe("locale resolution request boundary", () => {
-  it.each([
-    ["/@id/virtual:tanstack-start-dev-client-entry", "script"],
-    ["/src/presentation/styles/globals.css", "style"],
-    ["/@tanstack-start/styles.css?routes=__root__", "style"],
-    ["/assets/app-A123.js", "script"],
-    ["/favicon.ico", "image"],
-    ["/fonts/display.woff2", "font"],
-    ["/pl/images/logo.svg", "image"],
-  ])("does not redirect %s or overwrite the document locale", (pathname, destination) => {
-    const request = new Request(`https://pjborowiecki.com${pathname}`, {
-      headers: { accept: "*/*", cookie: polishCookie, "sec-fetch-dest": destination },
-    })
+describe("localeRedirect", () => {
+  it.each(["GET", "HEAD"])("sends a %s document request for a language alias to its canonical URL", (method) => {
+    const response = localeRedirect(new Request(ALIAS, { method }))
 
-    expect(resolveLocale(request)).toEqual({})
+    expect(response?.status).toBe(PERMANENT_REDIRECT)
+    expect(response?.headers.get("location")).toBe(CANONICAL)
   })
 
-  it.each(["empty", "worker", "unknown", "Document", ""])(
-    "ignores non-document or malformed Fetch Metadata destination %j even when HTML is accepted",
-    (destination) => {
-      const request = new Request("https://pjborowiecki.com/", {
-        headers: { accept: "text/html", cookie: polishCookie, "sec-fetch-dest": destination },
-      })
+  it("leaves a canonical URL alone", () => {
+    expect(localeRedirect(new Request("https://pjborowiecki.com/pl-PL"))).toBeUndefined()
+  })
 
-      expect(resolveLocale(request)).toEqual({})
+  it.each(["document", "iframe", "frame"])("redirects a %s navigation", (destination) => {
+    expect(localeRedirect(new Request(ALIAS, { headers: { "sec-fetch-dest": destination } }))?.status).toBe(PERMANENT_REDIRECT)
+  })
+
+  it.each(["empty", "worker", "unknown", "Document", "", "script", "style", "image", "font"])(
+    "ignores a request whose Fetch Metadata destination is %j, even when it accepts HTML",
+    (destination) => {
+      expect(localeRedirect(new Request(ALIAS, { headers: { accept: "text/html", "sec-fetch-dest": destination } }))).toBeUndefined()
     },
   )
 
-  it.each(["document", "iframe", "frame"])("updates the locale for a %s navigation", (destination) => {
-    const request = new Request("https://pjborowiecki.com/", {
-      headers: { cookie: polishCookie, "sec-fetch-dest": destination },
-    })
-
-    expect(resolveLocale(request)).toEqual({ setCookie: { name: I18N.COOKIE_NAME, value: I18N.DEFAULT_LOCALE } })
-  })
-
   it.each(["text/html", "application/xhtml+xml", "application/json, text/html; q=0.9", "TEXT/HTML; charset=utf-8"])(
-    "recognizes document Accept %j when Fetch Metadata is unavailable",
+    "recognises a document by its Accept header %j when Fetch Metadata is missing",
     (accept) => {
-      const request = new Request("https://pjborowiecki.com/pl-PL", { headers: { accept } })
-
-      expect(resolveLocale(request)).toEqual({ setCookie: { name: I18N.COOKIE_NAME, value: "pl-PL" } })
+      expect(localeRedirect(new Request(ALIAS, { headers: { accept } }))?.status).toBe(PERMANENT_REDIRECT)
     },
   )
 
   it.each(["*/*", "text/css,*/*;q=0.1", "application/javascript", "application/json", "text/html-invalid", ""])(
-    "ignores non-document Accept %j when Fetch Metadata is unavailable",
+    "ignores a request that accepts %j when Fetch Metadata is missing",
     (accept) => {
-      const request = new Request("https://pjborowiecki.com/src/presentation/styles/globals.css", {
-        headers: { accept, cookie: polishCookie },
-      })
-
-      expect(resolveLocale(request)).toEqual({})
+      expect(localeRedirect(new Request(ALIAS, { headers: { accept } }))).toBeUndefined()
     },
   )
 
-  it.each(["GET", "HEAD"])("preserves headerless %s document requests and canonical redirects", (method) => {
-    const response = resolveLocale(new Request("https://pjborowiecki.com/pl?query=one", { method }))
-
-    expect(response.redirect?.status).toBe(308)
-    expect(response.redirect?.headers.get("location")).toBe("https://pjborowiecki.com/pl-PL?query=one")
-    expect(resolveLocale(new Request("https://pjborowiecki.com/pl-PL", { method }))).toEqual({
-      setCookie: { name: I18N.COOKIE_NAME, value: "pl-PL" },
-    })
+  it.each(["POST", "PUT", "DELETE"])("ignores a %s request", (method) => {
+    expect(localeRedirect(new Request(ALIAS, { headers: { "sec-fetch-dest": "document" }, method }))).toBeUndefined()
   })
 
-  it.each(["POST", "PUT", "DELETE"])("does not treat %s requests as locale navigations", (method) => {
-    const request = new Request("https://pjborowiecki.com/pl", {
-      headers: { accept: "text/html", cookie: polishCookie, "sec-fetch-dest": "document" },
-      method,
-    })
-
-    expect(resolveLocale(request)).toEqual({})
-  })
-
-  it.each(["/_serverFn/submit-contact-message", "/_serverFn"])(
-    "keeps locale cookies unchanged for %s even with document headers",
-    (pathname) => {
-      const request = new Request(`https://pjborowiecki.com${pathname}`, {
-        headers: { accept: "text/html", cookie: polishCookie, "sec-fetch-dest": "document" },
-      })
-
-      expect(resolveLocale(request)).toEqual({})
-    },
-  )
-
-  it("does not rewrite an already matching locale cookie", () => {
-    const request = new Request("https://pjborowiecki.com/pl-PL", {
-      headers: { accept: "text/html", cookie: polishCookie, "sec-fetch-dest": "document" },
-    })
-
-    expect(resolveLocale(request)).toEqual({})
-  })
-})
-
-describe("locale cookie", () => {
-  it("reads a supported locale from the locale cookie", () => {
-    expect(parseLocaleCookie(`${I18N.COOKIE_NAME}=pl-PL`)).toBe("pl-PL")
-  })
-
-  it.each([undefined, `${I18N.COOKIE_NAME}=invalid`, "other=pl-PL"])("ignores a missing or unsupported locale cookie: %j", (cookie) => {
-    expect(parseLocaleCookie(cookie)).toBeUndefined()
+  it("ignores server function calls", () => {
+    expect(
+      localeRedirect(new Request("https://pjborowiecki.com/_serverFn/abc", { headers: { "sec-fetch-dest": "document" } })),
+    ).toBeUndefined()
   })
 })

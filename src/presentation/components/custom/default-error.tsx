@@ -17,9 +17,11 @@ export const DefaultError = ({ error }: ErrorComponentProps): JSX.Element => {
   }, [error, queryErrorResetBoundary])
 
   return (
-    <main className="frame flex min-h-svh flex-col items-start justify-center gap-6 py-24" role="alert">
-      <h1 className="type-display text-[clamp(2.5rem,6vw,6rem)]">{t("title")}</h1>
-      <p className="max-w-[46ch] type-body">{t("description")}</p>
+    <main className="frame flex min-h-svh flex-col items-start justify-center gap-6 py-24">
+      <div className="flex flex-col items-start gap-6" role="alert">
+        <h1 className="type-display text-[clamp(2.5rem,6vw,6rem)]">{t("title")}</h1>
+        <p className="max-w-[46ch] type-body">{t("description")}</p>
+      </div>
       <Button
         className="h-11 rounded-none px-5"
         onPress={() => {

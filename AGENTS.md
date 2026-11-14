@@ -34,7 +34,7 @@ Run tests with `bun run test`, never `bun test`. Format and lint only the files 
 1. No comments anywhere: code, tests, scripts, configuration, CSS.
 2. No `oxlint-disable`, `eslint-disable`, `@ts-expect-error`, `@ts-ignore`, `as` casts or `any` to get past a rule. Fix the cause.
 3. No multi-line ternaries; conditional classes use `cn("base", { "classes": condition })` from `~/src/lib/cn`.
-4. No `?? undefined` and no `null` literals (React's `useRef(null)` is the one allowed form); validate with Zod instead.
+4. No `?? undefined` and no `null` of your own: it appears only where React (`useRef(null)`) or a platform API (`headers.get`) produces it; validate with Zod instead.
 5. Kinds, statuses and other domain values are named constants (`CONTACT_ERROR.RATE_LIMITED`), never repeated string literals, in tests too. Numbers other than `0` are named constants.
 6. Server functions validate their input with a Zod schema that the form validates with too (`contactFormSchema` in `src/lib/contact.ts`).
 7. Every user-facing string exists in both locales; `bun run check:i18n` fails otherwise.

@@ -1,13 +1,14 @@
 {
   "name": "pjborowiecki",
-  "version": "3.0.0",
   "private": true,
-  "description": "",
+  "description": "Personal website of Piotr J. Borowiecki, software engineer: TanStack Start on Cloudflare Workers, in English and Polish.",
   "keywords": [
-    "freelance",
+    "cloudflare workers",
     "personal website",
     "pjborowiecki",
-    "portfolio"
+    "portfolio",
+    "software engineer",
+    "tanstack start"
   ],
   "homepage": "https://pjborowiecki.com",
   "bugs": {
@@ -15,7 +16,7 @@
   },
   "license": "MIT",
   "author": {
-    "name": "Piotr Borowiecki",
+    "name": "Piotr J. Borowiecki",
     "email": "hello@pjborowiecki.com",
     "url": "https://pjborowiecki.com"
   },
@@ -26,9 +27,9 @@
   "type": "module",
   "scripts": {
     "build": "bun run build:preview",
-    "build:preview": "rm -rf dist && bun run generate:cn && CLOUDFLARE_ENV=preview vp build --mode preview && bun scripts/optimize-prerendered-html.ts && bun scripts/verify-build.ts preview",
-    "build:production": "rm -rf dist && bun run generate:cn && CLOUDFLARE_ENV=production vp build --mode production && bun scripts/optimize-prerendered-html.ts && bun scripts/verify-build.ts production",
-    "build:test": "rm -rf dist && bun run generate:cn && CLOUDFLARE_ENV=test vp build --mode test && bun scripts/optimize-prerendered-html.ts && bun scripts/verify-build.ts test",
+    "build:preview": "rm -rf dist && bun run generate:cn && CLOUDFLARE_ENV=preview vp build --mode preview && bun scripts/optimize-prerendered-html.ts && bun scripts/write-static-headers.ts && bun scripts/verify-build.ts preview",
+    "build:production": "rm -rf dist && bun run generate:cn && CLOUDFLARE_ENV=production vp build --mode production && bun scripts/optimize-prerendered-html.ts && bun scripts/write-static-headers.ts && bun scripts/verify-build.ts production",
+    "build:test": "rm -rf dist && bun run generate:cn && CLOUDFLARE_ENV=test vp build --mode test && bun scripts/optimize-prerendered-html.ts && bun scripts/write-static-headers.ts && bun scripts/verify-build.ts test",
     "cf-typegen": "vp exec wrangler types --env development src/types/worker-configuration.d.ts",
     "check": "bun run generate:cn && bun run check:i18n && vp check",
     "check:fix": "bun run generate:cn && bun run check:i18n && vp check --fix",
@@ -106,7 +107,6 @@
     "shadcn": "^4.23.0",
     "sharp": "0.35.5",
     "tailwindcss": "^4.3.5",
-    "tw-animate-css": "^1.4.0",
     "typescript": "^7.0.2",
     "vite": "npm:@voidzero-dev/vite-plus-core@1.6.0",
     "vite-plus": "1.6.0",

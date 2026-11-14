@@ -12,8 +12,6 @@
     "credentialDegree": "BSc (Hons) CompSci, Durham University",
     "basedIn": "Krakow, PL",
     "portraitAlt": "Portrait of Piotr J. Borowiecki in a navy blazer and white shirt, arms folded, looking at the camera",
-    "nameFirst": "Piotr J.",
-    "nameLast": "Borowiecki",
     "credentialCompanyLabel": "Currently",
     "credentialDegreeLabel": "Education",
     "basedInLabel": "Based in",
@@ -341,7 +339,7 @@
         "summary": "An opinionated SaaS starter kit: one command scaffolds auth, billing, an admin and a visual page builder.",
         "challenge": "Starting a new SaaS requires configuring authentication, databases, payment gateways, and dashboards from scratch. This repetitive boilerplate wastes valuable development time and delays time-to-market.",
         "solution": "One command scaffolds a TanStack Start application on Cloudflare with authentication, billing, i18n and an admin console, under strict lint and a 100% coverage gate.",
-        "outcome": "An open-source foundation with 400+ stars and 100+ forks on GitHub."
+        "outcome": "An open-source foundation with {stars, number}+ stars and {forks, number}+ forks on GitHub."
       },
       "shoppeya": {
         "category": "Modular, Serverless E-commerce Platform"

@@ -1,4 +1,4 @@
-import { type JSX, type Ref, useImperativeHandle, useLayoutEffect, useRef, useState } from "react"
+import { type JSX, type Ref, useId, useImperativeHandle, useLayoutEffect, useRef, useState } from "react"
 
 import { useTranslations } from "use-intl/react"
 
@@ -439,6 +439,7 @@ export const HarnessDiagram = ({ className, ref }: HarnessDiagramProps): JSX.Ele
     draw(stateRef.current)
   })
 
+  const titleId = useId()
   const { height, width } = size
   const { fontSize, inset, productionY } = layoutLabels(size)
 
@@ -446,13 +447,13 @@ export const HarnessDiagram = ({ className, ref }: HarnessDiagramProps): JSX.Ele
     <div className={cn("relative", className)} ref={rootRef}>
       <canvas aria-hidden className="absolute inset-0 size-full" ref={canvasRef} />
       <svg
-        aria-labelledby="harness-title"
+        aria-labelledby={titleId}
         className="absolute inset-0 size-full overflow-visible"
         ref={overlayRef}
         role="img"
         viewBox={`0 0 ${String(width)} ${String(height)}`}
       >
-        <title id="harness-title">{t("diagramTitle")}</title>
+        <title id={titleId}>{t("diagramTitle")}</title>
         {GATES.map(({ at, key }, index) => (
           <g data-gate={index} key={key}>
             <line stroke={CHAMPAGNE_CSS} strokeWidth={1} x1={at * width} x2={at * width} y1={GATE_TOP} y2={height - GATE_BOTTOM_GAP} />

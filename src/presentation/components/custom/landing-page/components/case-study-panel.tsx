@@ -204,7 +204,7 @@ const CaseStudyDecisions = ({ project }: { readonly project: Project }): JSX.Ele
 
       <div className="md:col-span-6">
         <h3 className={SECTION_TITLE_CLASSNAME}>{t("results")}</h3>
-        <p className={SECTION_BODY_CLASSNAME}>{t(`projects.${project.id}.outcome`)}</p>
+        <p className={SECTION_BODY_CLASSNAME}>{t(`projects.${project.id}.outcome`, project.github)}</p>
       </div>
     </div>
   )

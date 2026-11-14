@@ -2,13 +2,13 @@ import type { JSX } from "react"
 
 import { useTranslations } from "use-intl/react"
 
-import { NAV_ITEMS, sectionHref } from "~/src/data/marketing"
+import { NAV_GROUND, NAV_ITEMS, sectionHref } from "~/src/data/marketing"
 
 import { ArrowUpRightIcon } from "~/src/presentation/components/custom/icons"
 import { NameMark } from "~/src/presentation/components/custom/landing-page/components/name-mark"
 import { RollText } from "~/src/presentation/components/custom/landing-page/components/roll-text"
 
-import { CONTACT_EMAIL, PROJECT_SITES, SOCIAL_PROFILES } from "~/src/presentation/branding"
+import { APP_NAME, CONTACT_EMAIL, PROJECT_SITES, SOCIAL_PROFILES } from "~/src/presentation/branding"
 
 const COLUMN_HEAD = "type-label pb-3 text-champagne"
 const COLUMN_LINK = "inline-block py-1 font-medium text-[clamp(0.9375rem,1vw,1.1875rem)] tracking-[-0.011em]"
@@ -24,7 +24,7 @@ export const Footer = (): JSX.Element => {
   const t = useTranslations()
 
   return (
-    <footer className="relative z-10 text-cream">
+    <footer className="ground-lit ground-lit-tail relative z-10 overflow-hidden ground-emerald text-cream" data-nav-ground={NAV_GROUND.LIT}>
       <div className="frame">
         <div className="grid grid-cols-2 gap-x-6 gap-y-9 border-t border-border pt-[clamp(1.75rem,3vw,3.5rem)] pb-[clamp(2.5rem,5vw,6rem)] md:grid-cols-12 md:gap-y-10">
           <div className="col-span-2 md:col-span-5">
@@ -78,7 +78,7 @@ export const Footer = (): JSX.Element => {
 
         <div className="flex flex-col">
           <p className="pb-[clamp(0.75rem,1.4vw,1.5rem)] type-label max-md:order-2 max-md:pt-5 max-md:pb-[calc(2rem+env(safe-area-inset-bottom))]">
-            {t("components.custom.footer.copyright")}
+            {t("components.custom.footer.copyright", { name: APP_NAME, year: import.meta.env.BUILD_YEAR })}
           </p>
           <NameMark className="-mb-px block h-auto w-full overflow-visible max-md:order-1 max-md:mb-0" />
         </div>

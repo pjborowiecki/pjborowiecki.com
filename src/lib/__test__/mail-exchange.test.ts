@@ -6,6 +6,7 @@ const MX = 15
 const ADDRESS_RECORD = 1
 const NO_ERROR = 0
 const NAME_ERROR = 3
+const SERVER_FAILURE = 2
 
 const CLOUDFLARE_LOOKUP = "https://cloudflare-dns.com/dns-query?name=example.org&type=MX"
 const GOOGLE_LOOKUP = "https://dns.google/resolve?name=example.org&type=MX"
@@ -44,10 +45,24 @@ describe("checkMailExchange", () => {
     await expect(checkMailExchange("example.com")).resolves.toBe(MAIL_EXCHANGE.REFUSES)
   })
 
-  it("refuses a domain without MX records", async () => {
+  it("accepts a domain without MX records, which receives mail at its address records", async () => {
     vi.spyOn(globalThis, "fetch").mockResolvedValue(answer({ Answer: [{ data: "192.0.2.1", type: ADDRESS_RECORD }], Status: NO_ERROR }))
 
-    await expect(checkMailExchange("no-mail.example")).resolves.toBe(MAIL_EXCHANGE.REFUSES)
+    await expect(checkMailExchange("no-mx.example")).resolves.toBe(MAIL_EXCHANGE.ACCEPTS)
+  })
+
+  it("accepts a domain whose null MX sits beside a real exchanger", async () => {
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      answer({
+        Answer: [
+          { data: "0 .", type: MX },
+          { data: "10 mx.example.org.", type: MX },
+        ],
+        Status: NO_ERROR,
+      }),
+    )
+
+    await expect(checkMailExchange("example.org")).resolves.toBe(MAIL_EXCHANGE.ACCEPTS)
   })
 
   it("refuses a domain that does not exist", async () => {
@@ -67,6 +82,25 @@ describe("checkMailExchange", () => {
   it("asks Google's DNS over HTTPS when Cloudflare's answers with something unreadable", async () => {
     vi.spyOn(globalThis, "fetch")
       .mockResolvedValueOnce(answer({ unexpected: true }))
+      .mockResolvedValue(mailExchanger())
+
+    await expect(checkMailExchange("example.org")).resolves.toBe(MAIL_EXCHANGE.ACCEPTS)
+  })
+
+  it("asks Google's DNS over HTTPS when Cloudflare's reports a server failure", async () => {
+    const lookup = vi
+      .spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(answer({ Status: SERVER_FAILURE }))
+      .mockResolvedValue(mailExchanger())
+
+    await expect(checkMailExchange("example.org")).resolves.toBe(MAIL_EXCHANGE.ACCEPTS)
+
+    expect(lookedUp(lookup)).toStrictEqual([CLOUDFLARE_LOOKUP, GOOGLE_LOOKUP])
+  })
+
+  it("asks Google's DNS over HTTPS when Cloudflare's answers with an HTTP error", async () => {
+    vi.spyOn(globalThis, "fetch")
+      .mockResolvedValueOnce(new Response("unavailable", { status: 503 }))
       .mockResolvedValue(mailExchanger())
 
     await expect(checkMailExchange("example.org")).resolves.toBe(MAIL_EXCHANGE.ACCEPTS)

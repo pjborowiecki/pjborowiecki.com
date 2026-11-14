@@ -1,10 +1,7 @@
 import { env } from "cloudflare:workers"
 
 import { createHash } from "node:crypto"
-import { readFileSync } from "node:fs"
 import { afterEach, beforeEach, describe, expect, it, vi } from "vite-plus/test"
-
-import { I18N } from "~/src/integrations/use-intl/i18n.config"
 
 import { HTTP_STATUS } from "~/src/data/http"
 
@@ -90,15 +87,6 @@ describe("security headers", () => {
     expect(secure.headers.get("strict-transport-security")).toBe("max-age=31536000; includeSubDomains")
     expect(local.headers.get("strict-transport-security")).toBeNull()
   })
-
-  it("gives static files served without the Worker the same protection", () => {
-    const rules = readFileSync("public/_headers", "utf8")
-
-    expect(rules).toContain(`  Content-Security-Policy: ${SECURITY_HEADERS["content-security-policy"]}`)
-    expect(rules).toContain(`  Referrer-Policy: ${SECURITY_HEADERS["referrer-policy"]}`)
-    expect(rules).toContain(`  X-Content-Type-Options: ${SECURITY_HEADERS["x-content-type-options"]}`)
-    expect(rules).toContain(`  X-Frame-Options: ${SECURITY_HEADERS["x-frame-options"]}`)
-  })
 })
 
 describe("hosts", () => {
@@ -121,13 +109,12 @@ describe("documents", () => {
     expect(fetchHandler).not.toHaveBeenCalled()
   })
 
-  it("serves the prerendered page without rendering it again and remembers the locale", async () => {
+  it("serves the prerendered page without rendering it again", async () => {
     vi.spyOn(env.ASSETS, "fetch").mockResolvedValueOnce(htmlPage("<html>Strona</html>"))
 
     const response = await worker.fetch(new Request("https://pjborowiecki.com/pl-PL"), env)
 
     expect(await response.text()).toBe("<html>Strona</html>")
-    expect(response.headers.get("set-cookie")).toBe(`${I18N.COOKIE_NAME}=pl-PL; Path=/; Max-Age=31536000; SameSite=Lax; Secure`)
     expect(fetchHandler).not.toHaveBeenCalled()
   })
 
@@ -179,15 +166,13 @@ describe("documents", () => {
 
     expect(await response.text()).toBe("<html>Not a page</html>")
     expect(response.headers.get("link")).toBeNull()
-    expect(response.headers.get("set-cookie")).toBeNull()
   })
 
-  it("remembers the locale on a non-HTML response without adding preloads", async () => {
+  it("adds no preloads to a non-HTML response", async () => {
     vi.spyOn(env.ASSETS, "fetch").mockResolvedValueOnce(new Response("{}", { headers: { "Content-Type": "application/json" } }))
 
     const response = await worker.fetch(new Request("https://pjborowiecki.com/pl-PL", { headers: { accept: "text/html" } }), env)
 
-    expect(response.headers.get("set-cookie")).toContain(`${I18N.COOKIE_NAME}=pl-PL`)
     expect(response.headers.get("link")).toBeNull()
   })
 

@@ -15,3 +15,8 @@ Each section lists the changes that reached `main` on that day. Every production
 - The contact form limits each sender as well as each client address, caps the whole site at ten messages a minute, and asks a second DNS resolver before letting through a message whose domain could not be checked.
 - Dependabot's updates can merge: the preview deploy they skip, because they get no secrets, now reports as skipped instead of blocking them.
 - The copy now describes what I do today, as a software engineer at IBM, and what I build in my own time. The consultation, offer and pricing sections are gone, the contact form asks only for a name, an email and a message, and ARKA, an open-source booking system, joins the project list.
+- Keyboard and screen reader fixes: the skip link moves focus into the main content, the footer is the page's own landmark instead of part of the contact section, the error page announces only its message, a form field points to its error only while it has one, and the location label in the about section meets the contrast minimum. The accessibility scan now also runs at phone width.
+- Certificates that cannot be checked on the issuer's record yet appear only in development, no longer on the preview site.
+- The contact form accepts a domain without an MX record, which receives mail at its address record, and still refuses one that does not exist or publishes a null MX.
+- The site no longer sets a language cookie; the URL alone carries the language.
+- Security headers and cache rules have one definition, which the Worker reads and the build writes into `_headers` for static files.

@@ -82,7 +82,7 @@ export const canonicalizePathname = (pathname: string): string => {
   return shouldIgnorePath(rest) ? rest : localizePathname({ locale, pathname: rest })
 }
 
-export interface LocaleLink {
+interface LocaleLink {
   readonly href: string
   readonly hrefLang?: string
   readonly rel: "alternate" | "canonical"

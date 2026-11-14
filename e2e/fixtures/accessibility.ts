@@ -5,16 +5,20 @@ const WCAG_TAGS = ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa", "best
 
 const revealWholePage = async (page: Page): Promise<void> => {
   await page.evaluate(async () => {
-    const nextFrame = async (): Promise<void> => {
-      await new Promise((resolve) => requestAnimationFrame(resolve))
-      await new Promise((resolve) => requestAnimationFrame(resolve))
+    const bottom = document.documentElement.scrollHeight
+    const step = globalThis.innerHeight / 2
+    const stops = [...Array.from({ length: Math.ceil(bottom / step) }, (_, index) => index * step), bottom]
+
+    for (const top of stops) {
+      globalThis.scrollTo({ behavior: "instant", top })
+      await new Promise<void>((resolve) => {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            resolve()
+          })
+        })
+      })
     }
-    for (let top = 0; top < document.documentElement.scrollHeight; top += window.innerHeight / 2) {
-      window.scrollTo({ behavior: "instant", top })
-      await nextFrame()
-    }
-    window.scrollTo({ behavior: "instant", top: document.documentElement.scrollHeight })
-    await nextFrame()
   })
 }
 
@@ -24,7 +28,7 @@ export const accessibilityViolations = async (page: Page): Promise<string[]> => 
     const timedAnimations = document
       .getAnimations()
       .filter((animation) => animation.timeline === document.timeline && animation.effect?.getComputedTiming().iterations !== Infinity)
-    await Promise.allSettled(timedAnimations.map(async (animation) => animation.finished))
+    await Promise.allSettled(timedAnimations.map((animation) => animation.finished))
   })
   const { violations } = await new AxeBuilder({ page }).withTags(WCAG_TAGS).analyze()
 
@@ -32,4 +36,3 @@ export const accessibilityViolations = async (page: Page): Promise<string[]> => 
     ({ help, id, impact, nodes }) => `${id} (${impact ?? "unknown"}): ${help} at ${nodes.map(({ target }) => target.join(" ")).join(", ")}`,
   )
 }
-

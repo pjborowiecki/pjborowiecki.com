@@ -117,7 +117,7 @@ export const DIAGRAM_NODES: Readonly<Record<DiagramNodeId, DiagramNodeSpec>> = {
   web: { hasSub: true, kind: DIAGRAM_NODE_KIND.BOX },
 }
 
-export interface DiagramLink {
+interface DiagramLink {
   readonly from: DiagramNodeId
   readonly to: DiagramNodeId
 }
@@ -147,7 +147,7 @@ export const DIAGRAM_TANGLE_EDGES: readonly DiagramLink[] = [
   { from: DIAGRAM_NODE.SEARCH, to: DIAGRAM_NODE.CATALOG },
 ]
 
-export const DIAGRAM_FINDING = {
+const DIAGRAM_FINDING = {
   BOUNDARY: "boundary",
   CRON: "cron",
   CYCLE: "cycle",
@@ -184,7 +184,7 @@ export const DIAGRAM_FLOW_TONE = {
   INK: "ink",
 } as const
 
-export type DiagramFlowTone = (typeof DIAGRAM_FLOW_TONE)[keyof typeof DIAGRAM_FLOW_TONE]
+type DiagramFlowTone = (typeof DIAGRAM_FLOW_TONE)[keyof typeof DIAGRAM_FLOW_TONE]
 
 export const DIAGRAM_COLOR = {
   board: "var(--board)",
@@ -211,14 +211,14 @@ export interface DiagramTanglePoint extends DiagramPoint {
   readonly rotate: number
 }
 
-export interface DiagramBox {
+interface DiagramBox {
   readonly height: number
   readonly width: number
   readonly x: number
   readonly y: number
 }
 
-export interface DiagramSegment {
+interface DiagramSegment {
   readonly x1: number
   readonly x2: number
   readonly y1: number
@@ -230,7 +230,7 @@ export interface DiagramCoreEdge extends DiagramLink {
   readonly route: DiagramRoute
 }
 
-export interface DiagramFlow {
+interface DiagramFlow {
   readonly duration: number
   readonly points: readonly DiagramPoint[]
   readonly tone: DiagramFlowTone

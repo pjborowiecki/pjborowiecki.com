@@ -43,7 +43,7 @@ const AboutStory = (): JSX.Element => {
           alt={t("photoAlt")}
           caption={
             <>
-              <span className="block text-[0.8125rem] text-cream/75">{t("location")}</span>
+              <span className="block text-[0.8125rem] text-cream/85">{t("location")}</span>
               <span className="block type-title text-[1.375rem]">{t("krakow")}</span>
             </>
           }

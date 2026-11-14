@@ -39,7 +39,6 @@ interface Destination {
 
 const arrive = (target: HTMLElement): void => {
   target.setAttribute("tabindex", "-1")
-  target.style.outline = "none"
   target.focus({ preventScroll: true })
 }
 

@@ -622,7 +622,7 @@ export const Navigation = (): JSX.Element => {
     <>
       <a
         className="fixed top-2 left-2 z-60 -translate-y-20 bg-emerald-deep px-4 py-2.5 text-sm font-medium text-cream focus-visible:translate-y-0"
-        href={sectionHref(SECTION_IDS.INTRO)}
+        href={sectionHref(SECTION_IDS.MAIN)}
       >
         {t("skip")}
       </a>

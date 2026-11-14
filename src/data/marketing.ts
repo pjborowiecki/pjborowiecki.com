@@ -5,12 +5,13 @@ export const SECTION_IDS = {
   CONTACT: "contact",
   HERO: "hero",
   INTRO: "intro",
+  MAIN: "main",
   PHILOSOPHY: "philosophy",
   SKILLS: "skills",
   WORK: "work",
 } as const
 
-export type SectionId = (typeof SECTION_IDS)[keyof typeof SECTION_IDS]
+type SectionId = (typeof SECTION_IDS)[keyof typeof SECTION_IDS]
 
 export const NAV_GROUND = {
   BOARD: "board",
@@ -35,7 +36,5 @@ export const NAV_ITEMS = [
   { key: "about", section: SECTION_IDS.ABOUT },
   { key: "work", section: SECTION_IDS.WORK },
 ] as const
-
-export type NavItem = (typeof NAV_ITEMS)[number]
 
 export const sectionHref = (section: SectionId): `#${SectionId}` => `#${section}`

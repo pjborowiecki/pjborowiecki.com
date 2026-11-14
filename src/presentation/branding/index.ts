@@ -4,8 +4,8 @@ export const APP_DOMAIN = "pjborowiecki.com"
 export const APP_URL = `https://${APP_DOMAIN}`
 export const CONTACT_EMAIL = `hello@${APP_DOMAIN}`
 
-export const APP_GITHUB_OWNER = "pjborowiecki"
-export const APP_GITHUB_REPO = APP_DOMAIN
+const APP_GITHUB_OWNER = "pjborowiecki"
+const APP_GITHUB_REPO = APP_DOMAIN
 export const APP_GITHUB_URL = `https://github.com/${APP_GITHUB_OWNER}/${APP_GITHUB_REPO}`
 
 export const GITHUB_PROFILE_URL = `https://github.com/${APP_GITHUB_OWNER}`

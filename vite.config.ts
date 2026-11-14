@@ -24,7 +24,6 @@ const ignorePatterns = [
   "blob-report",
   "coverage",
   "dist",
-  "e2e",
   "node_modules",
   "opensrc",
   "playwright-report",
@@ -173,7 +172,7 @@ const tooling = {
     },
     overrides: [
       {
-        files: ["src/**/*.test.{ts,tsx}", "src/**/__test__/**", "src/platform/testing/**"],
+        files: ["src/**/*.test.{ts,tsx}", "src/**/__test__/**", "src/platform/testing/**", "e2e/**"],
         rules: {
           "no-await-in-loop": "off",
           "no-magic-numbers": "off",
@@ -228,6 +227,7 @@ const tooling = {
 
 export default defineConfig(({ mode }) => ({
   ...tooling,
+  define: { "import.meta.env.BUILD_YEAR": JSON.stringify(String(new Date().getFullYear())) },
   plugins:
     lazyPlugins(async (): Promise<PluginOption[]> => {
       const { cloudflare } = await import("@cloudflare/vite-plugin")

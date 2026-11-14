@@ -20,9 +20,7 @@ const metadataModules = import.meta.glob<PageMetadata>("../../../messages/*/*.js
 
 export const toNamespace = (path: string): string => path.replaceAll(/^.*\/|\.json$/gu, "")
 
-const rootMessagePaths = Object.keys(
-  import.meta.glob(["../../../messages/*/common.json", "../../../messages/*/components.*.json", "../../../messages/*/errors*.json"]),
-)
+const rootMessagePaths = Object.keys(import.meta.glob(["../../../messages/*/components.*.json", "../../../messages/*/errors*.json"]))
 
 export const ROOT_NAMESPACES = [...new Set(rootMessagePaths.map((path) => toNamespace(path)))]
 
