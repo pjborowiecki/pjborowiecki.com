@@ -14,8 +14,9 @@ const waitForHydration = async (page: Page): Promise<void> => {
           return false
         }
       }
+      const controls = [...document.querySelectorAll("button, [data-rac]")]
 
-      return true
+      return controls.length > 0 && controls.every((control) => Object.keys(control).some((key) => key.startsWith("__reactProps$")))
     },
     undefined,
     { timeout: APP_READY_TIMEOUT_MS },
