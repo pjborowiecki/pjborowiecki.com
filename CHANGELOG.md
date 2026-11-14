@@ -9,3 +9,5 @@ Each section lists the changes that reached `main` on that day. Every production
 - The contact form validates with the same schema in the browser and on the server, limits how often one IP address can send, refuses addresses whose domain cannot receive mail and sends through Cloudflare Email Service.
 - `www.pjborowiecki.com` redirects to `pjborowiecki.com`.
 - Every pull request deploys to `preview.pjborowiecki.com`, and every production deploy is tagged and released on GitHub.
+- The site's content as of today stays online at `new.pjborowiecki.com`, for reference.
+- Vulnerabilities can be reported privately, as `SECURITY.md` describes.
