@@ -41,7 +41,7 @@ test("offers a way back to the top once the hero is behind", async ({ page }) =>
 test.describe("on a phone", () => {
   test.use({ viewport: PHONE })
 
-  test("opens the menu, moves through it and closes it with Escape", async ({ page }) => {
+  test("opens the menu over an inert page, moves through it and closes it with Escape", async ({ page }) => {
     await gotoHydrated(page, "/")
 
     const toggle = page.getByRole("button", { name: navigation.menu })
@@ -51,11 +51,15 @@ test.describe("on a phone", () => {
     await expect(menu).toBeVisible()
     await expect(page.getByRole("button", { name: navigation.close })).toHaveAttribute("aria-expanded", "true")
     await expect(menu.getByRole("link", { name: navigation.items.about })).toBeVisible()
+    await expect(page.locator("main")).toHaveAttribute("inert")
+    await expect(page.locator("footer")).toHaveAttribute("inert")
 
     await page.keyboard.press("Escape")
 
     await expect(menu).toBeHidden()
     await expect(page.getByRole("button", { name: navigation.menu })).toBeFocused()
+    await expect(page.locator("main")).not.toHaveAttribute("inert")
+    await expect(page.locator("footer")).not.toHaveAttribute("inert")
   })
 
   test("closes the menu after following one of its links", async ({ page }) => {
