@@ -241,14 +241,25 @@
 
 .ground-lit {
   --lit-stops: #1b9a70 0%, #0a6247 50%, #032c20 100%;
-  background-image: url("../assets/images/grain.png"), radial-gradient(64% 72% at 74% 42%, var(--lit-stops));
+  --lit-size: 64% 100svh;
+  --lit-above-seam: 25svh;
+  background-image:
+    url("../assets/images/grain.png"), radial-gradient(var(--lit-size) at 74% calc(100% - var(--lit-above-seam)), var(--lit-stops));
   background-size:
     220px 220px,
     100% 100%;
 }
 
 .ground-lit-tail {
-  background-image: url("../assets/images/grain.png"), radial-gradient(64% 190% at 74% -70%, var(--lit-stops));
+  background-image:
+    url("../assets/images/grain.png"), radial-gradient(var(--lit-size) at 74% calc(0% - var(--lit-above-seam)), var(--lit-stops));
+}
+
+@media (width < 48rem) {
+  .ground-lit {
+    --lit-size: 64% 136svh;
+    --lit-above-seam: 35svh;
+  }
 }
 
 .roll {
