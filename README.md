@@ -89,6 +89,7 @@ A change is done when `bun run check`, `bun run test:coverage`, `bun run build:t
 - Changes reach `main` through pull requests. CI (`.github/workflows/ci.yml`) checks every pull request, runs the browser suite and deploys the pull request to `preview.pjborowiecki.com`, so it can be reviewed live before it is merged. A push to `main` deploys production.
 - Every deploy ends by checking that the live Worker answers both locales and `robots.txt`.
 - Deploying from CI needs the `CLOUDFLARE_API_TOKEN` secret in the GitHub `Preview` and `Production` environments and the `CLOUDFLARE_ACCOUNT_ID` repository variable. Pull requests from forks and from Dependabot are checked but not deployed, because they get no secrets.
+- After a production deploy succeeds, the `release` job tags the deployed commit `vYYYY.MM.DD` with the UTC date (`.2`, `.3` and so on for later deploys that day) and publishes a GitHub release whose notes are that day's section of `CHANGELOG.md`. It is the only job with `contents: write`, and preview deploys are never tagged.
 - `bun run deploy:preview` builds, deploys and checks the preview Worker from a local checkout.
 - Pages other than production send `noindex, nofollow`, so previews stay out of search results.
 
