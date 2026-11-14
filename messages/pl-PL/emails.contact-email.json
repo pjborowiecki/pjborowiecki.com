@@ -7,5 +7,6 @@
   "details": "Szczegóły",
   "subject": "Nowa wiadomość od {name}",
   "subjectWithCompany": "Nowa wiadomość od {name} ({company})",
-  "notProvided": "Nie podano"
+  "notProvided": "Nie podano",
+  "unverifiedDomain": "Nie udało się sprawdzić, czy domena nadawcy ma serwer poczty, więc odpowiedź może nie dotrzeć."
 }

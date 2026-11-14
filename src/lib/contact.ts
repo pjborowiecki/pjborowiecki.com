@@ -7,15 +7,15 @@ import { createServerFn } from "@tanstack/react-start"
 import { getRequest } from "@tanstack/react-start/server"
 import { render, toPlainText } from "react-email"
 import { createTranslator } from "use-intl"
-import { z } from "zod/v4"
 
 import { I18N } from "~/src/integrations/use-intl/i18n.config"
 import { loadNamespace } from "~/src/integrations/use-intl/i18n.messages"
+import { z } from "~/src/integrations/zod/zod.config"
 
 import { CONTACT_ERROR, CONTACT_VALIDATION_PARAMS } from "~/src/data/contact"
 import { IP_ADDRESS_HEADER } from "~/src/data/http"
 
-import { acceptsMail, emailDomain } from "~/src/lib/mail-exchange"
+import { MAIL_EXCHANGE, checkMailExchange, emailDomain } from "~/src/lib/mail-exchange"
 
 import type emailMessages from "~/messages/en-US/emails.contact-email.json"
 import { APP_DOMAIN, CONTACT_EMAIL } from "~/src/presentation/branding"
@@ -23,6 +23,12 @@ import { CONTACT_EMAIL_NAMESPACE, ContactEmail } from "~/src/presentation/emails
 
 const REQUIRED_LENGTH = 1
 const UNKNOWN_CLIENT = "unknown"
+const GLOBAL_RATE_LIMIT_KEY = "all"
+
+const RATE_LIMIT_KEY_PREFIX = {
+  ADDRESS: "address:",
+  SENDER: "sender:",
+} as const
 
 const CONTACT_MUTATION_KEY = ["contact", "submit"] as const
 
@@ -39,28 +45,42 @@ export type ContactForm = z.input<typeof contactFormSchema>
 
 export type ContactMessage = z.output<typeof contactMessageSchema>
 
-const assertWithinRateLimit = async (request: Request): Promise<void> => {
-  const { success } = await env.CONTACT_RATE_LIMIT.limit({ key: request.headers.get(IP_ADDRESS_HEADER) ?? UNKNOWN_CLIENT })
+const isWithinLimit = async (limiter: RateLimit, key: string): Promise<boolean> => {
+  const { success } = await limiter.limit({ key })
 
-  if (!success) {
+  return success
+}
+
+const assertWithinRateLimits = async (request: Request, email: string): Promise<void> => {
+  const address = request.headers.get(IP_ADDRESS_HEADER) ?? UNKNOWN_CLIENT
+  const isWithinLimits =
+    (await isWithinLimit(env.CONTACT_RATE_LIMIT, `${RATE_LIMIT_KEY_PREFIX.ADDRESS}${address}`)) &&
+    (await isWithinLimit(env.CONTACT_RATE_LIMIT, `${RATE_LIMIT_KEY_PREFIX.SENDER}${email.toLowerCase()}`)) &&
+    (await isWithinLimit(env.CONTACT_GLOBAL_RATE_LIMIT, GLOBAL_RATE_LIMIT_KEY))
+
+  if (!isWithinLimits) {
     throw new Error(CONTACT_ERROR.RATE_LIMITED)
   }
 }
 
-const assertDeliverableAddress = async (email: string): Promise<void> => {
-  if (!(await acceptsMail(emailDomain(email)))) {
+const verifySenderDomain = async (email: string): Promise<boolean> => {
+  const verdict = await checkMailExchange(emailDomain(email))
+
+  if (verdict === MAIL_EXCHANGE.REFUSES) {
     throw new Error(CONTACT_ERROR.INVALID_EMAIL)
   }
+
+  return verdict === MAIL_EXCHANGE.ACCEPTS
 }
 
-const sendContactEmail = async (message: ContactMessage): Promise<void> => {
+const sendContactEmail = async (message: ContactMessage, isSenderDomainVerified: boolean): Promise<void> => {
   const messages = await loadNamespace<typeof emailMessages>({ locale: message.locale, namespace: CONTACT_EMAIL_NAMESPACE })
   const t = createTranslator({
     locale: message.locale,
     messages: { emails: { "contact-email": messages } },
     namespace: CONTACT_EMAIL_NAMESPACE,
   })
-  const html = await render(createElement(ContactEmail, { message, messages }))
+  const html = await render(createElement(ContactEmail, { isSenderDomainVerified, message, messages }))
   const subject =
     message.company === ""
       ? t("subject", { name: message.name })
@@ -84,9 +104,9 @@ const sendContactEmail = async (message: ContactMessage): Promise<void> => {
 export const submitContactMessage = createServerFn({ method: "POST" })
   .validator(contactMessageSchema)
   .handler(async ({ data }) => {
-    await assertWithinRateLimit(getRequest())
-    await assertDeliverableAddress(data.email)
-    await sendContactEmail(data)
+    await assertWithinRateLimits(getRequest(), data.email)
+    const isSenderDomainVerified = await verifySenderDomain(data.email)
+    await sendContactEmail(data, isSenderDomainVerified)
   })
 
 export const submitContactMessageMutation = mutationOptions({

@@ -41,7 +41,7 @@ Work happens on short-lived branches that reach `main` through pull requests. On
 - **One composed landing page.** Nine sections, from the hero to the contact form, each reading its own translations and data. The certifications section appears only once a certificate can be checked on the issuer's own record.
 - **Motion with a reason.** GSAP with ScrollTrigger and SplitText, Lenis as the only smooth scroll, a WebGL shader behind the hero and canvas drawings for the system diagrams. With `prefers-reduced-motion: reduce` the page renders its final state instead of animating.
 - **Accessible by construction.** Interactive controls are React Aria components, the page has a skip link and full keyboard navigation, and the browser suite runs an axe-core WCAG 2.2 AA scan of both locales.
-- **A contact form without API keys.** Name, company, email and message, validated with the same Zod schema in the browser and on the server. It limits each client address, refuses domains that cannot receive mail and sends through a Worker binding.
+- **A contact form without API keys.** Name, company, email and message, validated with the same Zod schema in the browser and on the server. It limits each client address, each sender and the site as a whole, refuses domains that cannot receive mail and sends through a Worker binding.
 
 ## Technology
 
@@ -110,14 +110,14 @@ Every Wrangler environment declares `"secrets": { "required": [] }`. With that d
 
 ### Wrangler environments and bindings
 
-| Environment   | Worker                     | Served at                                              | `CONTACT_RATE_LIMIT` namespace |
-| ------------- | -------------------------- | ------------------------------------------------------ | ------------------------------ |
-| `development` | `pjborowiecki-development` | <http://localhost:3001>, email sent through Cloudflare | `1003`                         |
-| `test`        | `pjborowiecki-test`        | Local only, for the browser suite                      | `1004`                         |
-| `preview`     | `pjborowiecki-preview`     | `preview.pjborowiecki.com`                             | `1002`                         |
-| `production`  | `pjborowiecki`             | `pjborowiecki.com` and `www.pjborowiecki.com`          | `1001`                         |
+| Environment   | Worker                     | Served at                                              | Rate limit namespaces (contact, site-wide) |
+| ------------- | -------------------------- | ------------------------------------------------------ | ------------------------------------------ |
+| `development` | `pjborowiecki-development` | <http://localhost:3001>, email sent through Cloudflare | `1003`, `1013`                             |
+| `test`        | `pjborowiecki-test`        | Local only, for the browser suite                      | `1004`, `1014`                             |
+| `preview`     | `pjborowiecki-preview`     | `preview.pjborowiecki.com`                             | `1002`, `1012`                             |
+| `production`  | `pjborowiecki`             | `pjborowiecki.com` and `www.pjborowiecki.com`          | `1001`, `1011`                             |
 
-Every environment binds `EMAIL` (`send_email`) and `CONTACT_RATE_LIMIT` (`ratelimits`, three messages per client address per minute). Custom domains are declared as routes with `custom_domain: true`, so a deploy creates their DNS records; the zone holds no records for them otherwise. The `new` environment exists only on the `new` branch.
+Every environment binds `EMAIL` (`send_email`), `CONTACT_RATE_LIMIT` (`ratelimits`, three messages a minute per client address and per sender) and `CONTACT_GLOBAL_RATE_LIMIT` (ten messages a minute for the whole site). Custom domains are declared as routes with `custom_domain: true`, so a deploy creates their DNS records; the zone holds no records for them otherwise. The `new` environment exists only on the `new` branch.
 
 ### Email
 
@@ -168,8 +168,8 @@ AVIF files were smaller than WebP, so the first pipeline used them. Measured in 
 
 [`src/lib/contact.ts`](src/lib/contact.ts) holds the Zod schema, the server function and its mutation options; the form validates with the same schema on every change and on submit. On the Worker, the function:
 
-1. rate limits the client address with the `CONTACT_RATE_LIMIT` binding;
-2. refuses an address whose domain publishes no mail exchanger, or a null MX, using Cloudflare's DNS over HTTPS. A failed lookup lets the message through, because losing a real enquiry to a DNS outage costs more than one undeliverable reply;
+1. rate limits the client address and the sender's email address with the `CONTACT_RATE_LIMIT` binding, so changing either alone does not help, and caps the whole site at ten messages a minute with `CONTACT_GLOBAL_RATE_LIMIT`;
+2. refuses an address whose domain publishes no mail exchanger, or a null MX, asking Cloudflare's DNS over HTTPS and then Google's if the first does not answer. Only when neither answers does the message go through, because losing a real enquiry to a DNS outage costs more than one undeliverable reply, and the email then says the domain could not be checked;
 3. renders [`contact-email.tsx`](src/presentation/emails/contact-email.tsx) in the visitor's language and sends it through the `EMAIL` binding, with the visitor as the reply-to address.
 
 Both bindings are declared in `wrangler.jsonc`, so there is no key to rotate or leak.
@@ -274,16 +274,17 @@ The decisions behind these numbers are described in [Problems worth talking abou
 
 Kept here rather than hidden, because an accurate map is more useful than a flattering one.
 
-- The `Content-Security-Policy` restricts `base-uri`, `frame-ancestors` and `object-src` only. A `script-src` policy would need hashes or nonces for the inline hydration scripts that TanStack Start writes into prerendered pages.
 - Mobile Total Blocking Time is 200 ms in the lab. Hydrating the animated sections still produces long tasks on a throttled CPU.
-- The contact rate limit counts per client address only, so a sender spread over many addresses is not slowed by it.
-- The MX check fails open: while DNS over HTTPS is unreachable, a message from a domain that cannot receive replies gets through.
 - Scroll choreography, the WebGL hero and the canvas drawings are outside the unit coverage gate. The browser suite exercises them, but asserts behaviour, not frames.
 - Preview and production deploys share one Cloudflare API token. A token per environment would limit what a leaked preview credential could reach.
 
 ## Security
 
-Report vulnerabilities privately, as described in [`SECURITY.md`](SECURITY.md). The Worker sends `Content-Security-Policy`, `Cross-Origin-Opener-Policy`, `Permissions-Policy`, `Referrer-Policy`, `X-Content-Type-Options`, `X-Frame-Options` and, over HTTPS, `Strict-Transport-Security` on every response; [`public/_headers`](public/_headers) gives the same protection to files served without the Worker.
+Report vulnerabilities privately, as described in [`SECURITY.md`](SECURITY.md).
+
+Every script a page runs is allowed by name. TanStack Start writes its hydration data into each page as inline scripts, so a `script-src` policy needs their hashes: [`scripts/optimize-prerendered-html.ts`](scripts/optimize-prerendered-html.ts) hashes the inline scripts of every prerendered page and embeds the policy before the first of them, [`src/server.ts`](src/server.ts) does the same in a header for pages it renders on request, and both use [`src/lib/content-security-policy.ts`](src/lib/content-security-policy.ts). `verify-build.ts` fails a build whose embedded policy does not match its scripts, and the browser suite fails on any policy violation. Zod runs in `jitless` mode, so it never probes for `eval`.
+
+The Worker sends `Content-Security-Policy`, `Cross-Origin-Opener-Policy`, `Permissions-Policy`, `Referrer-Policy`, `X-Content-Type-Options`, `X-Frame-Options` and, over HTTPS, `Strict-Transport-Security` on every response; [`public/_headers`](public/_headers) gives the same protection to files served without the Worker.
 
 ## Licence
 

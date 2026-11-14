@@ -7,5 +7,6 @@
   "details": "Details",
   "subject": "New message from {name}",
   "subjectWithCompany": "New message from {name} ({company})",
-  "notProvided": "Not given"
+  "notProvided": "Not given",
+  "unverifiedDomain": "The sender’s email domain could not be checked for a mail server, so a reply may not arrive."
 }
