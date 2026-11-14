@@ -16,7 +16,7 @@ describe("page head", () => {
     expect(metaContent(head, "og:url")).toBe("https://pjborowiecki.com/pl-PL")
     expect(metaContent(head, "og:locale")).toBe("pl_PL")
     expect(metaContent(head, "og:type")).toBe("profile")
-    expect(metaContent(head, "og:image")).toBe("https://pjborowiecki.com/images/promo/social/pjborowiecki-og-image.jpg")
+    expect(metaContent(head, "og:image")).toBe("https://pjborowiecki.com/images/og-image.jpg")
     expect(metaContent(head, "twitter:card")).toBe("summary_large_image")
     expect(head.links[0]).toStrictEqual({ href: "https://pjborowiecki.com/pl-PL", rel: "canonical" })
   })

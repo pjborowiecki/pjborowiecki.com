@@ -5,7 +5,7 @@ import { APP_NAME, APP_URL } from "~/src/presentation/branding"
 
 const SOCIAL_IMAGE = {
   height: 630,
-  path: "/images/promo/social/pjborowiecki-og-image.jpg",
+  path: "/images/og-image.jpg",
   width: 1200,
 } as const
 
