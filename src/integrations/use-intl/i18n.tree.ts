@@ -10,6 +10,17 @@ export const toNamespace = (path: string): string => path.replaceAll(/^.*\/|\.js
 
 const isMessageTree = (value: AbstractIntlMessages | string | undefined): value is MessageTree => typeof value === "object"
 
+const mergeMessages = (target: AbstractIntlMessages, source: AbstractIntlMessages): AbstractIntlMessages => {
+  const merged: AbstractIntlMessages = { ...target }
+
+  for (const [key, value] of Object.entries(source)) {
+    const existing = merged[key]
+    merged[key] = isMessageTree(existing) && isMessageTree(value) ? mergeMessages(existing, value) : value
+  }
+
+  return merged
+}
+
 const insertNamespace = ({ messages, namespace, tree }: { messages: AbstractIntlMessages; namespace: string; tree: MessageTree }): void => {
   const separator = namespace.lastIndexOf(NAMESPACE_SEPARATOR)
   const leaf = namespace.slice(separator + NAMESPACE_SEPARATOR.length)
@@ -26,7 +37,7 @@ const insertNamespace = ({ messages, namespace, tree }: { messages: AbstractIntl
   }
 
   const existing = node[leaf]
-  node[leaf] = isMessageTree(existing) ? { ...existing, ...messages } : messages
+  node[leaf] = isMessageTree(existing) ? mergeMessages(existing, messages) : messages
 }
 
 export const buildMessageTree = (entries: readonly NamespaceEntry[]): AbstractIntlMessages => {
