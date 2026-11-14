@@ -54,10 +54,7 @@ jobs:
   deploy-preview:
     name: Deploy preview
     needs: [verify, e2e]
-    if: >-
-      github.event_name == 'pull_request' &&
-      github.event.pull_request.head.repo.full_name == github.repository &&
-      github.actor != 'dependabot[bot]'
+    if: github.event_name == 'pull_request'
     permissions:
       contents: read
       deployments: write
