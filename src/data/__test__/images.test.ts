@@ -11,13 +11,12 @@ describe("optimized images", () => {
     expect(Object.keys(IMAGES).toSorted()).toStrictEqual(MASTERS.toSorted())
   })
 
-  it("describes an image by its largest WebP and both responsive source sets", () => {
-    const { avif, height, src, webp, width } = imageSource("hero-subject")
+  it("describes an image by its largest WebP and a source set ordered by width", () => {
+    const { height, src, srcSet, width } = imageSource("hero-subject")
 
     expect({ height, width }).toStrictEqual({ height: 2239, width: 1650 })
     expect(src).toContain("hero-subject-1650x2239.webp")
-    expect(avif.split(", ").map((candidate) => candidate.split(" ").at(-1))).toStrictEqual(["480w", "768w", "1080w", "1440w", "1650w"])
-    expect(webp.split(", ")).toHaveLength(5)
+    expect(srcSet.split(", ").map((candidate) => candidate.split(" ").at(-1))).toStrictEqual(["480w", "768w", "1080w", "1440w", "1650w"])
   })
 
   it("names the fix when an image is missing", () => {
