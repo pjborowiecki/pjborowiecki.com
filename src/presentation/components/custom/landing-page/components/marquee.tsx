@@ -1,6 +1,8 @@
 import { type JSX, type ReactNode, useRef } from "react"
 
-import { MOTION_OK, ScrollTrigger, gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
+import { ScrollTrigger, gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
+
+import { MEDIA } from "~/src/data/media"
 
 import { cn } from "~/src/lib/cn"
 
@@ -103,7 +105,7 @@ export const Marquee = ({ children, className, copies = 1, direction = "left", d
 
   useGSAP(
     () => {
-      gsap.matchMedia().add(MOTION_OK, () => {
+      gsap.matchMedia().add(MEDIA.MOTION_OK, () => {
         const root = rootRef.current
         const track = trackRef.current
 

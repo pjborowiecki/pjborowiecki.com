@@ -1,6 +1,8 @@
 import { type JSX, type ReactNode, useRef } from "react"
 
-import { MOTION_OK, gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
+import { gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
+
+import { MEDIA } from "~/src/data/media"
 
 type RevealVariant = "scale-in" | "slide-right" | "slide-up"
 
@@ -26,7 +28,7 @@ export const Reveal = ({ children, className, delay = 0, variant = "slide-up" }:
 
   useGSAP(
     () => {
-      gsap.matchMedia().add(MOTION_OK, () => {
+      gsap.matchMedia().add(MEDIA.MOTION_OK, () => {
         gsap.from(ref.current, {
           ...FROM[variant],
           ...REVEAL,

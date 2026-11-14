@@ -1,3 +1,5 @@
+export const CONTACT_FORM_ID = "contact-form"
+
 export const CONTACT_ERROR = {
   INVALID_EMAIL: "INVALID_EMAIL",
   RATE_LIMITED: "RATE_LIMITED",

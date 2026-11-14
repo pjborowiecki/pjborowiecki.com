@@ -4,13 +4,15 @@ import type Lenis from "lenis"
 import { Button } from "react-aria-components"
 import { useTranslations } from "use-intl/react"
 
-import { MOTION_OK, ScrollTrigger, gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
+import { ScrollTrigger, gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
 
 import { useLenis } from "~/src/hooks/use-lenis"
 
-import { LIGHT_NAV_GROUNDS, NAV_GROUND, NAV_ITEMS, SECTION_IDS, sectionHref } from "~/src/data/marketing"
+import { LIGHT_NAV_GROUNDS, MOBILE_MENU_ID, NAV_GROUND, NAV_ITEMS, SECTION_IDS, sectionHref } from "~/src/data/marketing"
+import { MEDIA } from "~/src/data/media"
 
 import { cn } from "~/src/lib/cn"
+import { half } from "~/src/lib/numbers"
 
 import { ArrowUpIcon } from "~/src/presentation/components/custom/icons"
 import { CtaLink } from "~/src/presentation/components/custom/landing-page/components/cta-link"
@@ -25,11 +27,8 @@ const BACK_TO_TOP_AT = 1.5
 const BACK_TO_TOP_PROBE = 48
 const INITIAL_BAR_HEIGHT = 60
 const DOT_HALF_WIDTH = 2.5
-const HALF = 2
-const DESKTOP_MIN_WIDTH = 1024
 
 const INITIALS = "PJB"
-const MENU_ID = "mobile-menu"
 const MENU_TONE = "menu"
 const FULL_LAYER = ""
 const HIDDEN_LAYER = "inset(100% 0 0 0)"
@@ -215,7 +214,7 @@ const placeDots = ({ dots, links }: NavElements, state: NavState): void => {
     dot.style.opacity = target ? "1" : "0"
 
     if (target) {
-      dot.style.transform = `translateX(${target.offsetLeft + target.offsetWidth / HALF - DOT_HALF_WIDTH}px)`
+      dot.style.transform = `translateX(${target.offsetLeft + half(target.offsetWidth) - DOT_HALF_WIDTH}px)`
     }
   }
 }
@@ -272,7 +271,7 @@ const syncLayers = ({ base, next }: NavElements, state: NavState, { isMenuUp, sc
     return
   }
 
-  const isBaseOnTop = edge > state.barHeight / HALF
+  const isBaseOnTop = edge > half(state.barHeight)
   const above = `inset(0 0 ${state.barHeight - edge}px 0)`
   const below = `inset(${edge}px 0 0 0)`
 
@@ -437,7 +436,7 @@ const lockPageUnderMenu = ({ close, header, lenis, returnFocus }: MenuLock): (()
   }
 
   const onResize = (): void => {
-    if (globalThis.innerWidth >= DESKTOP_MIN_WIDTH) {
+    if (globalThis.matchMedia(MEDIA.LG).matches) {
       close()
     }
   }
@@ -519,7 +518,7 @@ const NavRow = ({ isOpen, linksRef, menuButtonRef, onMenuPress }: NavRowProps): 
           {t("letsTalk")}
         </CtaLink>
         <Button
-          aria-controls={MENU_ID}
+          aria-controls={MOBILE_MENU_ID}
           aria-expanded={isOpen}
           aria-label={t(isOpen ? "close" : "menu")}
           className="relative -mr-2.5 size-11 lg:hidden"
@@ -566,7 +565,7 @@ export const Navigation = (): JSX.Element => {
 
   useGSAP(
     () => {
-      gsap.matchMedia().add(MOTION_OK, () => {
+      gsap.matchMedia().add(MEDIA.MOTION_OK, () => {
         gsap.from(NAV_INTRO_TARGETS, { ...NAV_INTRO })
       })
     },

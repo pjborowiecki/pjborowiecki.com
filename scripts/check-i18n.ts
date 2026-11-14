@@ -7,7 +7,7 @@ import type { AbstractIntlMessages } from "use-intl"
 
 import { I18N } from "~/src/integrations/use-intl/i18n.config"
 
-import { loadLocaleMessages } from "./i18n-messages"
+import { flattenMessages, loadLocaleMessages } from "./i18n-messages"
 
 const FAILURE_EXIT_CODE = 1
 const LAST_SCOPE_INDEX = -1
@@ -26,23 +26,7 @@ interface TranslationScope {
 
 const compareAlphabetically = (left: string, right: string): number => left.localeCompare(right)
 
-const flattenMessageKeys = (value: unknown, prefix = ""): string[] => {
-  if (value === null || typeof value !== "object" || Array.isArray(value)) {
-    return prefix.length > 0 ? [prefix] : []
-  }
-
-  return Object.entries(value).flatMap(([key, nested]) => {
-    const path = prefix.length > 0 ? `${prefix}.${key}` : key
-
-    if (nested !== null && typeof nested === "object" && !Array.isArray(nested)) {
-      return flattenMessageKeys(nested, path)
-    }
-
-    return [path]
-  })
-}
-
-const loadLocaleKeys = (locale: string): Set<string> => new Set(flattenMessageKeys(loadLocaleMessages(locale)))
+const loadLocaleKeys = (locale: string): Set<string> => new Set(flattenMessages(loadLocaleMessages(locale)).map(([key]) => key))
 
 const localeParityProblems = (locale: string, sourceKeys: Set<string>): string[] => {
   const localeKeys = loadLocaleKeys(locale)

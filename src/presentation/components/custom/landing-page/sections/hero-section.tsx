@@ -3,12 +3,14 @@ import { preload } from "react-dom"
 
 import { useTranslations } from "use-intl/react"
 
-import { MOTION_OK, gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
+import { gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
 
 import { imageSource } from "~/src/data/images"
 import { NAV_GROUND, SECTION_IDS, sectionHref } from "~/src/data/marketing"
+import { MEDIA } from "~/src/data/media"
 
 import { type HeroStudio, createHeroStudio } from "~/src/lib/hero-studio"
+import { ordinal } from "~/src/lib/numbers"
 
 import { CtaLink } from "~/src/presentation/components/custom/landing-page/components/cta-link"
 import { NAME_STEM_ORIGIN, NameMark, NameMarkStacked } from "~/src/presentation/components/custom/landing-page/components/name-mark"
@@ -19,9 +21,6 @@ const FOCUS_AREAS = ["focusPayments", "focusProducts", "focusAi"] as const
 const CREDENTIALS = ["credentialCompany", "credentialDegree", "basedIn"] as const
 
 const PORTRAIT = { name: "hero-subject", sizes: "(min-width: 900px) 50vw, 100vw" } as const
-
-const FIRST_ORDINAL = 1
-const ORDINAL_DIGITS = 2
 
 const NAME_FLOOD_SCALE = 90
 const NAME_REST_CLEAR_AT = 0.05
@@ -211,7 +210,7 @@ const HeroFocus = (): JSX.Element => {
               href={sectionHref(SECTION_IDS.SKILLS)}
             >
               <span aria-hidden className="mt-[0.5em] type-label text-champagne">
-                {String(index + FIRST_ORDINAL).padStart(ORDINAL_DIGITS, "0")}
+                {ordinal(index)}
               </span>
               <span className="block">
                 <span className="block type-title text-[min(2vw,3.5svh)] transition-transform duration-500 ease-out group-hover:translate-x-1.5">
@@ -249,7 +248,7 @@ export const HeroSection = (): JSX.Element => {
         return
       }
 
-      gsap.matchMedia().add(MOTION_OK, () => animateHero({ box, canvas, name, root, stage }))
+      gsap.matchMedia().add(MEDIA.MOTION_OK, () => animateHero({ box, canvas, name, root, stage }))
     },
     { scope: rootRef },
   )

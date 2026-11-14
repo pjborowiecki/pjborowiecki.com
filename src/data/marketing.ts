@@ -11,6 +11,8 @@ export const SECTION_IDS = {
   WORK: "work",
 } as const
 
+export const MOBILE_MENU_ID = "mobile-menu"
+
 type SectionId = (typeof SECTION_IDS)[keyof typeof SECTION_IDS]
 
 export const NAV_GROUND = {

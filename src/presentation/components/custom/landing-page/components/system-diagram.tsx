@@ -2,6 +2,7 @@ import { type JSX, type Ref, useImperativeHandle, useLayoutEffect, useRef, useSt
 
 import { useTranslations } from "use-intl/react"
 
+import { MEDIA } from "~/src/data/media"
 import {
   DIAGRAM_COLOR,
   DIAGRAM_FLOW_TONE,
@@ -27,7 +28,6 @@ interface SystemDiagramProps {
   readonly ref?: Ref<SystemDiagramHandle>
 }
 
-const TALL_QUERY = "(max-width: 767px)"
 const GRID_DOTS_ACROSS = 50
 const GRID_BLEED = { left: -20, top: 20, width: 40 } as const
 
@@ -153,7 +153,7 @@ export const SystemDiagram = ({ className, ref }: SystemDiagramProps): JSX.Eleme
   useImperativeHandle(ref, () => ({ update: apply }))
 
   useLayoutEffect(() => {
-    const query = globalThis.matchMedia(TALL_QUERY)
+    const query = globalThis.matchMedia(MEDIA.BELOW_MD)
     const sync = (): void => {
       setLayoutName(query.matches ? DIAGRAM_LAYOUT.TALL : DIAGRAM_LAYOUT.WIDE)
     }

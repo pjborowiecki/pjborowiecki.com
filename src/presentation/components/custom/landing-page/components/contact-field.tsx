@@ -2,7 +2,7 @@ import type { JSX } from "react"
 
 import { type StringField, fieldErrorMessage } from "~/src/integrations/tanstack-form/form.fields"
 
-import { CONTACT_VALIDATION_PARAMS } from "~/src/data/contact"
+import { CONTACT_FORM_ID, CONTACT_VALIDATION_PARAMS } from "~/src/data/contact"
 
 import { cn } from "~/src/lib/cn"
 
@@ -34,7 +34,7 @@ export const ContactField = ({
   placeholder,
   type = "text",
 }: ContactFieldProps): JSX.Element => {
-  const id = `contact-form-${field.name}`
+  const id = `${CONTACT_FORM_ID}-${field.name}`
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
   const control = {
     "aria-describedby": isInvalid ? `${id}-error` : undefined,

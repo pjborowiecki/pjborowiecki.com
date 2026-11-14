@@ -2,9 +2,10 @@ import { type JSX, useRef } from "react"
 
 import { useTranslations } from "use-intl/react"
 
-import { MOTION_OK, gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
+import { gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
 
 import { NAV_GROUND, SECTION_IDS } from "~/src/data/marketing"
+import { MEDIA } from "~/src/data/media"
 
 import { CtaLink } from "~/src/presentation/components/custom/landing-page/components/cta-link"
 import {
@@ -167,7 +168,7 @@ export const AiSection = (): JSX.Element => {
         return
       }
 
-      gsap.matchMedia().add(MOTION_OK, () =>
+      gsap.matchMedia().add(MEDIA.MOTION_OK, () =>
         animateHarness(root, (state) => {
           diagramRef.current?.update(state)
         }),

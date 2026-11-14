@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test"
 
+import { MOBILE_MENU_ID, SECTION_IDS } from "~/src/data/marketing"
+
 import { gotoHydrated } from "../fixtures/hydration"
 import backToTop from "~/messages/en-US/components.custom.back-to-top.json" with { type: "json" }
 import navigation from "~/messages/en-US/components.custom.navigation.json" with { type: "json" }
@@ -24,18 +26,18 @@ test("scrolls to a section from the primary navigation", async ({ page }) => {
 
   await page.getByRole("navigation", { name: navigation.primaryNav }).first().getByRole("link", { name: navigation.items.work }).click()
 
-  await expect(page.locator("#work")).toBeInViewport()
+  await expect(page.locator(`#${SECTION_IDS.WORK}`)).toBeInViewport()
 })
 
 test("offers a way back to the top once the hero is behind", async ({ page }) => {
   await gotoHydrated(page, "/")
-  await page.locator("#contact").scrollIntoViewIfNeeded()
+  await page.locator(`#${SECTION_IDS.CONTACT}`).scrollIntoViewIfNeeded()
 
   const button = page.getByRole("link", { exact: true, name: backToTop.label })
   await expect(button).toBeVisible()
   await button.click()
 
-  await expect(page.locator("#hero")).toBeInViewport()
+  await expect(page.locator(`#${SECTION_IDS.HERO}`)).toBeInViewport()
 })
 
 test.describe("on a phone", () => {
@@ -47,7 +49,7 @@ test.describe("on a phone", () => {
     const toggle = page.getByRole("button", { name: navigation.menu })
     await toggle.click()
 
-    const menu = page.locator("#mobile-menu")
+    const menu = page.locator(`#${MOBILE_MENU_ID}`)
     await expect(menu).toBeVisible()
     await expect(page.getByRole("button", { name: navigation.close })).toHaveAttribute("aria-expanded", "true")
     await expect(menu.getByRole("link", { name: navigation.items.about })).toBeVisible()
@@ -66,9 +68,9 @@ test.describe("on a phone", () => {
     await gotoHydrated(page, "/")
 
     await page.getByRole("button", { name: navigation.menu }).click()
-    await page.locator("#mobile-menu").getByRole("link", { name: navigation.items.work }).click()
+    await page.locator(`#${MOBILE_MENU_ID}`).getByRole("link", { name: navigation.items.work }).click()
 
-    await expect(page.locator("#mobile-menu")).toBeHidden()
-    await expect(page.locator("#work")).toBeInViewport()
+    await expect(page.locator(`#${MOBILE_MENU_ID}`)).toBeHidden()
+    await expect(page.locator(`#${SECTION_IDS.WORK}`)).toBeInViewport()
   })
 })

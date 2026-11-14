@@ -9,7 +9,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @custom-variant cover (@media (min-width: 900px) and (min-aspect-ratio: 11 / 10));
-@custom-variant side (@media (min-width: 768px) and (min-aspect-ratio: 1 / 1));
+@custom-variant side (@media (width >= 48rem) and (min-aspect-ratio: 1 / 1));
 
 @custom-variant live {
   @media (prefers-reduced-motion: no-preference) {
@@ -255,7 +255,7 @@
     url("../assets/images/grain.png"), radial-gradient(var(--lit-size) at 74% calc(0% - var(--lit-above-seam)), var(--lit-stops));
 }
 
-@media (width < 48rem) {
+@variant max-md {
   .ground-lit {
     --lit-size: 64% 136svh;
     --lit-above-seam: 35svh;
@@ -450,7 +450,7 @@ html:not(.js) .figure-fade {
   opacity: 1;
 }
 
-@media (prefers-reduced-motion: reduce) {
+@variant motion-reduce {
   .figure-line {
     stroke-dashoffset: 0;
     transition: none;
@@ -462,9 +462,11 @@ html:not(.js) .figure-fade {
   }
 }
 
-@media (min-width: 900px) and (min-aspect-ratio: 11 / 10) and (max-height: 800px) {
-  .showcase-proof {
-    display: none;
+@variant cover {
+  @media (max-height: 800px) {
+    .showcase-proof {
+      display: none;
+    }
   }
 }
 
@@ -509,7 +511,7 @@ html:not(.js) .figure-fade {
   display: contents;
 }
 
-@media (max-width: 639px) {
+@variant max-sm {
   .hero-subject {
     top: calc(var(--nav-height) * 0.62);
     height: min(88svh, 148vw);
@@ -525,7 +527,7 @@ html:not(.js) .figure-fade {
   }
 }
 
-@media (min-width: 900px) and (min-aspect-ratio: 11 / 10) {
+@variant cover {
   .hero-subject {
     top: max(calc(var(--nav-height) * 0.74), 3.4svh);
     height: min(104svh, 65vw);
@@ -567,7 +569,7 @@ html:not(.js) .figure-fade {
   }
 }
 
-@media (min-width: 900px) and (min-aspect-ratio: 11 / 10) {
+@variant cover {
   :lang(pl) .hero-role {
     font-size: min(3vw, 5.3svh);
   }
@@ -587,7 +589,7 @@ html.studio-live .hero-poster {
   outline: none;
 }
 
-@media (prefers-reduced-motion: no-preference) {
+@variant motion-safe {
   .hero-copy > * {
     animation: copy-rise 1s cubic-bezier(0.16, 1, 0.3, 1) both;
     animation-delay: 0.15s;

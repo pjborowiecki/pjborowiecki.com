@@ -3,9 +3,10 @@ import { type JSX, useRef, useState } from "react"
 import { Button } from "react-aria-components"
 import { useTranslations } from "use-intl/react"
 
-import { MOTION_OK, ScrollTrigger, gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
+import { ScrollTrigger, gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
 
 import { NAV_GROUND } from "~/src/data/marketing"
+import { MEDIA } from "~/src/data/media"
 import { PROJECTS, PROJECT_DISCIPLINES, type Project, type ProjectDiscipline } from "~/src/data/projects"
 
 import { ArrowUpRightIcon } from "~/src/presentation/components/custom/icons"
@@ -107,7 +108,7 @@ export const ProjectIndex = (): JSX.Element | undefined => {
       if (!hasFilterChangedRef.current || !listRef.current) {
         return
       }
-      gsap.matchMedia().add(MOTION_OK, () => {
+      gsap.matchMedia().add(MEDIA.MOTION_OK, () => {
         gsap.from(listRef.current?.children ?? [], { ...LIST_RISE })
       })
       ScrollTrigger.refresh()

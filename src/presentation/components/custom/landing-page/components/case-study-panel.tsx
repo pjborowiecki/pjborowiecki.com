@@ -5,17 +5,17 @@ import { Button } from "react-aria-components"
 import { FocusScope } from "react-aria/FocusScope"
 import { useTranslations } from "use-intl/react"
 
-import { MOTION_OK, gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
+import { gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
 
 import { useLenis } from "~/src/hooks/use-lenis"
 
+import { MEDIA } from "~/src/data/media"
 import type { Project } from "~/src/data/projects"
 
 import { ArrowRightIcon, ArrowUpRightIcon, CloseIcon } from "~/src/presentation/components/custom/icons"
 import { ResponsiveImage } from "~/src/presentation/components/custom/landing-page/components/responsive-image"
 import { RollText } from "~/src/presentation/components/custom/landing-page/components/roll-text"
 
-const REDUCED_MOTION = "(prefers-reduced-motion: reduce)"
 const BACKGROUND_SELECTOR = "main, header:not([data-panel-header])"
 const ESCAPE_KEY = "Escape"
 
@@ -35,7 +35,7 @@ const FACT_VALUE_CLASSNAME = "mt-0.5 font-semibold text-lg tracking-[-0.02em]"
 const SECTION_TITLE_CLASSNAME = "type-title text-[clamp(1.75rem,2.8vw,3.25rem)]"
 const SECTION_BODY_CLASSNAME = "type-body mt-5 md:text-lg"
 
-const prefersReducedMotion = (): boolean => globalThis.matchMedia(REDUCED_MOTION).matches
+const prefersReducedMotion = (): boolean => globalThis.matchMedia(MEDIA.REDUCED_MOTION).matches
 
 interface EntranceTargets {
   readonly capture: HTMLElement | null
@@ -159,7 +159,7 @@ const CaseStudyCapture = ({ captureFrameRef, captureRef, project }: CaseStudyCap
           alt={`${project.title}: ${t(`projects.${project.id}.category`)}`}
           className="h-auto w-full"
           name={project.image}
-          sizes="(min-width: 1024px) 78vw, 100vw"
+          sizes={`${MEDIA.LG} 78vw, 100vw`}
         />
       </div>
     </div>
@@ -267,7 +267,7 @@ export const CaseStudyPanel = ({ next, onClose, onSelect, project }: CaseStudyPa
 
       panel.scrollTop = 0
       gsap.set(contentRef.current, { clearProps: "all" })
-      gsap.matchMedia().add(MOTION_OK, () => {
+      gsap.matchMedia().add(MEDIA.MOTION_OK, () => {
         playEntrance({
           capture: captureRef.current,
           captureFrame: captureFrameRef.current,

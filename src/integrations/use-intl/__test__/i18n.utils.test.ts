@@ -2,13 +2,8 @@ import { QueryClient } from "@tanstack/react-query"
 import { getRequest } from "@tanstack/react-start/server"
 import { afterEach, describe, expect, it, vi } from "vite-plus/test"
 
-import {
-  ROOT_NAMESPACES,
-  buildMessageTree,
-  loadNamespace,
-  messagesQueryOptions,
-  preloadNamespaces,
-} from "~/src/integrations/use-intl/i18n.messages"
+import { ROOT_NAMESPACES, loadNamespace, messagesQueryOptions, preloadNamespaces } from "~/src/integrations/use-intl/i18n.messages"
+import { buildMessageTree } from "~/src/integrations/use-intl/i18n.tree"
 import { LOCALE_REWRITE, getCurrentLocale } from "~/src/integrations/use-intl/i18n.utils"
 
 afterEach(() => {

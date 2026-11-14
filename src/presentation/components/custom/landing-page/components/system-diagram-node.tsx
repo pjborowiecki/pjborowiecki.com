@@ -12,6 +12,8 @@ import {
   type DiagramNodeKind,
 } from "~/src/data/system-diagram"
 
+import { half } from "~/src/lib/numbers"
+
 interface SystemDiagramNodeProps {
   readonly id: DiagramNodeId
   readonly layout: DiagramLayout
@@ -26,7 +28,6 @@ interface NodeBox {
   readonly width: number
 }
 
-const HALF = 2
 const VISIBLE = 1
 const RIM = { max: 6, ratio: 0.14 } as const
 const SHADOW = { x: 2, y: 3 } as const
@@ -103,8 +104,8 @@ export const SystemDiagramNode = ({ id, layout }: SystemDiagramNodeProps): JSX.E
   const isCylinder = kind === DIAGRAM_NODE_KIND.STORE || kind === DIAGRAM_NODE_KIND.HOTSPOT
   const height = isCylinder ? layout.node.storeHeight : layout.node.height
   const box: NodeBox = {
-    halfHeight: height / HALF,
-    halfWidth: width / HALF,
+    halfHeight: half(height),
+    halfWidth: half(width),
     height,
     kind,
     rim: Math.min(RIM.max, height * RIM.ratio),
@@ -113,7 +114,7 @@ export const SystemDiagramNode = ({ id, layout }: SystemDiagramNodeProps): JSX.E
   const sub = hasSub === true ? t(`subs.${id}`) : ""
   const isSubShown = sub !== "" && layout.font.sub > 0
   const subLift = isSubShown ? -layout.font.sub * DIAGRAM_TEXT.titleLift : 0
-  const titleY = isCylinder ? box.rim / HALF : subLift
+  const titleY = isCylinder ? half(box.rim) : subLift
 
   return (
     <g data-node={id} style={{ opacity: dies === undefined ? VISIBLE : 0 }} transform={`translate(${at.x} ${at.y})`}>
