@@ -1,0 +1,105 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "pjborowiecki",
+  "main": "./src/server.ts",
+  "compatibility_date": "2026-08-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "keep_vars": true,
+  "upload_source_maps": false,
+  "observability": {
+    "enabled": true,
+  },
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "html_handling": "drop-trailing-slash",
+    "run_worker_first": ["/*", "!/assets/*", "!/fonts/*", "!/images/*", "!/favicon.ico", "!/robots.txt"],
+  },
+  "env": {
+    "development": {
+      "name": "pjborowiecki-development",
+      "send_email": [
+        {
+          "name": "EMAIL",
+          "remote": true,
+        },
+      ],
+      "ratelimits": [
+        {
+          "name": "CONTACT_RATE_LIMIT",
+          "namespace_id": "1003",
+          "simple": {
+            "limit": 3,
+            "period": 60,
+          },
+        },
+      ],
+    },
+    "preview": {
+      "name": "pjborowiecki-preview",
+      "routes": [
+        {
+          "pattern": "preview.pjborowiecki.com",
+          "custom_domain": true,
+        },
+      ],
+      "send_email": [
+        {
+          "name": "EMAIL",
+        },
+      ],
+      "ratelimits": [
+        {
+          "name": "CONTACT_RATE_LIMIT",
+          "namespace_id": "1002",
+          "simple": {
+            "limit": 3,
+            "period": 60,
+          },
+        },
+      ],
+    },
+    "test": {
+      "name": "pjborowiecki-test",
+      "send_email": [
+        {
+          "name": "EMAIL",
+        },
+      ],
+      "ratelimits": [
+        {
+          "name": "CONTACT_RATE_LIMIT",
+          "namespace_id": "1004",
+          "simple": {
+            "limit": 3,
+            "period": 60,
+          },
+        },
+      ],
+    },
+    "production": {
+      "name": "pjborowiecki",
+      "routes": [
+        {
+          "pattern": "pjborowiecki.com",
+          "custom_domain": true,
+        },
+      ],
+      "send_email": [
+        {
+          "name": "EMAIL",
+        },
+      ],
+      "ratelimits": [
+        {
+          "name": "CONTACT_RATE_LIMIT",
+          "namespace_id": "1001",
+          "simple": {
+            "limit": 3,
+            "period": 60,
+          },
+        },
+      ],
+    },
+  },
+}

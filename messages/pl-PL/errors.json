@@ -1,0 +1,10 @@
+{
+  "notFound": {
+    "title": "Nie znaleziono strony",
+    "description": "Strona, której szukasz, nie istnieje albo została przeniesiona.",
+    "backHome": "Wróć na stronę główną"
+  },
+  "codes": {
+    "VALIDATION": "Sprawdź formularz i spróbuj ponownie."
+  }
+}
