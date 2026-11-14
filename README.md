@@ -85,7 +85,7 @@ A change is done when `bun run check`, `bun run test:coverage`, `bun run build:t
 `wrangler.jsonc` declares four environments: `development`, `test`, `preview` (`preview.pjborowiecki.com`) and `production` (`pjborowiecki.com`).
 
 - `bun run deploy:preview` builds, deploys and then checks that the live Worker answers both locales and `robots.txt`.
-- CI (`.github/workflows/ci.yml`) verifies every pull request and push, runs the browser suite, deploys `preview` on a push to the `preview` branch and `production` on a push to `main`. Deploying from CI needs `CLOUDFLARE_API_TOKEN` and `CLOUDFLARE_ACCOUNT_ID` in the GitHub `Preview` and `Production` environments.
+- CI (`.github/workflows/ci.yml`) verifies every pull request and push, runs the browser suite, deploys `preview` on a push to the `preview` branch and `production` on a push to `main`. Deploying from CI needs the `CLOUDFLARE_API_TOKEN` secret in the GitHub `Preview` and `Production` environments and the `CLOUDFLARE_ACCOUNT_ID` repository variable; until that variable exists, the deploy jobs are skipped.
 - Pages other than production send `noindex, nofollow`, so previews stay out of search results.
 
 ## Conventions
