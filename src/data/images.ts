@@ -1,34 +1,29 @@
 import { z } from "zod/v4"
 
-const variantUrls = import.meta.glob<string>("/src/presentation/assets/images/optimized/*.{avif,webp}", {
+const variantUrls = import.meta.glob<string>("/src/presentation/assets/images/optimized/*.webp", {
   eager: true,
   import: "default",
   query: "?url",
 })
 
-const VARIANT_PATTERN = /\/(?<name>[a-z-]+)-(?<width>\d+)x(?<height>\d+)\.(?<format>avif|webp)$/u
+const VARIANT_PATTERN = /\/(?<name>[a-z-]+)-(?<width>\d+)x(?<height>\d+)\.webp$/u
 
 const variantSchema = z.object({
-  format: z.enum(["avif", "webp"]),
   height: z.coerce.number().int().positive(),
   name: z.string(),
   width: z.coerce.number().int().positive(),
 })
 
-type ImageFormat = z.infer<typeof variantSchema>["format"]
-
 interface ImageVariant {
-  readonly format: ImageFormat
   readonly height: number
   readonly url: string
   readonly width: number
 }
 
 export interface ResponsiveImageSource {
-  readonly avif: string
   readonly height: number
   readonly src: string
-  readonly webp: string
+  readonly srcSet: string
   readonly width: number
 }
 
@@ -39,19 +34,16 @@ const toVariant = ([path, url]: [string, string]): ImageVariant & { readonly nam
 
 const byWidth = (left: ImageVariant, right: ImageVariant): number => left.width - right.width
 
-const srcSet = (variants: readonly ImageVariant[], format: ImageFormat): string =>
-  variants
-    .filter((variant) => variant.format === format)
+const widerOf = (left: ImageVariant, right: ImageVariant): ImageVariant => (right.width > left.width ? right : left)
+
+const buildSource = (variants: readonly ImageVariant[]): ResponsiveImageSource => {
+  const largest = variants.reduce((wider, variant) => widerOf(wider, variant))
+  const srcSet = variants
     .toSorted(byWidth)
     .map(({ url, width }) => `${url} ${String(width)}w`)
     .join(", ")
 
-const widerOf = (left: ImageVariant, right: ImageVariant): ImageVariant => (right.width > left.width ? right : left)
-
-const buildSource = (variants: readonly ImageVariant[]): ResponsiveImageSource => {
-  const largest = variants.filter((variant) => variant.format === "webp").reduce((wider, variant) => widerOf(wider, variant))
-
-  return { avif: srcSet(variants, "avif"), height: largest.height, src: largest.url, webp: srcSet(variants, "webp"), width: largest.width }
+  return { height: largest.height, src: largest.url, srcSet, width: largest.width }
 }
 
 const grouped = Map.groupBy(

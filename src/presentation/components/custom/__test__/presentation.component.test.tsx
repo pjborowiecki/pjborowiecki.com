@@ -118,14 +118,15 @@ describe("links and text", () => {
 })
 
 describe("ResponsiveImage", () => {
-  it("offers AVIF and WebP at every width and loads lazily by default", () => {
+  it("offers every width and loads lazily by default", () => {
     render(<ResponsiveImage alt="Portrait" name="about-standing" sizes="50vw" />)
 
     const image = screen.getByRole("img", { name: "Portrait" })
     expect(image).toHaveAttribute("loading", "lazy")
     expect(image).toHaveAttribute("fetchpriority", "auto")
     expect(image).not.toHaveClass("absolute")
-    expect(image.closest("picture")?.querySelector('source[type="image/avif"]')).toHaveAttribute("sizes", "50vw")
+    expect(image).toHaveAttribute("sizes", "50vw")
+    expect(image.getAttribute("srcset")?.split(", ").length).toBeGreaterThan(1)
   })
 
   it("fills its frame and loads first when it is the main image", () => {

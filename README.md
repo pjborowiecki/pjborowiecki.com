@@ -42,7 +42,9 @@ No API key or secret is involved: both bindings are declared in `wrangler.jsonc`
 
 ## Images
 
-Masters live in `src/presentation/assets/images/originals`. `bun run images` writes AVIF and WebP variants at widths up to each master's own into `src/presentation/assets/images/optimized`, named `<name>-<width>x<height>.<format>`. `src/data/images.ts` reads them into typed source sets, and `ResponsiveImage` renders a `<picture>` with both formats, intrinsic dimensions, lazy loading by default and high fetch priority for the hero. Vite fingerprints every variant, so they are cached for a year.
+Masters live in `src/presentation/assets/images/originals`. `bun run images` writes WebP variants at widths up to each master's own into `src/presentation/assets/images/optimized`, named `<name>-<width>x<height>.webp`. `src/data/images.ts` reads them into typed source sets, and `ResponsiveImage` renders them with intrinsic dimensions, lazy loading by default and high fetch priority for the hero. Vite fingerprints every variant, so they are cached for a year.
+
+The variants are WebP rather than AVIF on purpose. AVIF files were smaller, but measured in Chrome they made the browser decode during scrolling and caused occasional frames of 160 to 640 ms; the same page with WebP stayed under 100 ms.
 
 ## Getting started
 

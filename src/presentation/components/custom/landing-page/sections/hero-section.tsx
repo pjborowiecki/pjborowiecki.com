@@ -263,7 +263,13 @@ export const HeroSection = (): JSX.Element => {
 
   const portrait = imageSource(PORTRAIT.name)
 
-  preload(portrait.src, { as: "image", fetchPriority: "high", imageSizes: PORTRAIT.sizes, imageSrcSet: portrait.avif, type: "image/avif" })
+  preload(portrait.src, {
+    as: "image",
+    fetchPriority: "high",
+    imageSizes: PORTRAIT.sizes,
+    imageSrcSet: portrait.srcSet,
+    type: "image/webp",
+  })
 
   return (
     <section className="hero relative live:h-[260svh]" data-nav-ground={NAV_GROUND.HERO} id={SECTION_IDS.HERO} ref={rootRef}>

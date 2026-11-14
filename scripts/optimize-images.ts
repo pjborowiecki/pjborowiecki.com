@@ -18,7 +18,6 @@ const ULTRA_WIDTH = 3840
 const WIDTHS = [PHONE_WIDTH, TABLET_WIDTH, LAPTOP_WIDTH, DESKTOP_WIDTH, WIDE_WIDTH, RETINA_WIDTH, ULTRA_WIDTH]
 const MASTER_EXTENSIONS = new Set([".jpg", ".png", ".webp"])
 
-const AVIF = { chromaSubsampling: "4:4:4", effort: 6, quality: 62 } as const
 const WEBP = { effort: 6, quality: 84, smartSubsample: true } as const
 
 const variantWidths = (masterWidth: number): number[] => {
@@ -32,12 +31,11 @@ const optimize = async (file: string): Promise<number> => {
   const master = sharp(join(ORIGINALS_DIR, file))
   const { height, width } = await master.metadata()
 
-  const outputs = variantWidths(width).flatMap((variantWidth) => {
+  const outputs = variantWidths(width).map((variantWidth) => {
     const variantHeight = Math.round((height * variantWidth) / width)
-    const resized = master.clone().resize({ width: variantWidth })
-    const stem = join(OUTPUT_DIR, `${name}-${String(variantWidth)}x${String(variantHeight)}`)
+    const output = join(OUTPUT_DIR, `${name}-${String(variantWidth)}x${String(variantHeight)}.webp`)
 
-    return [resized.clone().avif(AVIF).toFile(`${stem}.avif`), resized.clone().webp(WEBP).toFile(`${stem}.webp`)]
+    return master.clone().resize({ width: variantWidth }).webp(WEBP).toFile(output)
   })
 
   await Promise.all(outputs)
