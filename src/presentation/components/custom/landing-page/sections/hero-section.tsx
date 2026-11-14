@@ -23,12 +23,11 @@ const PORTRAIT = { name: "hero-subject", sizes: "(min-width: 900px) 50vw, 100vw"
 const FIRST_ORDINAL = 1
 const ORDINAL_DIGITS = 2
 
-const REDUCED_MOTION = "(prefers-reduced-motion: reduce)"
-
 const NAME_FLOOD_SCALE = 90
 const NAME_REST_CLEAR_AT = 0.05
 
-const LIGHTS_UP: gsap.TweenVars = { duration: 2.4, ease: "power2.out", intro: 1 }
+const CANVAS_REVEAL: gsap.TweenVars = { autoAlpha: 1, duration: 0.6, ease: "power1.out" }
+const INTRO_WINDOW_MS = 1200
 const NAME_RISE: gsap.TweenVars = { delay: 0.25, duration: 1.5, ease: "expo.out", stagger: 0.09, y: 880 }
 const COPY_CLEAR: gsap.TweenVars = { autoAlpha: 0, duration: 0.2, ease: "power1.in", y: "-5svh" }
 const CAMERA_PUSH: gsap.TweenVars = { duration: 0.9, ease: "power1.in", zoom: 1.28 }
@@ -47,7 +46,6 @@ interface HeroElements {
 }
 
 interface HeroView {
-  intro: number
   zoom: number
 }
 
@@ -60,11 +58,10 @@ interface NameDive {
 
 const selectAll = (root: HTMLElement, selector: string): Element[] => [...root.querySelectorAll(selector)]
 
-const startStudio = ({ box, canvas, name, stage }: HeroElements, view: HeroView): HeroStudio | undefined => {
+const startStudio = ({ box, canvas, name, stage }: HeroElements): HeroStudio | undefined => {
   const html = document.documentElement
 
   const showPoster = (): void => {
-    html.classList.add("intro-started")
     html.classList.remove("studio-live")
     gsap.set(canvas, { autoAlpha: 0 })
   }
@@ -75,12 +72,10 @@ const startStudio = ({ box, canvas, name, stage }: HeroElements, view: HeroView)
     fadeAnchor: name,
     onFail: showPoster,
     onReady: () => {
-      html.classList.add("intro-started", "studio-live")
-      gsap.set(canvas, { autoAlpha: 1 })
-      gsap.to(view, {
-        ...LIGHTS_UP,
-        onUpdate: () => {
-          studio?.setIntro(view.intro)
+      gsap.to(canvas, {
+        ...CANVAS_REVEAL,
+        onComplete: () => {
+          html.classList.add("studio-live")
         },
       })
     },
@@ -146,11 +141,13 @@ const diveIntoName = ({ marks, root, studio, view }: NameDive): void => {
 
 const animateHero = (elements: HeroElements): (() => void) => {
   const { root } = elements
-  const view: HeroView = { intro: 0, zoom: 1 }
-  const studio = startStudio(elements, view)
+  const view: HeroView = { zoom: 1 }
+  const studio = startStudio(elements)
   const marks = selectAll(root, "[data-name-mark]")
 
-  riseName(root, marks)
+  if (performance.now() <= INTRO_WINDOW_MS) {
+    riseName(root, marks)
+  }
   diveIntoName({ marks, root, studio, view })
 
   return () => {
@@ -253,10 +250,6 @@ export const HeroSection = (): JSX.Element => {
       }
 
       gsap.matchMedia().add(MOTION_OK, () => animateHero({ box, canvas, name, root, stage }))
-
-      gsap.matchMedia().add(REDUCED_MOTION, () => {
-        document.documentElement.classList.add("intro-started")
-      })
     },
     { scope: rootRef },
   )
@@ -277,7 +270,7 @@ export const HeroSection = (): JSX.Element => {
         <div className="hero-subject" ref={boxRef}>
           <ResponsiveImage
             alt={t("portraitAlt")}
-            className="hero-poster intro-hide object-contain object-top"
+            className="hero-poster object-contain object-top"
             isFill
             isPriority
             name={PORTRAIT.name}

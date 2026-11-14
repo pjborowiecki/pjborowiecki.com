@@ -575,28 +575,17 @@ html.studio-live .hero-poster {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  html.js:not(.intro-started) .intro-hide {
-    visibility: hidden;
-    animation: intro-failsafe 0s linear 2.4s forwards;
-  }
-
   .hero-copy > * {
     animation: copy-rise 1s cubic-bezier(0.16, 1, 0.3, 1) both;
-    animation-delay: 0.5s;
+    animation-delay: 0.15s;
   }
 
   .hero-copy > :nth-child(2) {
-    animation-delay: 0.6s;
+    animation-delay: 0.25s;
   }
 
   .hero-copy > :nth-child(3) {
-    animation-delay: 0.7s;
-  }
-}
-
-@keyframes intro-failsafe {
-  to {
-    visibility: visible;
+    animation-delay: 0.35s;
   }
 }
 

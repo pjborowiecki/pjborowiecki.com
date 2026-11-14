@@ -18,7 +18,6 @@ uniform vec2 uRes;
 uniform vec4 uRect;
 uniform vec2 uLight;
 uniform vec2 uFade;
-uniform float uIntro;
 uniform float uZoom;
 uniform float uPixel;
 uniform vec3 uLit;
@@ -98,8 +97,6 @@ void main() {
 
   color = mix(color, uDeep, smoothstep(uFade.x, uFade.y, uv.y));
 
-  color *= mix(0.06, 1.0, uIntro);
-
   color += (hash(gl_FragCoord.xy) - 0.5) * 0.022;
 
   gl_FragColor = vec4(color, 1.0);
@@ -140,7 +137,6 @@ type UniformLocation = ReturnType<WebGLRenderingContext["getUniformLocation"]>
 
 interface StudioUniforms {
   readonly fade: UniformLocation
-  readonly intro: UniformLocation
   readonly light: UniformLocation
   readonly pixel: UniformLocation
   readonly rect: UniformLocation
@@ -160,7 +156,6 @@ interface StudioScene {
 
 interface StudioState {
   frame: number
-  intro: number
   isDestroyed: boolean
   isDirty: boolean
   isReady: boolean
@@ -190,7 +185,6 @@ interface Studio {
 
 export interface HeroStudio {
   readonly destroy: () => void
-  readonly setIntro: (value: number) => void
   readonly setVisible: (isVisible: boolean) => void
   readonly setZoom: (value: number) => void
 }
@@ -235,7 +229,6 @@ const createQuad = (gl: WebGLRenderingContext, program: WebGLProgram): WebGLBuff
 
 const locateUniforms = (gl: WebGLRenderingContext, program: WebGLProgram): StudioUniforms => ({
   fade: gl.getUniformLocation(program, "uFade"),
-  intro: gl.getUniformLocation(program, "uIntro"),
   light: gl.getUniformLocation(program, "uLight"),
   pixel: gl.getUniformLocation(program, "uPixel"),
   rect: gl.getUniformLocation(program, "uRect"),
@@ -352,7 +345,6 @@ const measureStudio = (studio: Studio): void => {
 const drawStudio = ({ scene, state }: Studio): void => {
   const { gl, uniforms } = scene
 
-  gl.uniform1f(uniforms.intro, state.intro)
   gl.uniform1f(uniforms.zoom, state.zoom)
   gl.uniform2f(uniforms.light, state.lightX, state.lightY)
   gl.drawArrays(gl.TRIANGLES, 0, TRIANGLE_VERTICES)
@@ -437,7 +429,6 @@ const loadTextures = (studio: Studio): void => {
 
 const createState = (): StudioState => ({
   frame: 0,
-  intro: 0,
   isDestroyed: false,
   isDirty: true,
   isReady: false,
@@ -503,10 +494,6 @@ export const createHeroStudio = (options: HeroStudioOptions): HeroStudio | undef
       document.removeEventListener("pointerleave", onPointerLeave)
       options.canvas.removeEventListener("webglcontextlost", onContextLost)
       disposeScene(scene)
-    },
-    setIntro: (value) => {
-      state.intro = value
-      state.isDirty = true
     },
     setVisible: (isVisible) => {
       state.isVisible = isVisible
