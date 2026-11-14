@@ -84,6 +84,10 @@
           "pattern": "pjborowiecki.com",
           "custom_domain": true,
         },
+        {
+          "pattern": "www.pjborowiecki.com",
+          "custom_domain": true,
+        },
       ],
       "send_email": [
         {

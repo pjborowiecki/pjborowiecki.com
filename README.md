@@ -23,7 +23,7 @@ The personal site of Piotr J. Borowiecki: software delivery, system architecture
 
 `src/server.ts` is the Worker. For every `GET` and `HEAD` it first asks the static assets for a prerendered page, and only renders with TanStack Start when there is none. On the way out it:
 
-- redirects language aliases (`/pl`, `/en`, `/en-US`) to their canonical URL with a `308`;
+- redirects `www.pjborowiecki.com` to `pjborowiecki.com` and language aliases (`/pl`, `/en`, `/en-US`) to their canonical URL, both with a `308`;
 - remembers the visitor's locale in a cookie;
 - adds `Link` preload headers for the stylesheet and the font subsets of the page's language;
 - sends baseline security headers (`Content-Security-Policy`, `Cross-Origin-Opener-Policy`, `Permissions-Policy`, `Referrer-Policy`, `X-Content-Type-Options`, `X-Frame-Options`, and `Strict-Transport-Security` over HTTPS). `public/_headers` gives files served without the Worker the same protection and long-lived caching for hashed assets and fonts.

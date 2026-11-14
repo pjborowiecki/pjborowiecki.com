@@ -21,6 +21,8 @@ const SECURITY_HEADERS = {
 
 const STRICT_TRANSPORT_SECURITY = "max-age=31536000; includeSubDomains"
 
+const WWW_PREFIX = "www."
+
 const render = async (request: Request, env: Cloudflare.Env): Promise<Response> => {
   if ((request.method === "GET" || request.method === "HEAD") && !shouldIgnorePath(new URL(request.url).pathname)) {
     const asset = await env.ASSETS.fetch(request)
@@ -83,9 +85,21 @@ const respond = async (request: Request, env: Cloudflare.Env): Promise<Response>
   return page
 }
 
+const redirectToBareHost = (url: URL): Response => {
+  const bare = new URL(url)
+  bare.hostname = url.hostname.slice(WWW_PREFIX.length)
+
+  return Response.redirect(bare.href, HTTP_STATUS.PERMANENT_REDIRECT)
+}
+
 export default {
   async fetch(request: Request, env: Cloudflare.Env): Promise<Response> {
-    const { protocol } = new URL(request.url)
-    return withSecurityHeaders(await respond(request, env), protocol)
+    const url = new URL(request.url)
+
+    if (url.hostname.startsWith(WWW_PREFIX)) {
+      return withSecurityHeaders(redirectToBareHost(url), url.protocol)
+    }
+
+    return withSecurityHeaders(await respond(request, env), url.protocol)
   },
 } satisfies ExportedHandler<Cloudflare.Env>
