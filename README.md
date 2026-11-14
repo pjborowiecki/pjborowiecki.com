@@ -231,7 +231,7 @@ A change is done when `bun run check`, `bun run test:coverage`, `bun run build:t
 | Deploy production                | Pushes to `main`                   | Builds, deploys to `pjborowiecki.com` and checks the live site         |
 | Release                          | After a production deploy succeeds | Tags the commit and publishes a GitHub release                         |
 
-[`e2e-full.yml`](.github/workflows/e2e-full.yml) adds WebKit on every push to `main` and runs both browsers weekly and on demand. Deploys read `CLOUDFLARE_API_TOKEN` from the GitHub `Preview` and `Production` environments and `CLOUDFLARE_ACCOUNT_ID` from the repository variables. Pull requests from forks and from Dependabot are checked but not deployed, because GitHub gives them no secrets. Every deploy ends with [`scripts/verify-deployment.ts`](scripts/verify-deployment.ts), which fails the job unless the live Worker answers both locales and `robots.txt`.
+[`e2e-full.yml`](.github/workflows/e2e-full.yml) adds WebKit on every push to `main` and runs both browsers weekly and on demand. Deploys read `CLOUDFLARE_API_TOKEN` from the GitHub `Preview` and `Production` environments and `CLOUDFLARE_ACCOUNT_ID` from the repository variables. Pull requests from forks and from Dependabot are checked but not deployed, because GitHub gives them no secrets; their preview deploy reports as skipped, which the merge rules accept. Every deploy ends with [`scripts/verify-deployment.ts`](scripts/verify-deployment.ts), which fails the job unless the live Worker answers both locales and `robots.txt`.
 
 ### Releases
 
@@ -239,7 +239,7 @@ The `release` job tags the deployed commit `vYYYY.MM.DD` with the UTC date (`.2`
 
 ### Repository rules
 
-- `main` accepts changes only through pull requests, merged by squash or rebase into a linear history. A pull request needs both CI checks above, GitGuardian's secret scan and CodeRabbit's review to pass and a successful deploy to `Preview`, and GitHub Copilot reviews every push. `main` cannot be deleted or force-pushed.
+- `main` accepts changes only through pull requests, merged by squash or rebase into a linear history. A pull request needs both CI checks above, its preview deploy, GitGuardian's secret scan and CodeRabbit's review to pass, and GitHub Copilot reviews every push. `main` cannot be deleted or force-pushed.
 - `v*` release tags cannot be deleted or moved.
 - Only `main` can deploy to the GitHub `Production` environment or use the deploy token stored in it.
 - Secret scanning with push protection, CodeQL and Dependabot alerts are on.
