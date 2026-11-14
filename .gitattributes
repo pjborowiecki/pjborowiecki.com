@@ -1,0 +1,10 @@
+* text=auto eol=lf
+
+*.ico binary
+*.jpg binary
+*.png binary
+*.webp binary
+*.woff2 binary
+
+src/routeTree.gen.ts linguist-generated
+src/types/worker-configuration.d.ts linguist-generated
