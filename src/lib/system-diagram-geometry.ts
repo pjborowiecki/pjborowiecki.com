@@ -8,7 +8,7 @@ import {
 } from "~/src/data/system-diagram"
 import { DIAGRAM_LAYOUTS } from "~/src/data/system-diagram-layouts"
 
-import { half } from "~/src/lib/numbers"
+import { half, mix, noise, smoothstep } from "~/src/lib/numbers"
 
 export interface CoreGeometry {
   readonly edge: DiagramCoreEdge
@@ -63,7 +63,6 @@ const CUBIC_OFFSET = { control1X: 0, control1Y: 1, control2X: 2, control2Y: 3, e
 const BERNSTEIN_OUTER = 3
 const DERIVATIVE_INNER = 6
 
-const WOBBLE = { amplitude: 43_758.5453, frequency: 12.9898 } as const
 const WOBBLE_SEED = { control1X: 0, control1Y: 1, control2X: 2, control2Y: 3 } as const
 
 const CURVE_MIDPOINT = 0.5
@@ -73,19 +72,10 @@ const CORE_SWING = 0.26
 const CORE_SEED = { base: 1, step: 7 } as const
 
 const NODE_EASE = { spread: 1.22, stagger: 0.22 } as const
-const SMOOTHSTEP = { offset: 3, slope: 2 } as const
-
-export const clamp = (value: number): number => Math.min(FULL, Math.max(0, value))
-
-export const mix = (from: number, to: number, amount: number): number => from + (to - from) * amount
 
 export const formatCoordinate = (value: number): string => value.toFixed(COORDINATE_DECIMALS)
 
-export const wobble = (seed: number): number => {
-  const raw = Math.sin(seed * WOBBLE.frequency) * WOBBLE.amplitude
-
-  return (raw - Math.floor(raw)) * HALVES - FULL
-}
+export const wobble = (seed: number): number => noise(seed) * HALVES - FULL
 
 export const measureWobble = (seed: number): CurveWobble => ({
   control1X: wobble(seed + WOBBLE_SEED.control1X),
@@ -94,11 +84,8 @@ export const measureWobble = (seed: number): CurveWobble => ({
   control2Y: wobble(seed + WOBBLE_SEED.control2Y),
 })
 
-export const easeNode = (index: number, order: number): number => {
-  const local = clamp(order * NODE_EASE.spread - (index / DIAGRAM_NODE_IDS.length) * NODE_EASE.stagger)
-
-  return local * local * (SMOOTHSTEP.offset - SMOOTHSTEP.slope * local)
-}
+export const easeNode = (index: number, order: number): number =>
+  smoothstep(0, FULL, order * NODE_EASE.spread - (index / DIAGRAM_NODE_IDS.length) * NODE_EASE.stagger)
 
 const appendStraight = (flat: number[], from: DiagramPoint, to: DiagramPoint): void => {
   flat.push(

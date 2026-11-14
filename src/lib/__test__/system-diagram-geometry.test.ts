@@ -3,26 +3,12 @@ import { describe, expect, it } from "vite-plus/test"
 import { DIAGRAM_LAYOUT } from "~/src/data/system-diagram"
 import { DIAGRAM_LAYOUTS } from "~/src/data/system-diagram-layouts"
 
-import {
-  DIAGRAM_GEOMETRY,
-  clamp,
-  easeNode,
-  formatCoordinate,
-  formatCubicPath,
-  measureWobble,
-  mix,
-  wobble,
-} from "~/src/lib/system-diagram-geometry"
+import { DIAGRAM_GEOMETRY, easeNode, formatCoordinate, formatCubicPath, measureWobble, wobble } from "~/src/lib/system-diagram-geometry"
 
 const CUBIC_STRIDE = 6
 const PATH_START = 2
 
 describe("diagram maths", () => {
-  it("clamps progress to the unit interval and mixes linearly", () => {
-    expect([clamp(-0.5), clamp(0.25), clamp(3)]).toStrictEqual([0, 0.25, 1])
-    expect(mix(10, 20, 0.25)).toBe(12.5)
-  })
-
   it("rounds coordinates to one decimal so server and client markup match", () => {
     expect(formatCoordinate(0.1 + 0.2)).toBe("0.3")
     expect(formatCoordinate(-0.04)).toBe("-0.0")

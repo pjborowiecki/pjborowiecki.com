@@ -8,10 +8,23 @@ import { ScrollTrigger, gsap, useGSAP } from "~/src/integrations/gsap/gsap.confi
 
 import { useLenis } from "~/src/hooks/use-lenis"
 
-import { LIGHT_NAV_GROUNDS, MOBILE_MENU_ID, NAV_GROUND, NAV_ITEMS, SECTION_IDS, sectionHref } from "~/src/data/marketing"
+import { MOBILE_MENU_ID, NAV_GROUND, NAV_ITEMS, SECTION_IDS, sectionHref } from "~/src/data/marketing"
 import { MEDIA } from "~/src/data/media"
 
 import { cn } from "~/src/lib/cn"
+import {
+  BACK_TO_TOP_TONE,
+  FULL_LAYER,
+  type Ground,
+  HIDDEN_LAYER,
+  type LayerWrite,
+  type Span,
+  backToTop,
+  isReading,
+  isScrolled,
+  layerWrites,
+  resolveCrossing,
+} from "~/src/lib/nav-bar"
 import { half } from "~/src/lib/numbers"
 
 import { ArrowUpIcon } from "~/src/presentation/components/custom/icons"
@@ -21,22 +34,10 @@ import { MobileMenu } from "~/src/presentation/components/custom/mobile-menu"
 
 import { APP_NAME } from "~/src/presentation/branding"
 
-const SCROLLED_AT = 0.45
-const READING_LINE = 0.45
-const BACK_TO_TOP_AT = 1.5
-const BACK_TO_TOP_PROBE = 48
 const INITIAL_BAR_HEIGHT = 60
 const DOT_HALF_WIDTH = 2.5
 
 const INITIALS = "PJB"
-const MENU_TONE = "menu"
-const FULL_LAYER = ""
-const HIDDEN_LAYER = "inset(100% 0 0 0)"
-const NO_ARRIVAL = ""
-const BACK_TO_TOP_TONE = {
-  DARK: "dark",
-  LIGHT: "light",
-} as const
 
 const NAV_INTRO_TARGETS = "[data-nav-layer='base'] [data-nav-intro]"
 const BASE_LAYER_LINK = "[data-nav-layer='base'] a"
@@ -57,15 +58,6 @@ const NAV_INTRO: gsap.TweenVars = {
 const MENU_LINE =
   "absolute top-1/2 left-1/2 h-[1.5px] w-[26px] -translate-x-1/2 bg-current transition-[translate,rotate] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
 
-interface Span {
-  readonly bottom: number
-  readonly top: number
-}
-
-interface Ground extends Span {
-  readonly tone: string
-}
-
 interface TrackedSection extends Span {
   isActive: boolean
   readonly links: NodeListOf<Element>
@@ -74,17 +66,6 @@ interface TrackedSection extends Span {
 interface LayerMemory {
   clip: string
   tone: string
-}
-
-interface LayerWrite {
-  readonly clip: string
-  readonly tone?: string
-}
-
-interface Crossing {
-  readonly arriving: string
-  readonly edge: number
-  readonly tone: string
 }
 
 interface ScrollMoment {
@@ -231,71 +212,31 @@ const writeLayer = (element: HTMLElement, memory: LayerMemory, { clip, tone }: L
   }
 }
 
-const resolveCrossing = (state: NavState, scrollY: number): Crossing => {
-  let currentTone = state.tone
-  let arriving = NO_ARRIVAL
-  let edge = state.barHeight
-
-  for (const ground of state.grounds) {
-    const start = ground.top - scrollY
-
-    if (start <= 0 && ground.bottom - scrollY > 0) {
-      currentTone = ground.tone
-      arriving = NO_ARRIVAL
-      edge = state.barHeight
-    } else if (start > 0 && start < state.barHeight) {
-      arriving = ground.tone
-      edge = start
-    }
-  }
-
-  return { arriving, edge, tone: currentTone }
-}
-
 const syncLayers = ({ base, next }: NavElements, state: NavState, { isMenuUp, scrollY }: ScrollMoment): void => {
-  const { arriving, edge, tone } = resolveCrossing(state, scrollY)
+  const crossing = resolveCrossing({ barHeight: state.barHeight, grounds: state.grounds, scrollY, tone: state.tone })
+  const writes = layerWrites({ barHeight: state.barHeight, crossing, isMenuUp })
 
-  state.tone = tone
-
-  if (isMenuUp) {
-    writeLayer(base, state.baseLayer, { clip: FULL_LAYER, tone: MENU_TONE })
-    writeLayer(next, state.nextLayer, { clip: HIDDEN_LAYER })
-
-    return
-  }
-
-  if (arriving === NO_ARRIVAL || arriving === tone) {
-    writeLayer(base, state.baseLayer, { clip: FULL_LAYER, tone })
-    writeLayer(next, state.nextLayer, { clip: HIDDEN_LAYER })
-
-    return
-  }
-
-  const isBaseOnTop = edge > half(state.barHeight)
-  const above = `inset(0 0 ${state.barHeight - edge}px 0)`
-  const below = `inset(${edge}px 0 0 0)`
-
-  writeLayer(base, state.baseLayer, { clip: isBaseOnTop ? above : below, tone: isBaseOnTop ? tone : arriving })
-  writeLayer(next, state.nextLayer, { clip: isBaseOnTop ? below : above, tone: isBaseOnTop ? arriving : tone })
+  state.tone = crossing.tone
+  writeLayer(base, state.baseLayer, writes.base)
+  writeLayer(next, state.nextLayer, writes.next)
 }
 
 const syncScrolled = ({ header }: NavElements, state: NavState, scrollY: number): void => {
-  const isScrolled = scrollY > state.viewport * SCROLLED_AT
+  const scrolled = isScrolled({ scrollY, viewport: state.viewport })
 
-  if (isScrolled === state.isScrolled) {
+  if (scrolled === state.isScrolled) {
     return
   }
 
-  state.isScrolled = isScrolled
-  header.toggleAttribute("data-scrolled", isScrolled)
+  state.isScrolled = scrolled
+  header.toggleAttribute("data-scrolled", scrolled)
 }
 
 const syncSections = (state: NavState, scrollY: number): boolean => {
-  const line = scrollY + state.viewport * READING_LINE
   let hasChanged = false
 
   for (const section of state.sections) {
-    const isActive = section.top <= line && section.bottom > line
+    const isActive = isReading(section, { scrollY, viewport: state.viewport })
 
     if (isActive !== section.isActive) {
       section.isActive = isActive
@@ -311,14 +252,11 @@ const syncSections = (state: NavState, scrollY: number): boolean => {
 }
 
 const syncBackToTop = ({ top }: NavElements, state: NavState, { isMenuUp, scrollY }: ScrollMoment): void => {
-  const probe = scrollY + state.viewport - BACK_TO_TOP_PROBE
-  const groundTone = state.grounds.findLast((ground) => ground.top <= probe && ground.bottom > probe)?.tone ?? NAV_GROUND.HERO
-  const topTone = LIGHT_NAV_GROUNDS.has(groundTone) ? BACK_TO_TOP_TONE.LIGHT : BACK_TO_TOP_TONE.DARK
-  const isVisible = scrollY > state.viewport * BACK_TO_TOP_AT && !isMenuUp
+  const { isVisible, tone } = backToTop({ grounds: state.grounds, isMenuUp, scrollY, viewport: state.viewport })
 
-  if (topTone !== state.topTone) {
-    state.topTone = topTone
-    top.dataset["on"] = topTone
+  if (tone !== state.topTone) {
+    state.topTone = tone
+    top.dataset["on"] = tone
   }
 
   if (isVisible !== state.isTopVisible) {
