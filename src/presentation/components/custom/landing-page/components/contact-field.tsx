@@ -37,7 +37,7 @@ export const ContactField = ({
   const id = `contact-form-${field.name}`
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
   const control = {
-    "aria-describedby": `${id}-error`,
+    "aria-describedby": isInvalid ? `${id}-error` : undefined,
     "aria-invalid": isInvalid,
     id,
     name: field.name,

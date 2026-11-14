@@ -12,8 +12,6 @@
     "credentialDegree": "BSc (Hons) Informatyka, Durham University",
     "basedIn": "Kraków, PL",
     "portraitAlt": "Portret Piotra J. Borowieckiego w granatowej marynarce i białej koszuli, z założonymi rękami, patrzącego w obiektyw",
-    "nameFirst": "Piotr J.",
-    "nameLast": "Borowiecki",
     "credentialCompanyLabel": "Obecnie",
     "credentialDegreeLabel": "Wykształcenie",
     "basedInLabel": "Lokalizacja",
@@ -341,7 +339,7 @@
         "summary": "Starter kit SaaS z jasno określonymi zasadami: jedno polecenie generuje uwierzytelnianie, płatności, panel administracyjny i wizualny edytor stron.",
         "challenge": "Nowy SaaS wymaga skonfigurowania od zera uwierzytelniania, baz danych, bramek płatności i paneli. Ten powtarzalny kod pochłania cenny czas zespołu i opóźnia wejście na rynek.",
         "solution": "Jedno polecenie tworzy aplikację TanStack Start na Cloudflare z logowaniem, płatnościami, i18n i panelem administracyjnym, pod rygorystycznym lintem i progiem 100% pokrycia testami.",
-        "outcome": "Open-source’owy fundament z ponad 400 gwiazdkami i ponad 100 forkami na GitHubie."
+        "outcome": "Open-source’owy fundament z ponad {stars, number} gwiazdkami i ponad {forks, number} forkami na GitHubie."
       },
       "shoppeya": {
         "category": "Modułowa, bezserwerowa platforma e-commerce"

@@ -14,7 +14,8 @@ const LAST_SCOPE_INDEX = -1
 const SOURCE_LOCALE = I18N.DEFAULT_LOCALE
 const SOURCE_ROOT = join(import.meta.dirname, "../src")
 
-const SCOPE_PATTERN = /(?:useTranslations\(\s*|getTranslations\(\s*|namespace:\s+)(?:["'`](?<namespace>.*?)["'`])?/gu
+const SCOPE_PATTERN = /(?:useTranslations\(\s*|namespace:\s+)(?:["'`](?<namespace>.*?)["'`]|(?<constant>[A-Z][A-Z_]*))?/gu
+const CONSTANT_PATTERN = /const (?<name>[A-Z][A-Z_]*) = ["'`](?<value>[^"'`]*)["'`]/gu
 const KEY_PATTERN = /[^\w]t(?:\.rich|\.markup|\.raw)?\s*\(\s*(?<quote>["'`])(?<key>[\w.-]+)\k<quote>/gu
 
 interface TranslationScope {
@@ -103,13 +104,17 @@ const hasMessage = (messages: AbstractIntlMessages, key: string): boolean => {
   return node !== undefined
 }
 
+const stringConstants = (source: string): Map<string, string> =>
+  new Map([...source.matchAll(CONSTANT_PATTERN)].map(({ groups }) => [groups?.["name"] ?? "", groups?.["value"] ?? ""]))
+
 const translationScopes = (source: string): TranslationScope[] => {
+  const constants = stringConstants(source)
   const scopes: TranslationScope[] = []
   let isScoped = false
 
   for (const match of source.matchAll(SCOPE_PATTERN)) {
     const previous = scopes.at(LAST_SCOPE_INDEX)
-    const namespace = match.groups?.["namespace"]
+    const namespace = match.groups?.["namespace"] ?? constants.get(match.groups?.["constant"] ?? "")
 
     if (isScoped && previous !== undefined) {
       previous.end = match.index

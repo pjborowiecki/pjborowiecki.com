@@ -4,7 +4,6 @@ import { useTranslations } from "use-intl/react"
 
 import { NAV_GROUND, SECTION_IDS } from "~/src/data/marketing"
 
-import { Footer } from "~/src/presentation/components/custom/footer"
 import { ContactForm } from "~/src/presentation/components/custom/landing-page/components/contact-form"
 import { Reveal } from "~/src/presentation/components/custom/landing-page/components/reveal"
 import { SplitHeading } from "~/src/presentation/components/custom/landing-page/components/split-heading"
@@ -43,8 +42,6 @@ export const ContactSection = (): JSX.Element => {
           </div>
         </Reveal>
       </div>
-
-      <Footer />
     </section>
   )
 }

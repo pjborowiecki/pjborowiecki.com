@@ -2,7 +2,7 @@ import { describe, expect, it } from "vite-plus/test"
 
 import { CERTIFICATIONS } from "~/src/data/certifications"
 import { LIGHT_NAV_GROUNDS, NAV_GROUND, NAV_ITEMS, SECTION_IDS, sectionHref } from "~/src/data/marketing"
-import { FEATURED_PROJECTS, PROJECTS, PROJECT_DISCIPLINES, SAASYLAND_GITHUB_STARS } from "~/src/data/projects"
+import { FEATURED_PROJECTS, PROJECTS, PROJECT_DISCIPLINES, PROJECT_ID, SAASY_LAND_REPOSITORY } from "~/src/data/projects"
 
 import landing from "~/messages/en-US/pages.landing.json"
 
@@ -20,9 +20,9 @@ describe("marketing data", () => {
 })
 
 describe("projects", () => {
-  it("features MarteBizuteria and SaaSy Land, with SaaSy Land's GitHub stars", () => {
+  it("features MarteBizuteria and SaaSy Land, with SaaSy Land's repository", () => {
     expect(FEATURED_PROJECTS.map(({ title }) => title)).toStrictEqual(["MarteBizuteria.pl", "SaaSyLand.com"])
-    expect(PROJECTS.find(({ github }) => github !== undefined)?.github?.stars).toBe(SAASYLAND_GITHUB_STARS)
+    expect(PROJECTS.find(({ id }) => id === PROJECT_ID.SAASYLAND)?.github).toBe(SAASY_LAND_REPOSITORY)
   })
 
   it("has a translated category for every project and a full case study for every featured one", () => {

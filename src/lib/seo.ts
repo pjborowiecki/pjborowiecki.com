@@ -46,7 +46,7 @@ export const buildPageHead = ({
   }
 }
 
-export interface PageLoaderData {
+interface PageLoaderData {
   readonly locale: SupportedLocale
   readonly metadata: { readonly description: string; readonly title: string }
 }

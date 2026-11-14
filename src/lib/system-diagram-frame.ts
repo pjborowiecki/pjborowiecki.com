@@ -71,7 +71,7 @@ interface DiagramScene {
   readonly tangle: readonly TangleBinding[]
 }
 
-export interface DiagramFrame {
+interface DiagramFrame {
   readonly applied: DiagramState
   hasApplied: boolean
   isVisible: boolean
@@ -384,7 +384,7 @@ export const resetDiagramFrame = (frame: DiagramFrame, layout: DiagramLayoutName
   frame.scene = undefined
 }
 
-export const syncDiagramFlow = (svg: SVGSVGElement, frame: DiagramFrame): void => {
+const syncDiagramFlow = (svg: SVGSVGElement, frame: DiagramFrame): void => {
   const flow = frame.scene?.flow
 
   if (!flow) {

@@ -5,7 +5,7 @@ const APP_READY_TIMEOUT_MS = 30_000
 const waitForHydration = async (page: Page): Promise<void> => {
   await page.waitForFunction(
     () => {
-      const hydration: unknown = Reflect.get(window, "$_TSR")
+      const hydration: unknown = Reflect.get(globalThis, "$_TSR")
       if (typeof hydration === "object" && hydration !== null && (!("hydrated" in hydration) || hydration.hydrated !== true)) {
         return false
       }

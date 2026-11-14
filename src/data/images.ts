@@ -20,7 +20,7 @@ interface ImageVariant {
   readonly width: number
 }
 
-export interface ResponsiveImageSource {
+interface ResponsiveImageSource {
   readonly height: number
   readonly src: string
   readonly srcSet: string

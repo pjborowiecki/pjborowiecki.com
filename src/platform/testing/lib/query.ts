@@ -7,8 +7,3 @@ export const executeMutation = <TData, TVariables>(
   const client = new QueryClient({ defaultOptions: { mutations: { retry: false } } })
   return new MutationObserver(client, options).mutate(variables)
 }
-
-export const executeQuery: QueryClient["query"] = (options) => {
-  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } })
-  return client.query(options)
-}

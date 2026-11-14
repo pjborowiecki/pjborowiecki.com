@@ -6,7 +6,6 @@ import { mutationOptions } from "@tanstack/react-query"
 import { createServerFn } from "@tanstack/react-start"
 import { getRequest } from "@tanstack/react-start/server"
 import { render, toPlainText } from "react-email"
-import { createTranslator } from "use-intl"
 
 import { I18N } from "~/src/integrations/use-intl/i18n.config"
 import { loadNamespace } from "~/src/integrations/use-intl/i18n.messages"
@@ -19,7 +18,7 @@ import { MAIL_EXCHANGE, checkMailExchange, emailDomain } from "~/src/lib/mail-ex
 
 import type emailMessages from "~/messages/en-US/emails.contact-email.json"
 import { APP_DOMAIN, CONTACT_EMAIL } from "~/src/presentation/branding"
-import { CONTACT_EMAIL_NAMESPACE, ContactEmail } from "~/src/presentation/emails/contact-email"
+import { CONTACT_EMAIL_NAMESPACE, ContactEmail, createContactEmailTranslator } from "~/src/presentation/emails/contact-email"
 
 const REQUIRED_LENGTH = 1
 const UNKNOWN_CLIENT = "unknown"
@@ -39,7 +38,7 @@ export const contactFormSchema = z.object({
   name: z.string().trim().min(REQUIRED_LENGTH, "nameRequired").max(CONTACT_VALIDATION_PARAMS.nameTooLong.max, "nameTooLong"),
 })
 
-export const contactMessageSchema = contactFormSchema.extend({ locale: z.enum(I18N.SUPPORTED_LOCALES) })
+const contactMessageSchema = contactFormSchema.extend({ locale: z.enum(I18N.SUPPORTED_LOCALES) })
 
 export type ContactForm = z.input<typeof contactFormSchema>
 
@@ -75,12 +74,8 @@ const verifySenderDomain = async (email: string): Promise<boolean> => {
 
 const sendContactEmail = async (message: ContactMessage, isSenderDomainVerified: boolean): Promise<void> => {
   const messages = await loadNamespace<typeof emailMessages>({ locale: message.locale, namespace: CONTACT_EMAIL_NAMESPACE })
-  const t = createTranslator({
-    locale: message.locale,
-    messages: { emails: { "contact-email": messages } },
-    namespace: CONTACT_EMAIL_NAMESPACE,
-  })
-  const html = await render(createElement(ContactEmail, { isSenderDomainVerified, message, messages }))
+  const t = createContactEmailTranslator({ locale: message.locale, messages })
+  const html = await render(createElement(ContactEmail, { isSenderDomainVerified, message, t }))
   const subject =
     message.company === ""
       ? t("subject", { name: message.name })

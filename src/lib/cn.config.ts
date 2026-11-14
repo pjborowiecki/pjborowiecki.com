@@ -5,7 +5,7 @@ export default {
     classGroups: {
       "font-size": [
         {
-          text: ["display", "lead", "title"],
+          text: ["display", "lead"],
         },
       ],
     },

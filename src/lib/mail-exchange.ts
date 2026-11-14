@@ -4,7 +4,11 @@ const DNS_OVER_HTTPS_RESOLVERS = ["https://cloudflare-dns.com/dns-query", "https
 const DNS_JSON = "application/dns-json"
 const LOOKUP_TIMEOUT_MS = 2000
 
-const DNS_STATUS_NO_ERROR = 0
+const DNS_STATUS = {
+  NAME_ERROR: 3,
+  NO_ERROR: 0,
+} as const
+
 const DNS_RECORD_TYPE_MX = 15
 const NULL_MX_EXCHANGE = "."
 const DOMAIN_SEPARATOR = "@"
@@ -15,7 +19,7 @@ export const MAIL_EXCHANGE = {
   UNKNOWN: "unknown",
 } as const
 
-export type MailExchangeVerdict = (typeof MAIL_EXCHANGE)[keyof typeof MAIL_EXCHANGE]
+type MailExchangeVerdict = (typeof MAIL_EXCHANGE)[keyof typeof MAIL_EXCHANGE]
 
 const dnsRecordSchema = z.object({ data: z.string(), type: z.number() })
 
@@ -26,8 +30,20 @@ const dnsAnswerSchema = z.object({
 
 const exchangeOf = (record: string): string => record.slice(record.lastIndexOf(" ") + " ".length)
 
-const isMailExchange = ({ data, type }: z.infer<typeof dnsRecordSchema>): boolean =>
-  type === DNS_RECORD_TYPE_MX && exchangeOf(data) !== NULL_MX_EXCHANGE
+const verdictOf = ({ Answer, Status }: z.infer<typeof dnsAnswerSchema>): MailExchangeVerdict => {
+  if (Status === DNS_STATUS.NAME_ERROR) {
+    return MAIL_EXCHANGE.REFUSES
+  }
+
+  if (Status !== DNS_STATUS.NO_ERROR) {
+    return MAIL_EXCHANGE.UNKNOWN
+  }
+
+  const exchanges = Answer.filter(({ type }) => type === DNS_RECORD_TYPE_MX)
+  const publishesNullMx = exchanges.length > 0 && exchanges.every(({ data }) => exchangeOf(data) === NULL_MX_EXCHANGE)
+
+  return publishesNullMx ? MAIL_EXCHANGE.REFUSES : MAIL_EXCHANGE.ACCEPTS
+}
 
 export const emailDomain = (email: string): string =>
   email.slice(email.lastIndexOf(DOMAIN_SEPARATOR) + DOMAIN_SEPARATOR.length).toLowerCase()
@@ -39,9 +55,8 @@ const askResolver = async (resolver: string, domain: string): Promise<MailExchan
 
   try {
     const response = await fetch(url, { headers: { accept: DNS_JSON }, signal: AbortSignal.timeout(LOOKUP_TIMEOUT_MS) })
-    const { Answer, Status } = dnsAnswerSchema.parse(await response.json())
 
-    return Status === DNS_STATUS_NO_ERROR && Answer.some((record) => isMailExchange(record)) ? MAIL_EXCHANGE.ACCEPTS : MAIL_EXCHANGE.REFUSES
+    return response.ok ? verdictOf(dnsAnswerSchema.parse(await response.json())) : MAIL_EXCHANGE.UNKNOWN
   } catch {
     return MAIL_EXCHANGE.UNKNOWN
   }

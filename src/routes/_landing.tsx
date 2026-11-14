@@ -2,7 +2,10 @@ import type { JSX } from "react"
 
 import { Outlet, createFileRoute } from "@tanstack/react-router"
 
+import { SECTION_IDS } from "~/src/data/marketing"
+
 import { CustomCursor } from "~/src/presentation/components/custom/custom-cursor"
+import { Footer } from "~/src/presentation/components/custom/footer"
 import { Navigation } from "~/src/presentation/components/custom/navigation"
 import { SmoothScroll } from "~/src/presentation/components/custom/smooth-scroll"
 
@@ -11,9 +14,10 @@ const LandingLayout = (): JSX.Element => (
     <SmoothScroll />
     <CustomCursor />
     <Navigation />
-    <main className="relative">
+    <main className="relative" id={SECTION_IDS.MAIN}>
       <Outlet />
     </main>
+    <Footer />
   </div>
 )
 

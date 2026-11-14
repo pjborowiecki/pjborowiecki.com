@@ -1,6 +1,6 @@
 export type Discipline = "ai" | "interfaces" | "payments" | "products"
 
-export type Point = readonly [number, number]
+type Point = readonly [number, number]
 
 interface Layer {
   readonly accent?: readonly string[]
@@ -11,7 +11,7 @@ interface Layer {
   readonly plates?: readonly string[]
 }
 
-export interface DrawingLayer extends Layer {
+interface DrawingLayer extends Layer {
   readonly depth: number
 }
 

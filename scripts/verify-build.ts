@@ -8,6 +8,7 @@ import { I18N } from "~/src/integrations/use-intl/i18n.config"
 import { localeLinks, localizePathname } from "~/src/integrations/use-intl/i18n.paths"
 
 import { embeddedPolicy, scriptPolicy } from "~/src/lib/content-security-policy"
+import { staticHeaders } from "~/src/lib/static-headers"
 
 import { readWranglerEnvironment } from "./wrangler-config.ts"
 import { ROUTES } from "~/src/routes"
@@ -16,6 +17,7 @@ const SCRIPT_ARGUMENTS_START = 2
 const CLIENT_DIR = "dist/client"
 const ASSETS_DIR = join(CLIENT_DIR, "assets")
 const FONTS_DIR = join(CLIENT_DIR, "fonts")
+const HEADERS_FILE = join(CLIENT_DIR, "_headers")
 const DEPLOY_CONFIG_PATH = ".wrangler/deploy/config.json"
 const WORKER_CONFIG_PATH = "dist/server/wrangler.json"
 
@@ -75,6 +77,10 @@ await Promise.all(I18N.SUPPORTED_LOCALES.flatMap((locale) => LOCALIZED_PAGES.map
 
 accessSync(FONTS_DIR)
 
+if (!existsSync(HEADERS_FILE) || readFileSync(HEADERS_FILE, "utf8") !== staticHeaders()) {
+  throw new Error(`Missing or stale ${HEADERS_FILE}`)
+}
+
 for (const page of UNPRERENDERED_PAGES) {
   if (existsSync(join(CLIENT_DIR, page, "index.html"))) {
     throw new Error(`Unexpected prerendered alias: ${page}`)
@@ -98,5 +104,5 @@ for (const file of clientScripts) {
 }
 
 process.stdout.write(
-  `Verified the ${environment} Worker deployment config, prerendered locales and their script policies, fonts and client assets.\n`,
+  `Verified the ${environment} Worker deployment config, prerendered locales and their script policies, static headers, fonts and client assets.\n`,
 )

@@ -5,7 +5,7 @@ import userEvent from "@testing-library/user-event"
 import { Link } from "react-aria-components"
 import { afterEach, describe, expect, it, vi } from "vite-plus/test"
 
-import { createTestRouter } from "~/src/platform/testing/lib/render"
+import { createTestRouter } from "~/src/platform/testing/lib/router"
 
 import { AriaProvider } from "~/src/providers/aria-provider"
 

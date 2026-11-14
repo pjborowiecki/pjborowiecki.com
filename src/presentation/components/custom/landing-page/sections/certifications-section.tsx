@@ -12,7 +12,7 @@ import { Reveal } from "~/src/presentation/components/custom/landing-page/compon
 import { RollText } from "~/src/presentation/components/custom/landing-page/components/roll-text"
 import { SectionHead } from "~/src/presentation/components/custom/landing-page/components/section-head"
 
-const LISTED = CERTIFICATIONS.filter(({ url }) => url !== undefined || import.meta.env.MODE !== "production")
+const LISTED = CERTIFICATIONS.filter(({ url }) => url !== undefined || import.meta.env.DEV)
 
 const SCROLL_PER_PIXEL = 1.1
 const REVEAL_STAGGER = 0.06

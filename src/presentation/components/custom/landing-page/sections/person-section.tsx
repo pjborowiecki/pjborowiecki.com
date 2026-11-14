@@ -3,7 +3,7 @@ import type { JSX, ReactNode } from "react"
 import { useTranslations } from "use-intl/react"
 
 import { NAV_GROUND, SECTION_IDS, sectionHref } from "~/src/data/marketing"
-import { PROJECTS, PROJECT_ID, SAASYLAND_GITHUB_STARS } from "~/src/data/projects"
+import { SAASY_LAND_REPOSITORY } from "~/src/data/projects"
 
 import { ArrowRightIcon, ArrowUpRightIcon } from "~/src/presentation/components/custom/icons"
 import { ResponsiveImage } from "~/src/presentation/components/custom/landing-page/components/responsive-image"
@@ -11,14 +11,18 @@ import { Reveal } from "~/src/presentation/components/custom/landing-page/compon
 import { RollText } from "~/src/presentation/components/custom/landing-page/components/roll-text"
 import { SplitHeading } from "~/src/presentation/components/custom/landing-page/components/split-heading"
 
-import { ANGULAR_PROJECTS_URL, GITHUB_PROFILE_URL, LINKEDIN_PROFILE_URL, REACT_PROJECTS_URL } from "~/src/presentation/branding"
+import {
+  ANGULAR_PROJECTS_URL,
+  GITHUB_PROFILE_URL,
+  LINKEDIN_PROFILE_URL,
+  REACT_PROJECTS_URL,
+  SAASY_LAND_URL,
+} from "~/src/presentation/branding"
 
 const LEAD_CLASSNAME = "type-lead max-w-[32ch] text-[clamp(1.375rem,1.8vw,2.375rem)] text-foreground"
 
-const SAASY_LAND = PROJECTS.find((project) => project.id === PROJECT_ID.SAASYLAND)
-
 interface ProofLink {
-  readonly href: string | undefined
+  readonly href: string
   readonly label: string
 }
 
@@ -43,10 +47,10 @@ const PROOFS: readonly Proof[] = [
   {
     key: "live",
     links: [
-      { href: SAASY_LAND?.url, label: "saasyland.com" },
-      { href: SAASY_LAND?.github?.url, label: "GitHub" },
+      { href: SAASY_LAND_URL, label: "saasyland.com" },
+      { href: SAASY_LAND_REPOSITORY.url, label: "GitHub" },
     ],
-    values: { stars: SAASYLAND_GITHUB_STARS },
+    values: { stars: SAASY_LAND_REPOSITORY.stars },
   },
 ]
 

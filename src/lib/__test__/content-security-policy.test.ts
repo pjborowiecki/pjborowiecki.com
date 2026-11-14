@@ -1,14 +1,9 @@
 import { createHash } from "node:crypto"
 import { describe, expect, it } from "vite-plus/test"
 
-import {
-  BASE_POLICY,
-  documentPolicy,
-  embedScriptPolicy,
-  embeddedPolicy,
-  inlineScripts,
-  scriptPolicy,
-} from "~/src/lib/content-security-policy"
+import { BASE_CONTENT_SECURITY_POLICY } from "~/src/data/http"
+
+import { documentPolicy, embedScriptPolicy, embeddedPolicy, inlineScripts, scriptPolicy } from "~/src/lib/content-security-policy"
 
 const FLAG = "document.documentElement.classList.add('js')"
 const HYDRATION = 'self.$_TSR={"matches":[]}'
@@ -37,7 +32,7 @@ describe("scriptPolicy", () => {
 
 describe("documentPolicy", () => {
   it("adds the script policy to the base policy every response carries", async () => {
-    await expect(documentPolicy(PAGE)).resolves.toBe(`${BASE_POLICY}; ${await scriptPolicy(PAGE)}`)
+    await expect(documentPolicy(PAGE)).resolves.toBe(`${BASE_CONTENT_SECURITY_POLICY}; ${await scriptPolicy(PAGE)}`)
   })
 })
 

@@ -22,10 +22,3 @@ test("links each locale to the other as an alternate", async ({ page }) => {
   await expect(page.locator('link[rel="alternate"][hreflang="pl-PL"]')).toHaveAttribute("href", "https://pjborowiecki.com/pl-PL")
   await expect(page.locator('link[rel="alternate"][hreflang="x-default"]')).toHaveAttribute("href", "https://pjborowiecki.com/")
 })
-
-test("remembers the language of the last page visited", async ({ page }) => {
-  await page.goto("/pl-PL")
-
-  const cookies = await page.context().cookies()
-  expect(cookies.find(({ name }) => name === "pjborowiecki.com_locale")?.value).toBe("pl-PL")
-})

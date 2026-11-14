@@ -36,10 +36,10 @@ Work happens on short-lived branches that reach `main` through pull requests. On
 
 ## Features
 
-- **Two languages.** English at `/` and Polish at `/pl-PL`. `/pl`, `/en` and `/en-US` redirect to their canonical URL with a `308`, the chosen language is remembered in a cookie, and every page carries canonical and `hreflang` links. Every string exists in both locales, which `bun run check` enforces.
-- **One composed landing page.** Nine sections, from the hero to the contact form, each reading its own translations and data. The certifications section appears only once a certificate can be checked on the issuer's own record.
+- **Two languages.** English at `/` and Polish at `/pl-PL`. `/pl`, `/en` and `/en-US` redirect to their canonical URL with a `308`, and every page carries canonical and `hreflang` links. Every string exists in both locales, which `bun run check` enforces.
+- **One composed landing page.** Nine sections, from the hero to the contact form, each reading its own translations and data. A certificate is listed only once it can be checked on the issuer's own record; the rest show in development only.
 - **Motion with a reason.** GSAP with ScrollTrigger and SplitText, Lenis as the only smooth scroll, a WebGL shader behind the hero and canvas drawings for the system diagrams. With `prefers-reduced-motion: reduce` the page renders its final state instead of animating.
-- **Accessible by construction.** Interactive controls are React Aria components, the page has a skip link and full keyboard navigation, and the browser suite runs an axe-core WCAG 2.2 AA scan of both locales.
+- **Accessible by construction.** Interactive controls are React Aria components, the skip link moves focus into the main content, the page works from the keyboard alone, and the browser suite runs an axe-core WCAG 2.2 AA scan of both locales at desktop and phone widths.
 - **A contact form without API keys.** Name, company, email and message, validated with the same Zod schema in the browser and on the server. It limits each client address, each sender and the site as a whole, refuses domains that cannot receive mail and sends through a Worker binding.
 
 ## Technology
@@ -129,14 +129,14 @@ Messages are sent from `hello@pjborowiecki.com` through Cloudflare Email Service
 .vite-hooks/         Git hooks: staged checks and the commit message emoji
 e2e/                 Playwright specs and fixtures (hydration wait, axe-core scan)
 messages/<locale>/   One JSON file per translation namespace, in en-US and pl-PL
-public/              Fonts, robots.txt, _headers and the social image
-scripts/             Image optimisation, build and deployment checks, releases, translation checks
+public/              Fonts, robots.txt and the social image
+scripts/             Image optimisation, static headers, build and deployment checks, releases, translation checks
 src/
   server.ts          The Worker: redirects, prerendered assets, preload and security headers
   routes/            File routes: the root document and the landing page
   data/              Constants and content data shared by several files
   integrations/      GSAP, use-intl and TanStack Form configuration
-  lib/               Server functions, SEO, cookies, release and deployment checks, drawing geometry
+  lib/               Server functions, SEO, security headers, release and deployment checks, drawing geometry
   presentation/      Components (custom and shadcn), emails, styles, branding and images
   providers/         Application providers
   platform/testing/  Test helpers and mocks
@@ -168,7 +168,7 @@ AVIF files were smaller than WebP, so the first pipeline used them. Measured in 
 [`src/lib/contact.ts`](src/lib/contact.ts) holds the Zod schema, the server function and its mutation options; the form validates with the same schema on every change and on submit. On the Worker, the function:
 
 1. rate limits the client address and the sender's email address with the `CONTACT_RATE_LIMIT` binding, so changing either alone does not help, and caps the whole site at ten messages a minute with `CONTACT_GLOBAL_RATE_LIMIT`;
-2. refuses an address whose domain publishes no mail exchanger, or a null MX, asking Cloudflare's DNS over HTTPS and then Google's if the first does not answer. Only when neither answers does the message go through, because losing a real enquiry to a DNS outage costs more than one undeliverable reply, and the email then says the domain could not be checked;
+2. refuses an address whose domain does not exist or publishes only a null MX ([RFC 7505](https://www.rfc-editor.org/rfc/rfc7505)), asking Cloudflare's DNS over HTTPS and then Google's when the first fails or answers with an error. A domain without an MX record is accepted, because mail then goes to its address record ([RFC 5321](https://www.rfc-editor.org/rfc/rfc5321#section-5.1)). Only when neither resolver answers does the message go through unchecked, because losing a real enquiry to a DNS outage costs more than one undeliverable reply, and the email then says the domain could not be checked;
 3. renders [`contact-email.tsx`](src/presentation/emails/contact-email.tsx) in the visitor's language and sends it through the `EMAIL` binding, with the visitor as the reply-to address.
 
 Both bindings are declared in `wrangler.jsonc`, so there is no key to rotate or leak.
@@ -179,7 +179,7 @@ A prerendered page looks interactive before React has attached its handlers. On 
 
 ## Engineering standards
 
-oxlint runs six categories as errors: `correctness`, `nursery`, `pedantic`, `perf`, `style` and `suspicious`, with type-aware rules and type checking. Files are limited to 800 lines, functions to 150 lines and 20 statements; `no-magic-numbers` allows only `0`, and `id-length` allows only `_`, `m` and `t`.
+oxlint checks the source, the scripts and the browser specs, with six categories as errors: `correctness`, `nursery`, `pedantic`, `perf`, `style` and `suspicious`, with type-aware rules and type checking. Files are limited to 800 lines, functions to 150 lines and 20 statements; `no-magic-numbers` allows only `0`, and `id-length` allows only `_`, `m` and `t`.
 
 ```jsonc
 "strict": true,
@@ -190,9 +190,9 @@ oxlint runs six categories as errors: `correctness`, `nursery`, `pedantic`, `per
 "noFallthroughCasesInSwitch": true
 ```
 
-The hand-written code has no comments, no lint suppressions, no `@ts-expect-error`, no `as` casts, no `any` and no `null` literals; domain values are named constants. oxfmt formats at 140 columns without semicolons and sorts Tailwind classes in `cn`, `cva`, `clsx` and `tw`. Git hooks in [`.vite-hooks/`](.vite-hooks) check translations and staged files before each commit and prefix each conventional commit message with its type's emoji.
+The hand-written code has no comments, no lint suppressions, no `@ts-expect-error`, no `as` casts, no `any`, and `null` only where React or a platform API produces it; domain values are named constants. oxfmt formats at 140 columns without semicolons and sorts Tailwind classes in `cn`, `cva`, `clsx` and `tw`. Git hooks in [`.vite-hooks/`](.vite-hooks) check translations and staged files before each commit and prefix each conventional commit message with its type's emoji.
 
-The coverage gate is 100% of lines, statements, functions and branches for the Worker, the routes, the integrations, the data, the library code and the interactive components. Scroll choreography, the WebGL hero and the canvas drawings cannot run in jsdom; they are listed in `BROWSER_VERIFIED` in [`vite.config.ts`](vite.config.ts) and covered by the browser suite instead.
+The coverage gate is 100% of lines, statements, functions and branches for the Worker, the routes, the integrations, the data, the library code, the contact form and the smaller components. The files that depend on layout, scrolling or WebGL are listed in `BROWSER_VERIFIED` in [`vite.config.ts`](vite.config.ts) and covered by the browser suite instead: the hero scene, the system diagrams, the navigation and mobile menu, the landing sections, the case-study panel and the project index. The generated shadcn primitives are excluded too.
 
 ## Commands and verification
 
@@ -273,7 +273,7 @@ The decisions behind these numbers are described in [Problems worth talking abou
 Kept here rather than hidden, because an accurate map is more useful than a flattering one.
 
 - Mobile Total Blocking Time is about 275 ms in the lab. Hydration evaluates roughly 950 KB of minified JavaScript at once: the framework, the landing route, the animation libraries and the class tables. Starting the WebGL scene later made no measurable difference, so the next step is splitting the sections below the fold and the contact form into chunks that load and hydrate after the first paint.
-- Scroll choreography, the WebGL hero and the canvas drawings are outside the unit coverage gate. The browser suite exercises them, but asserts behaviour, not frames.
+- The navigation, the mobile menu, the landing sections, the case-study panel and the project index are outside the unit coverage gate along with the scroll choreography, the WebGL hero and the canvas drawings. The browser suite exercises all of them, but asserts behaviour, not frames, and their non-visual logic deserves unit tests of its own.
 - Cloudflare API tokens cannot be limited to one Worker, so the deploy token can reach both Workers. Only `main` can deploy to the GitHub `Production` environment, but the `Preview` environment holds the same token, so a workflow on any branch of this repository could reach production. Only the owner can push branches, and pull requests from forks and Dependabot get no secrets.
 
 ## Security
@@ -282,7 +282,7 @@ Report vulnerabilities privately, as described in [`SECURITY.md`](SECURITY.md).
 
 Every script a page runs is allowed by name. TanStack Start writes its hydration data into each page as inline scripts, so a `script-src` policy needs their hashes: [`scripts/optimize-prerendered-html.ts`](scripts/optimize-prerendered-html.ts) hashes the inline scripts of every prerendered page and embeds the policy before the first of them, [`src/server.ts`](src/server.ts) does the same in a header for pages it renders on request, and both use [`src/lib/content-security-policy.ts`](src/lib/content-security-policy.ts). `verify-build.ts` fails a build whose embedded policy does not match its scripts, and the browser suite fails on any policy violation. Zod runs in `jitless` mode, so it never probes for `eval`.
 
-The Worker sends `Content-Security-Policy`, `Cross-Origin-Opener-Policy`, `Permissions-Policy`, `Referrer-Policy`, `X-Content-Type-Options`, `X-Frame-Options` and, over HTTPS, `Strict-Transport-Security` on every response; [`public/_headers`](public/_headers) gives the same protection to files served without the Worker.
+The Worker sends `Content-Security-Policy`, `Cross-Origin-Opener-Policy`, `Permissions-Policy`, `Referrer-Policy`, `X-Content-Type-Options`, `X-Frame-Options` and, over HTTPS, `Strict-Transport-Security` on every response. Static files can be served without the Worker, so [`scripts/write-static-headers.ts`](scripts/write-static-headers.ts) writes the same headers and the cache rules into `_headers` at build time from [`src/data/http.ts`](src/data/http.ts), the one place both read them from, and `verify-build.ts` fails a build whose `_headers` differs.
 
 ## Licence
 

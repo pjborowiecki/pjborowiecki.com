@@ -1,6 +1,4 @@
-export const CONTENT_SECURITY_POLICY_HEADER = "Content-Security-Policy"
-
-export const BASE_POLICY = "base-uri 'self'; frame-ancestors 'none'; object-src 'none'"
+import { BASE_CONTENT_SECURITY_POLICY } from "~/src/data/http"
 
 const SCRIPT_SOURCES = ["'self'", "https://static.cloudflareinsights.com"] as const
 
@@ -25,7 +23,7 @@ export const scriptPolicy = async (html: string): Promise<string> => {
   return `script-src ${[...SCRIPT_SOURCES, ...hashes].join(" ")}`
 }
 
-export const documentPolicy = async (html: string): Promise<string> => `${BASE_POLICY}; ${await scriptPolicy(html)}`
+export const documentPolicy = async (html: string): Promise<string> => `${BASE_CONTENT_SECURITY_POLICY}; ${await scriptPolicy(html)}`
 
 export const embeddedPolicy = (html: string): string | undefined => POLICY_META_PATTERN.exec(html)?.groups?.["policy"]
 

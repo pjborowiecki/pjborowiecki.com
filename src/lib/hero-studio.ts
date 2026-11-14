@@ -167,7 +167,7 @@ interface StudioState {
   zoom: number
 }
 
-export interface HeroStudioOptions {
+interface HeroStudioOptions {
   readonly box: HTMLElement
   readonly canvas: HTMLCanvasElement
   readonly fadeAnchor: HTMLElement

@@ -3,7 +3,6 @@
 @source not "../../**/__test__/**";
 @source not "../../platform/testing/**";
 @import "./fonts.css";
-@import "tw-animate-css";
 @import "shadcn/tailwind.css";
 @import "lenis/dist/lenis.css";
 
@@ -64,7 +63,6 @@
   --font-sans: "Inter", "Inter Fallback", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Inter Tight", "Inter Tight Fallback", ui-sans-serif, system-ui, sans-serif;
   --text-display: clamp(2.875rem, 7.6vw, 10.5rem);
-  --text-title: clamp(1.75rem, 3.2vw, 4rem);
   --text-lead: clamp(1.25rem, 1.9vw, 2.375rem);
   --color-navy: var(--navy);
   --color-emerald: var(--emerald);
@@ -242,15 +240,15 @@
 }
 
 .ground-lit {
-  background-image: url("../assets/images/grain.png"), radial-gradient(64% 72% at 74% 42%, #1b9a70 0%, #0a6247 50%, #032c20 100%);
+  --lit-stops: #1b9a70 0%, #0a6247 50%, #032c20 100%;
+  background-image: url("../assets/images/grain.png"), radial-gradient(64% 72% at 74% 42%, var(--lit-stops));
   background-size:
     220px 220px,
     100% 100%;
 }
 
-.split-mask {
-  padding: 0.06em 0.06em 0.16em;
-  margin: -0.06em -0.06em -0.16em;
+.ground-lit-tail {
+  background-image: url("../assets/images/grain.png"), radial-gradient(64% 190% at 74% -70%, var(--lit-stops));
 }
 
 .roll {
@@ -572,6 +570,10 @@ html:not(.js) .figure-fade {
 
 html.studio-live .hero-poster {
   visibility: hidden;
+}
+
+[tabindex="-1"]:focus {
+  outline: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {

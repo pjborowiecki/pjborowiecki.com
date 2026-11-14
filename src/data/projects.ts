@@ -1,6 +1,6 @@
 import { SAASY_LAND_URL } from "~/src/presentation/branding"
 
-export const PROJECT_DISCIPLINE = {
+const PROJECT_DISCIPLINE = {
   AI: "ai",
   ARCHITECTURE: "architecture",
   CONCEPTS: "concepts",
@@ -32,7 +32,7 @@ export type ProjectId = (typeof PROJECT_ID)[keyof typeof PROJECT_ID]
 
 export interface Project {
   readonly discipline?: ProjectDiscipline
-  readonly github?: { readonly stars: number; readonly url: string }
+  readonly github?: { readonly forks: number; readonly stars: number; readonly url: string }
   readonly id: ProjectId
   readonly image: string
   readonly isDraft: boolean
@@ -43,11 +43,13 @@ export interface Project {
   readonly year: string
 }
 
-export const SAASYLAND_GITHUB_STARS = 440
+export const SAASY_LAND_REPOSITORY = { forks: 100, stars: 440, url: "https://github.com/saasyland/saasyland.com" } as const
 
-export const ARKA_GITHUB_STARS = 160
-
-const ARKA_REPOSITORY_URL = "https://github.com/pjborowiecki/ARKA-Veterinary-Clinic-Page-and-Appointment-Booking-System"
+const ARKA_REPOSITORY = {
+  forks: 30,
+  stars: 160,
+  url: "https://github.com/pjborowiecki/ARKA-Veterinary-Clinic-Page-and-Appointment-Booking-System",
+} as const
 
 const PLACEHOLDER_IMAGE = "project-placeholder"
 
@@ -72,7 +74,7 @@ export const PROJECTS: readonly Project[] = [
     year: "2024",
   },
   {
-    github: { stars: SAASYLAND_GITHUB_STARS, url: "https://github.com/saasyland/saasyland.com" },
+    github: SAASY_LAND_REPOSITORY,
     id: PROJECT_ID.SAASYLAND,
     image: "work-saasyland",
     isDraft: false,
@@ -134,14 +136,14 @@ export const PROJECTS: readonly Project[] = [
   },
   {
     discipline: PROJECT_DISCIPLINE.PRODUCTS,
-    github: { stars: ARKA_GITHUB_STARS, url: ARKA_REPOSITORY_URL },
+    github: ARKA_REPOSITORY,
     id: PROJECT_ID.ARKA,
     image: PLACEHOLDER_IMAGE,
     isDraft: false,
     isFeatured: false,
     techStack: ["Next.js", "TypeScript", "Auth.js", "PostgreSQL", "Drizzle", "Tailwind CSS"],
     title: "Arka-Weterynaria.pl",
-    url: ARKA_REPOSITORY_URL,
+    url: ARKA_REPOSITORY.url,
     year: "2023",
   },
 ]
