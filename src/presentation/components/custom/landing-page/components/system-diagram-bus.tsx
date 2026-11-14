@@ -13,7 +13,7 @@ interface LegendProps {
 
 const CELL_CENTER = 0.5
 const PLATFORM_TITLE_INSET = 0.5
-const PLATFORM_INK = "#f5f0e4"
+const PLATFORM_INK = "var(--cream)"
 const PLATFORM_CELLS = ["observability", "delivery", "infra"] as const
 
 const Platform = ({ layout }: { readonly layout: DiagramLayout }): JSX.Element => {
@@ -70,7 +70,7 @@ const Legend = ({ at, fontSize }: LegendProps): JSX.Element => {
   const t = useTranslations("pages.landing.philosophy")
 
   return (
-    <g className="text-[#0d1526]" fill="currentColor" fontSize={fontSize} stroke="none" transform={`translate(${at.x} ${at.y})`}>
+    <g className="text-navy" fill="currentColor" fontSize={fontSize} stroke="none" transform={`translate(${at.x} ${at.y})`}>
       <line stroke="currentColor" strokeWidth={1.2} x1={0} x2={26} y1={0} y2={0} />
       <text dominantBaseline="central" fillOpacity={0.7} x={34}>
         {t("legend.sync")}

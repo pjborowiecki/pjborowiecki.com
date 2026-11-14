@@ -89,7 +89,7 @@ const MenuFoot = ({ onNavigate }: { readonly onNavigate: () => void }): JSX.Elem
   const t = useTranslations("components.custom.navigation")
 
   return (
-    <div className="mt-[clamp(1rem,3.2svh,2.25rem)] [--cta-bg:var(--cream)] [--cta-hover:var(--champagne)] [--cta-ink:#0d1526] [--ring:var(--cream)]">
+    <div className="mt-[clamp(1rem,3.2svh,2.25rem)] [--cta-bg:var(--cream)] [--cta-hover:var(--champagne)] [--cta-ink:var(--navy)] [--ring:var(--cream)]">
       <div data-menu-foot>
         <CtaLink className="w-full justify-between" href={sectionHref(SECTION_IDS.CONTACT)} onClick={onNavigate}>
           {t("letsTalk")}
@@ -181,7 +181,7 @@ export const MobileMenu = ({ isOpen, onClosed, onNavigate, originRef }: MobileMe
       inert={!isOpen}
       ref={rootRef}
     >
-      <span aria-hidden className="absolute rounded-full bg-[#084f3a] will-change-transform" ref={discRef} />
+      <span aria-hidden className="absolute rounded-full bg-forest will-change-transform" ref={discRef} />
       <span aria-hidden className="absolute inset-0 bg-[radial-gradient(95%_55%_at_78%_16%,#16855f_0%,transparent_100%)]" data-menu-glow />
 
       <div className="relative flex h-dvh flex-col px-(--gutter) pt-[calc(var(--nav-bar-height)+clamp(0.5rem,2.4svh,1.75rem))]">

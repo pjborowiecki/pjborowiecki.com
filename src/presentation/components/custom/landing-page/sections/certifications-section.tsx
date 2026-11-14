@@ -134,7 +134,7 @@ export const CertificationsSection = (): JSX.Element | undefined => {
   }
 
   return (
-    <div className="relative z-10 bg-[#084f3a]" data-nav-ground={NAV_GROUND.EMERALD} id={SECTION_IDS.CERTIFICATIONS} ref={outerRef}>
+    <div className="relative z-10 bg-forest" data-nav-ground={NAV_GROUND.EMERALD} id={SECTION_IDS.CERTIFICATIONS} ref={outerRef}>
       <section
         className="relative ground-emerald pt-[clamp(2rem,4vw,4.5rem)] live:sticky live:flex live:min-h-svh live:flex-col max-md:live:pt-[calc(var(--nav-bar-height)+1.5rem)]"
         ref={rootRef}

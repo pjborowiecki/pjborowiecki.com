@@ -188,8 +188,8 @@ type DiagramFlowTone = (typeof DIAGRAM_FLOW_TONE)[keyof typeof DIAGRAM_FLOW_TONE
 
 export const DIAGRAM_COLOR = {
   board: "var(--board)",
-  card: "#fbf8f0",
-  emerald: "#0a6247",
+  card: "var(--card)",
+  emerald: "var(--emerald)",
   signal: "var(--signal)",
 } as const
 

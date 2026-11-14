@@ -1,5 +1,8 @@
+import { COLOR_TOKEN } from "~/src/data/colors"
 import { imageSource } from "~/src/data/images"
 import { MEDIA } from "~/src/data/media"
+
+import { readColorToken } from "~/src/lib/color-tokens"
 
 const VERTEX_SHADER = `
 attribute vec2 p;
@@ -102,8 +105,6 @@ void main() {
 
   gl_FragColor = vec4(color, 1.0);
 }`
-
-const BACKDROP = { deep: "#032c20", lit: "#22a87c", mid: "#0a6247" } as const
 
 const HEX_CHANNEL = { blueStart: 5, greenStart: 3, length: 2, max: 255, redStart: 1 } as const
 const HEX_RADIX = 16
@@ -237,9 +238,9 @@ const locateUniforms = (gl: WebGLRenderingContext, program: WebGLProgram): Studi
 })
 
 const applyPalette = (gl: WebGLRenderingContext, program: WebGLProgram): void => {
-  gl.uniform3fv(gl.getUniformLocation(program, "uLit"), parseHexColor(BACKDROP.lit))
-  gl.uniform3fv(gl.getUniformLocation(program, "uMid"), parseHexColor(BACKDROP.mid))
-  gl.uniform3fv(gl.getUniformLocation(program, "uDeep"), parseHexColor(BACKDROP.deep))
+  gl.uniform3fv(gl.getUniformLocation(program, "uLit"), parseHexColor(readColorToken(COLOR_TOKEN.EMERALD_LIT)))
+  gl.uniform3fv(gl.getUniformLocation(program, "uMid"), parseHexColor(readColorToken(COLOR_TOKEN.EMERALD)))
+  gl.uniform3fv(gl.getUniformLocation(program, "uDeep"), parseHexColor(readColorToken(COLOR_TOKEN.EMERALD_DEEP)))
   gl.uniform1i(gl.getUniformLocation(program, "uSubject"), TEXTURE_UNIT.subject)
   gl.uniform1i(gl.getUniformLocation(program, "uMaps"), TEXTURE_UNIT.maps)
 }

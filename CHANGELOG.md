@@ -21,3 +21,4 @@ Each section lists the changes that reached `main` on that day. Every production
 - The contact form accepts a domain without an MX record, which receives mail at its address record, and still refuses one that does not exist or publishes a null MX.
 - The site no longer sets a language cookie; the URL alone carries the language.
 - Security headers and cache rules have one definition, which the Worker reads and the build writes into `_headers` for static files.
+- Colours, media queries, page ids and number formats are each defined once, and the navigation closes its mobile menu at the same breakpoint, measured in rem, as the classes that hide it.
