@@ -39,7 +39,7 @@ Run tests with `bun run test`, never `bun test`. Format and lint only the files 
 6. Server functions validate their input with a Zod schema that the form validates with too (`contactFormSchema` in `src/lib/contact.ts`).
 7. Every user-facing string exists in both locales; `bun run check:i18n` fails otherwise.
 8. Coverage stays at 100% for lines, statements, functions and branches of the code the gate includes; delete unreachable branches instead of stubbing them.
-9. A change updates the README and the site copy it makes inaccurate.
+9. A change updates the README, `CHANGELOG.md` under the day it reaches `main`, and the site copy it makes inaccurate.
 10. Commits are conventional (`fix(contact): keep the locale in the enquiry email`), never `--no-verify`, and carry no `Co-Authored-By` trailer or any other AI attribution; the same goes for pull request descriptions. Do not type the emoji: the hook adds it from the type (`feat` ✨, `fix` 🐛, `docs` 📚, `refactor` 📦, `chore` ♻️, `test` 🚨, `perf` 🚀, `build` 🛠️, `ci` ⚙️, `style` 💎, `revert` 🗑️).
 11. Stay on the latest dependency versions: adapt the code, or carry an upstream bug as a `bun patch` and report it upstream. Never pin back.
 12. Performance is measured, not assumed: compare production builds before and after a change to motion, images or the Worker.
