@@ -541,7 +541,7 @@ html:not(.js) .figure-fade {
   .hero-stage {
     --hero-unit: min(1vw, 1.6svh);
     --hero-inset: max(var(--gutter), calc((100vw - 100 * var(--hero-unit)) / 2));
-    --hero-lift: calc(100svh - 62.5 * var(--hero-unit));
+    --hero-lift: max(0px, calc(100svh - 73.3 * var(--hero-unit)));
   }
 
   .hero-subject {
