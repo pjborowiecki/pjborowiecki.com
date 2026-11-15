@@ -25,7 +25,7 @@ jobs:
       - uses: ./.github/actions/setup
       - name: Build local Cloudflare test environment
         run: bun run build:test
-      - uses: actions/cache@v5
+      - uses: actions/cache@v6
         with:
           path: ~/.cache/ms-playwright
           key: ${{ runner.os }}-playwright-${{ inputs.browser }}-${{ hashFiles('bun.lock') }}
