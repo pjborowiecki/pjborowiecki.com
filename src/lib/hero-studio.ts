@@ -352,11 +352,15 @@ const drawStudio = ({ scene, state }: Studio): void => {
   gl.drawArrays(gl.TRIANGLES, 0, TRIANGLE_VERTICES)
 }
 
+const canDraw = ({ state }: Studio): boolean => state.isReady && state.isVisible && !document.hidden
+
 const resizeStudio = (studio: Studio): void => {
   measureStudio(studio)
 
-  if (studio.state.isReady) {
+  if (canDraw(studio)) {
     drawStudio(studio)
+  } else {
+    studio.state.isDirty = true
   }
 }
 
@@ -389,7 +393,7 @@ const restLight = (state: StudioState): void => {
 const stepStudio = (studio: Studio, time: number): void => {
   const { isCoarse, state } = studio
 
-  if (!state.isReady || !state.isVisible || document.hidden) {
+  if (!canDraw(studio)) {
     return
   }
 
