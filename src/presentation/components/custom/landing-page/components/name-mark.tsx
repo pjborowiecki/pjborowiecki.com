@@ -16,10 +16,10 @@ const WORDS = [
 const [FIRST_NAME, MIDDLE_INITIAL, SURNAME] = WORDS
 
 export const NameMark = ({ className }: { readonly className?: string }): JSX.Element => (
-  <svg aria-hidden="true" className={className} data-name-mark fill="currentColor" viewBox={VIEW_BOX}>
+  <svg aria-hidden="true" className={className} fill="currentColor" viewBox={VIEW_BOX}>
     <g data-name-zoom>
       {WORDS.map((path) => (
-        <path d={path} data-word key={path} />
+        <path d={path} key={path} />
       ))}
     </g>
   </svg>
@@ -27,15 +27,15 @@ export const NameMark = ({ className }: { readonly className?: string }): JSX.El
 
 export const NameMarkStacked = ({ className }: { readonly className?: string }): JSX.Element => (
   <div className={className}>
-    <svg aria-hidden="true" className="block h-auto w-[62.49%]" data-name-mark fill="currentColor" viewBox={FIRST_LINE_VIEW_BOX}>
+    <svg aria-hidden="true" className="block h-auto w-[62.49%] overflow-visible" fill="currentColor" viewBox={FIRST_LINE_VIEW_BOX}>
       <g data-name-rest>
-        <path d={FIRST_NAME} data-word />
-        <path d={MIDDLE_INITIAL} data-word />
+        <path d={FIRST_NAME} />
+        <path d={MIDDLE_INITIAL} />
       </g>
     </svg>
-    <svg aria-hidden="true" className="mt-[3%] block h-auto w-full" data-name-mark fill="currentColor" viewBox={SECOND_LINE_VIEW_BOX}>
+    <svg aria-hidden="true" className="mt-[3%] block h-auto w-full overflow-visible" fill="currentColor" viewBox={SECOND_LINE_VIEW_BOX}>
       <g data-name-zoom>
-        <path d={SURNAME} data-word />
+        <path d={SURNAME} />
       </g>
     </svg>
   </div>

@@ -2,6 +2,10 @@
 
 Each section lists the changes that reached `main` on that day. Every production deploy is tagged `vYYYY.MM.DD` and published as a GitHub release with its day's section as the notes.
 
+## 2026-11-16
+
+- The name, the headline and the navigation appear with the first paint and stay put. The name used to vanish as the page's scripts started and return almost two seconds later, the navigation faded out and back in, and the headline appeared after the paragraph beneath it.
+
 ## 2026-11-15
 
 - Opening the mobile menu, or scrolling down, rolls the header's initials into the full name instead of crossfading the two on top of each other.

@@ -112,8 +112,8 @@ describe("links and text", () => {
       </>,
     )
 
-    expect(container.querySelectorAll("svg[data-name-mark]")).toHaveLength(3)
-    expect(container.querySelectorAll("[data-name-zoom] path[data-word]")).toHaveLength(4)
+    expect(container.querySelectorAll('svg[aria-hidden="true"]')).toHaveLength(3)
+    expect(container.querySelectorAll("[data-name-zoom] path")).toHaveLength(4)
   })
 })
 

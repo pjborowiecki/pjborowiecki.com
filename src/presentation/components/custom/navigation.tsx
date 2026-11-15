@@ -4,7 +4,7 @@ import type Lenis from "lenis"
 import { Button } from "react-aria-components"
 import { useTranslations } from "use-intl/react"
 
-import { ScrollTrigger, gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
+import { ScrollTrigger } from "~/src/integrations/gsap/gsap.config"
 
 import { useLenis } from "~/src/hooks/use-lenis"
 
@@ -39,21 +39,10 @@ const DOT_HALF_WIDTH = 2.5
 
 const INITIALS = "PJB"
 
-const NAV_INTRO_TARGETS = "[data-nav-layer='base'] [data-nav-intro]"
 const BASE_LAYER_LINK = "[data-nav-layer='base'] a"
 const GROUND = "[data-nav-ground]"
 const NAV_DOT = "[data-nav-dot]"
 const ACTIVE_LINK = "[data-active]"
-
-const NAV_INTRO: gsap.TweenVars = {
-  autoAlpha: 0,
-  clearProps: "transform,opacity,visibility",
-  delay: 0.2,
-  duration: 1,
-  ease: "power3.out",
-  stagger: 0.05,
-  y: -22,
-}
 
 const TITLE_ROLL = "block transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
 
@@ -419,7 +408,6 @@ const NavRow = ({ isOpen, linksRef, menuButtonRef, onMenuPress }: NavRowProps): 
     <div className="nav-row @container">
       <a
         className="relative justify-self-start font-display text-[1.0625rem] leading-none font-semibold tracking-[-0.025em]"
-        data-nav-intro
         href={sectionHref(SECTION_IDS.HERO)}
       >
         <span className="relative -my-1 block overflow-y-clip py-1">
@@ -454,7 +442,6 @@ const NavRow = ({ isOpen, linksRef, menuButtonRef, onMenuPress }: NavRowProps): 
           <a
             className="px-2.5 py-2 text-[0.875rem] font-medium tracking-[-0.01em] whitespace-nowrap"
             data-nav={sectionHref(item.section)}
-            data-nav-intro
             href={sectionHref(item.section)}
             key={item.key}
           >
@@ -463,7 +450,7 @@ const NavRow = ({ isOpen, linksRef, menuButtonRef, onMenuPress }: NavRowProps): 
         ))}
       </nav>
 
-      <div className="col-start-3 flex items-center gap-2 justify-self-end" data-nav-intro>
+      <div className="col-start-3 flex items-center gap-2 justify-self-end">
         <CtaLink className="hidden whitespace-nowrap lg:inline-flex" href={sectionHref(SECTION_IDS.CONTACT)} size="compact">
           {t("letsTalk")}
         </CtaLink>
@@ -512,15 +499,6 @@ export const Navigation = (): JSX.Element => {
   const syncRef = useRef<(() => void) | undefined>(undefined)
 
   const [isOpen, setOpen] = useState(false)
-
-  useGSAP(
-    () => {
-      gsap.matchMedia().add(MEDIA.MOTION_OK, () => {
-        gsap.from(NAV_INTRO_TARGETS, { ...NAV_INTRO })
-      })
-    },
-    { scope: headerRef },
-  )
 
   useEffect(() => {
     const elements = collectElements(headerRef.current, {
