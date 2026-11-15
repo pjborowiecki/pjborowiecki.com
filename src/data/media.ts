@@ -9,4 +9,5 @@ export const MEDIA = {
   MD: `(width >= ${BREAKPOINT.MD})`,
   MOTION_OK: "(prefers-reduced-motion: no-preference)",
   REDUCED_MOTION: "(prefers-reduced-motion: reduce)",
+  TALL: "(min-height: 36rem)",
 } as const

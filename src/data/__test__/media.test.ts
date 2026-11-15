@@ -12,8 +12,9 @@ describe("media queries", () => {
     expect(TAILWIND_THEME).toContain(`--breakpoint-lg: ${BREAKPOINT.LG};`)
   })
 
-  it("match the cover variant and the motion condition the stylesheet defines", () => {
+  it("match the cover variant and the motion and pinning conditions the stylesheet defines", () => {
     expect(STYLESHEET).toContain(`@custom-variant cover (@media ${MEDIA.COVER});`)
     expect(STYLESHEET).toContain(`@media ${MEDIA.MOTION_OK} {`)
+    expect(STYLESHEET).toContain(`@media ${MEDIA.MOTION_OK} and ${MEDIA.TALL} {`)
   })
 })

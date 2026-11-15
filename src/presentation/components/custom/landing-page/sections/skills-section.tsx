@@ -33,7 +33,7 @@ const CORE_TECHNOLOGIES = [
   "Cloudflare Workers",
 ] as const
 
-const WIDE_MOTION = `${MEDIA.MOTION_OK} and ${MEDIA.MD}`
+const WIDE_MOTION = `${MEDIA.MOTION_OK} and ${MEDIA.MD} and ${MEDIA.TALL}`
 
 const SCROLL_PER_PIXEL = 1.1
 
@@ -71,7 +71,7 @@ const DisciplinePanel = ({ discipline, index }: DisciplinePanelProps): JSX.Eleme
 
   return (
     <article
-      className="group relative flex flex-col gap-6 overflow-hidden border-t border-border px-(--gutter) py-8 md:live:w-[clamp(28rem,38vw,52rem)] md:live:gap-[clamp(0.75rem,2svh,2rem)] md:live:border-t-0 md:live:border-l md:live:px-[clamp(1.5rem,2.4vw,3rem)] md:live:pt-[calc(var(--nav-height)+0.75rem)] md:live:pb-14"
+      className="group relative flex flex-col gap-6 overflow-hidden border-t border-border px-(--gutter) py-8 md:pin:w-[clamp(28rem,38vw,52rem)] md:pin:gap-[clamp(0.75rem,2svh,2rem)] md:pin:border-t-0 md:pin:border-l md:pin:px-[clamp(1.5rem,2.4vw,3rem)] md:pin:pt-[calc(var(--nav-height)+0.75rem)] md:pin:pb-14"
       data-dark-ground
     >
       <span
@@ -86,14 +86,14 @@ const DisciplinePanel = ({ discipline, index }: DisciplinePanelProps): JSX.Eleme
           </span>
           <span className="text-right type-label text-champagne group-hover:text-emerald">{t(`${discipline}Where`)}</span>
         </div>
-        <h3 className="mt-[clamp(0.75rem,3svh,4.5rem)] type-display text-[clamp(2.25rem,4.5vw,6.25rem)] md:live:text-[max(1.875rem,min(3.9vw,6.8svh))]">
+        <h3 className="mt-[clamp(0.75rem,3svh,4.5rem)] type-display text-[clamp(2.25rem,4.5vw,6.25rem)] md:pin:text-[max(1.875rem,min(3.9vw,6.8svh))]">
           {t(discipline)}
         </h3>
         <p className="mt-[clamp(0.5rem,1.5svh,2rem)] type-body text-current opacity-85">{t(`${discipline}Desc`)}</p>
       </div>
 
       <ExpertiseFigure
-        className="relative h-[clamp(10rem,48vw,15rem)] md:live:h-auto md:live:min-h-0 md:live:flex-1"
+        className="relative h-[clamp(10rem,48vw,15rem)] md:pin:h-auto md:pin:min-h-0 md:pin:flex-1"
         discipline={discipline}
       />
 
@@ -176,13 +176,13 @@ export const SkillsSection = (): JSX.Element => {
   return (
     <section className="relative overflow-x-clip ground-emerald" data-nav-ground={NAV_GROUND.EMERALD} id={SECTION_IDS.SKILLS}>
       <div ref={outerRef}>
-        <div className="relative md:live:sticky md:live:top-0 md:live:h-svh md:live:overflow-hidden">
-          <div className="flex flex-col md:live:h-full md:live:w-fit md:live:flex-row md:live:will-change-transform" ref={trackRef}>
-            <div className="frame flex flex-col gap-6 pt-(--section-y) pb-12 md:live:w-[66vw] md:live:max-w-none md:live:justify-between md:live:pt-[calc(var(--nav-height)+0.75rem)] md:live:pb-14">
+        <div className="relative md:pin:sticky md:pin:top-0 md:pin:h-svh md:pin:overflow-hidden">
+          <div className="flex flex-col md:pin:h-full md:pin:w-fit md:pin:flex-row md:pin:will-change-transform" ref={trackRef}>
+            <div className="frame flex flex-col gap-6 pt-(--section-y) pb-12 md:pin:w-[66vw] md:pin:max-w-none md:pin:justify-between md:pin:pt-[calc(var(--nav-height)+0.75rem)] md:pin:pb-14">
               <Reveal variant="slide-right">
                 <p className="type-label text-champagne">{t("label")}</p>
               </Reveal>
-              <SplitHeading className="type-display text-display md:live:text-[min(9vw,17svh)]">{t("toolkit")}</SplitHeading>
+              <SplitHeading className="type-display text-display md:pin:text-[min(9vw,17svh)]">{t("toolkit")}</SplitHeading>
             </div>
 
             {DISCIPLINES.map((discipline, index) => (

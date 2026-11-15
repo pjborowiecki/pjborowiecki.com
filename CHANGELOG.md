@@ -2,6 +2,12 @@
 
 Each section lists the changes that reached `main` on that day. Every production deploy is tagged `vYYYY.MM.DD` and published as a GitHub release with its day's section as the notes.
 
+## 2026-11-15
+
+- Opening the mobile menu, or scrolling down, rolls the header's initials into the full name instead of crossfading the two on top of each other.
+- The hero portrait dissolves into the background on every screen shape. On windows only slightly wider than they are tall, its bottom edge used to stop short of the fade and show as a hard line.
+- On screens too short to hold them, such as a phone held sideways, the hero and the expertise cards scroll as ordinary content instead of pinning. The hero's headline and buttons used to fade away before they could scroll into view, and the cards cut off their last line.
+
 ## 2026-11-14
 
 - The site moved from Next.js on Vercel to TanStack Start on Cloudflare Workers, with the same look and the same content. Both languages are prerendered at the edge: English at `/` and Polish at `/pl-PL`, which `/pl` redirects to.
