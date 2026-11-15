@@ -55,6 +55,8 @@ const NAV_INTRO: gsap.TweenVars = {
   y: -22,
 }
 
+const TITLE_ROLL = "block transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
+
 const MENU_LINE =
   "absolute top-1/2 left-1/2 h-[1.5px] w-[26px] -translate-x-1/2 bg-current transition-[translate,rotate] duration-500 ease-[cubic-bezier(0.22,1,0.36,1)]"
 
@@ -420,16 +422,21 @@ const NavRow = ({ isOpen, linksRef, menuButtonRef, onMenuPress }: NavRowProps): 
         data-nav-intro
         href={sectionHref(SECTION_IDS.HERO)}
       >
-        <span className="block transition-opacity duration-500 group-data-scrolled/nav:opacity-0 group-data-open/nav:opacity-0">
-          {INITIALS}
+        <span className="relative -my-1 block overflow-y-clip py-1">
+          <span className={cn(TITLE_ROLL, "group-data-scrolled/nav:-translate-y-[130%] group-data-open/nav:-translate-y-[130%]")}>
+            {INITIALS}
+          </span>
+          <span
+            aria-hidden
+            className={cn(
+              TITLE_ROLL,
+              "absolute top-1 left-0 translate-y-[130%] whitespace-nowrap group-data-scrolled/nav:translate-y-0 group-data-open/nav:translate-y-0",
+            )}
+          >
+            {APP_NAME}
+          </span>
         </span>
         <span className="sr-only">{t("home")}</span>
-        <span
-          aria-hidden
-          className="absolute top-0 left-0 whitespace-nowrap opacity-0 transition-opacity duration-500 group-data-scrolled/nav:opacity-100 group-data-open/nav:opacity-100"
-        >
-          {APP_NAME}
-        </span>
       </a>
 
       <nav aria-label={t("primaryNav")} className="relative hidden items-center gap-[clamp(0.25rem,0.7vw,1rem)] lg:flex" ref={linksRef}>
