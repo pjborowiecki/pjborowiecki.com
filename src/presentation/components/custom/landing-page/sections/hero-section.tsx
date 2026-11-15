@@ -3,7 +3,7 @@ import { preload } from "react-dom"
 
 import { useTranslations } from "use-intl/react"
 
-import { gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
+import { ScrollTrigger, gsap, useGSAP } from "~/src/integrations/gsap/gsap.config"
 
 import { imageSource } from "~/src/data/images"
 import { NAV_GROUND, SECTION_IDS, sectionHref } from "~/src/data/marketing"
@@ -33,6 +33,8 @@ const CAMERA_PUSH: gsap.TweenVars = { duration: 0.9, ease: "power1.in", zoom: 1.
 const NAME_DIVE: gsap.TweenVars = { duration: 1, ease: "expo.in", scale: NAME_FLOOD_SCALE, svgOrigin: NAME_STEM_ORIGIN }
 const NAME_REST_CLEAR: gsap.TweenVars = { autoAlpha: 0, duration: 0.3, ease: "power1.in" }
 const DIVE_SCROLL: ScrollTrigger.Vars = { end: "bottom bottom", scrub: true, start: "top top" }
+const ON_SCREEN: ScrollTrigger.Vars = { end: "bottom top", start: "top bottom" }
+const HERO_MEDIA = { motion: MEDIA.MOTION_OK, pin: `${MEDIA.MOTION_OK} and ${MEDIA.TALL}` } as const
 
 const STRONG_TAGS = { strong: (chunks: ReactNode) => <strong>{chunks}</strong> }
 
@@ -138,7 +140,17 @@ const diveIntoName = ({ marks, root, studio, view }: NameDive): void => {
     .to(selectAll(root, "[data-name-rest]"), { ...NAME_REST_CLEAR }, NAME_REST_CLEAR_AT)
 }
 
-const animateHero = (elements: HeroElements): (() => void) => {
+const renderWhileOnScreen = (root: HTMLElement, studio: HeroStudio | undefined): void => {
+  ScrollTrigger.create({
+    ...ON_SCREEN,
+    onToggle: (self) => {
+      studio?.setVisible(self.isActive)
+    },
+    trigger: root,
+  })
+}
+
+const animateHero = (elements: HeroElements, canPin: boolean): (() => void) => {
   const { root } = elements
   const view: HeroView = { zoom: 1 }
   const studio = startStudio(elements)
@@ -147,7 +159,12 @@ const animateHero = (elements: HeroElements): (() => void) => {
   if (performance.now() <= INTRO_WINDOW_MS) {
     riseName(root, marks)
   }
-  diveIntoName({ marks, root, studio, view })
+
+  if (canPin) {
+    diveIntoName({ marks, root, studio, view })
+  } else {
+    renderWhileOnScreen(root, studio)
+  }
 
   return () => {
     studio?.destroy()
@@ -248,7 +265,13 @@ export const HeroSection = (): JSX.Element => {
         return
       }
 
-      gsap.matchMedia().add(MEDIA.MOTION_OK, () => animateHero({ box, canvas, name, root, stage }))
+      gsap.matchMedia().add(HERO_MEDIA, ({ conditions }) => {
+        if (conditions?.["motion"] !== true) {
+          return
+        }
+
+        return animateHero({ box, canvas, name, root, stage }, conditions["pin"] === true)
+      })
     },
     { scope: rootRef },
   )
@@ -264,8 +287,8 @@ export const HeroSection = (): JSX.Element => {
   })
 
   return (
-    <section className="hero relative live:h-[260svh]" data-nav-ground={NAV_GROUND.HERO} id={SECTION_IDS.HERO} ref={rootRef}>
-      <div className="hero-stage relative top-0 h-svh min-h-[36rem] overflow-hidden text-cream live:sticky" ref={stageRef}>
+    <section className="hero relative pin:h-[260svh]" data-nav-ground={NAV_GROUND.HERO} id={SECTION_IDS.HERO} ref={rootRef}>
+      <div className="hero-stage relative top-0 h-svh min-h-[36rem] overflow-hidden text-cream pin:sticky" ref={stageRef}>
         <div className="hero-subject" ref={boxRef}>
           <ResponsiveImage
             alt={t("portraitAlt")}
@@ -298,7 +321,7 @@ export const HeroSection = (): JSX.Element => {
       </div>
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-[49%] bottom-0 hidden live:block"
+        className="pointer-events-none absolute inset-x-0 top-[49%] bottom-0 hidden pin:block"
         data-nav-ground={NAV_GROUND.FLOOD}
       />
     </section>

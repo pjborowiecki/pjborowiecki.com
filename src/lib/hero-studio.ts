@@ -84,6 +84,7 @@ void main() {
   color = mix(color, color * vec3(0.42, 0.5, 0.48), shadow * 0.8);
 
   vec4 subject = texture2D(uSubject, clamp(st + toLight * maps.b * 0.0085, 0.0, 1.0)) * inside;
+  subject.a *= 1.0 - smoothstep(0.84, 1.0, st.y);
 
   vec2 texel = vec2(1.5 / 360.0, 1.5 / 488.0);
   vec2 gradient = vec2(

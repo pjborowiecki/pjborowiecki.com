@@ -19,6 +19,14 @@
   }
 }
 
+@custom-variant pin {
+  @media (prefers-reduced-motion: no-preference) and (min-height: 36rem) {
+    html.js & {
+      @slot;
+    }
+  }
+}
+
 :root {
   --emerald-lit: #22a87c;
   --emerald: #0a6247;
@@ -484,6 +492,7 @@ html:not(.js) .figure-fade {
   height: min(84svh, 136vw);
   aspect-ratio: 1650 / 2239;
   translate: -50% 0;
+  mask-image: linear-gradient(to bottom, #000 84%, transparent);
 }
 
 .hero-fade {
