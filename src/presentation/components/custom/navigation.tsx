@@ -416,21 +416,26 @@ const NavRow = ({ isOpen, linksRef, menuButtonRef, onMenuPress }: NavRowProps): 
   const t = useTranslations("components.custom.navigation")
 
   return (
-    <div className="nav-row">
+    <div className="nav-row @container">
       <a
         className="relative justify-self-start font-display text-[1.0625rem] leading-none font-semibold tracking-[-0.025em]"
         data-nav-intro
         href={sectionHref(SECTION_IDS.HERO)}
       >
         <span className="relative -my-1 block overflow-y-clip py-1">
-          <span className={cn(TITLE_ROLL, "group-data-scrolled/nav:-translate-y-[130%] group-data-open/nav:-translate-y-[130%]")}>
+          <span
+            className={cn(
+              TITLE_ROLL,
+              "@min-nav-title:group-data-scrolled/nav:-translate-y-[130%] @min-nav-title:group-data-open/nav:-translate-y-[130%]",
+            )}
+          >
             {INITIALS}
           </span>
           <span
             aria-hidden
             className={cn(
               TITLE_ROLL,
-              "absolute top-1 left-0 translate-y-[130%] whitespace-nowrap group-data-scrolled/nav:translate-y-0 group-data-open/nav:translate-y-0",
+              "absolute top-1 left-0 translate-y-[130%] whitespace-nowrap @min-nav-title:group-data-scrolled/nav:translate-y-0 @min-nav-title:group-data-open/nav:translate-y-0",
             )}
           >
             {APP_NAME}

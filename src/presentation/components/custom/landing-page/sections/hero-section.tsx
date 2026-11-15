@@ -106,14 +106,17 @@ const riseName = (root: HTMLElement, marks: Element[]): void => {
 const diveIntoName = ({ marks, root, studio, view }: NameDive): void => {
   const mark = { isOpen: false }
 
+  const sync = (self: ScrollTrigger): void => {
+    studio?.setVisible(self.isActive || self.progress === 0)
+  }
+
   gsap
     .timeline({
       defaults: { ease: "none" },
       scrollTrigger: {
         ...DIVE_SCROLL,
-        onToggle: (self) => {
-          studio?.setVisible(self.isActive || self.progress === 0)
-        },
+        onRefresh: sync,
+        onToggle: sync,
         onUpdate: (self) => {
           if (mark.isOpen || self.progress === 0) {
             return
@@ -141,13 +144,11 @@ const diveIntoName = ({ marks, root, studio, view }: NameDive): void => {
 }
 
 const renderWhileOnScreen = (root: HTMLElement, studio: HeroStudio | undefined): void => {
-  ScrollTrigger.create({
-    ...ON_SCREEN,
-    onToggle: (self) => {
-      studio?.setVisible(self.isActive)
-    },
-    trigger: root,
-  })
+  const sync = (self: ScrollTrigger): void => {
+    studio?.setVisible(self.isActive)
+  }
+
+  ScrollTrigger.create({ ...ON_SCREEN, onRefresh: sync, onToggle: sync, trigger: root })
 }
 
 const animateHero = (elements: HeroElements, canPin: boolean): (() => void) => {
