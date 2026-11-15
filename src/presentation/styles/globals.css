@@ -78,6 +78,7 @@
 }
 
 @theme inline {
+  --container-nav-title: 13rem;
   --font-sans: "Inter", "Inter Fallback", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Inter Tight", "Inter Tight Fallback", ui-sans-serif, system-ui, sans-serif;
   --text-display: clamp(2.875rem, 7.6vw, 10.5rem);
