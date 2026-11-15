@@ -178,21 +178,21 @@ const HeroIntro = (): JSX.Element => {
 
   return (
     <div className="hero-copy z-10 cover:flex cover:flex-col" data-copy>
-      <p className="hidden border-b border-cream/22 pb-[clamp(0.5rem,0.85vw,1rem)] type-label text-champagne cover:block">
+      <p className="hidden border-b border-cream/22 pb-[clamp(0.5rem,calc(0.85*var(--hero-unit)),1rem)] type-label text-champagne cover:block">
         {t("introLabel")}
       </p>
       <p className="type-label text-champagne cover:hidden">{t("focusShort")}</p>
-      <p className="hero-role mt-2 type-display text-[clamp(1.375rem,6.1vw,2.75rem)] leading-[1.03]! tracking-[-0.034em]! max-sm:leading-[1.1]! cover:mt-[clamp(0.75rem,1.05vw,1.5rem)] cover:text-[min(2.6vw,4.6svh)]">
+      <p className="hero-role mt-2 type-display text-[clamp(1.375rem,6.1vw,2.75rem)] leading-[1.03]! tracking-[-0.034em]! max-sm:leading-[1.1]! cover:mt-[clamp(0.75rem,calc(1.05*var(--hero-unit)),1.5rem)] cover:text-[calc(2.6*var(--hero-unit))]">
         {t("role")}
       </p>
-      <p className="hero-para mt-3 type-body text-[0.9375rem] leading-[1.48] text-cream/88 max-sm:hidden cover:mt-[clamp(0.6rem,0.9vw,1.25rem)] cover:text-[clamp(0.875rem,min(0.98vw,1.72svh),1.25rem)] [&_strong]:font-medium [&_strong]:text-cream">
+      <p className="hero-para mt-3 type-body text-[0.9375rem] leading-[1.48] text-cream/88 max-sm:hidden cover:mt-[clamp(0.6rem,calc(0.9*var(--hero-unit)),1.25rem)] cover:text-[clamp(0.875rem,calc(0.98*var(--hero-unit)),1.25rem)] [&_strong]:font-medium [&_strong]:text-cream">
         {t.rich("building", STRONG_TAGS)}
       </p>
 
-      <dl className="hero-creds mt-[clamp(0.75rem,1.15vw,1.5rem)] hidden border-t border-cream/22 text-[clamp(0.8125rem,min(0.86vw,1.5svh),1.0625rem)] tracking-[-0.008em] [@media(min-width:900px)_and_(min-aspect-ratio:11/10)_and_(min-height:760px)]:block">
+      <dl className="hero-creds mt-[clamp(0.75rem,calc(1.15*var(--hero-unit)),1.5rem)] hidden border-t border-cream/22 text-[clamp(0.8125rem,calc(0.86*var(--hero-unit)),1.0625rem)] tracking-[-0.008em] [@media(min-width:900px)_and_(min-aspect-ratio:11/10)_and_(min-height:760px)]:block">
         {CREDENTIALS.map((credential) => (
           <div
-            className="grid grid-cols-[6.2vw_1fr] gap-x-[0.6vw] border-b border-cream/22 py-[clamp(0.3rem,0.5vw,0.65rem)]"
+            className="grid grid-cols-[calc(6.2*var(--hero-unit))_1fr] gap-x-[calc(0.6*var(--hero-unit))] border-b border-cream/22 py-[clamp(0.3rem,calc(0.5*var(--hero-unit)),0.65rem)]"
             key={credential}
           >
             <dt className="text-cream/65">{t(`${credential}Label`)}</dt>
@@ -201,7 +201,7 @@ const HeroIntro = (): JSX.Element => {
         ))}
       </dl>
 
-      <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-3 ground-tokens cover:mt-auto cover:pt-[clamp(0.75rem,1.1vw,1.5rem)]">
+      <div className="mt-4 flex flex-wrap items-center gap-x-5 gap-y-3 ground-tokens cover:mt-auto cover:pt-[clamp(0.75rem,calc(1.1*var(--hero-unit)),1.5rem)]">
         <CtaLink href={sectionHref(SECTION_IDS.WORK)}>{t("viewWork")}</CtaLink>
         <a
           className="border-b border-cream/70 pb-0.5 text-[0.9375rem] font-medium tracking-[-0.012em]"
@@ -219,22 +219,24 @@ const HeroFocus = (): JSX.Element => {
 
   return (
     <div className="hero-copy z-10 hidden cover:block" data-copy>
-      <p className="border-b border-cream/22 pb-[clamp(0.5rem,0.85vw,1rem)] type-label text-champagne">{t("focusLabel")}</p>
+      <p className="border-b border-cream/22 pb-[clamp(0.5rem,calc(0.85*var(--hero-unit)),1rem)] type-label text-champagne">
+        {t("focusLabel")}
+      </p>
       <ol>
         {FOCUS_AREAS.map((area, index) => (
           <li className="border-cream/22 not-last:border-b" key={area}>
             <a
-              className="group grid grid-cols-[2.1vw_1fr] pt-[clamp(0.6rem,1.05vw,1.35rem)] pb-[clamp(0.7rem,1.25vw,1.6rem)]"
+              className="group grid grid-cols-[calc(2.1*var(--hero-unit))_1fr] pt-[clamp(0.6rem,calc(1.05*var(--hero-unit)),1.35rem)] pb-[clamp(0.7rem,calc(1.25*var(--hero-unit)),1.6rem)]"
               href={sectionHref(SECTION_IDS.SKILLS)}
             >
               <span aria-hidden className="mt-[0.5em] type-label text-champagne">
                 {ordinal(index)}
               </span>
               <span className="block">
-                <span className="block type-title text-[min(2vw,3.5svh)] transition-transform duration-500 ease-out group-hover:translate-x-1.5">
+                <span className="block type-title text-[calc(2*var(--hero-unit))] transition-transform duration-500 ease-out group-hover:translate-x-1.5">
                   {t(`${area}Title`)}
                 </span>
-                <span className="mt-[0.5vw] block text-[clamp(0.8125rem,min(0.9vw,1.6svh),1.1875rem)] leading-[1.42] tracking-[-0.011em] text-pretty text-cream/80">
+                <span className="mt-[calc(0.5*var(--hero-unit))] block text-[clamp(0.8125rem,calc(0.9*var(--hero-unit)),1.1875rem)] leading-[1.42] tracking-[-0.011em] text-pretty text-cream/80">
                   {t(`${area}Desc`)}
                 </span>
               </span>
@@ -311,7 +313,7 @@ export const HeroSection = (): JSX.Element => {
           </div>
 
           <div
-            className="hero-name z-20 -order-1 text-background cover:absolute cover:right-(--gutter) cover:bottom-[clamp(0.75rem,2.4svh,2rem)] cover:left-(--gutter)"
+            className="hero-name z-20 -order-1 text-background cover:absolute cover:right-(--hero-inset) cover:bottom-[clamp(0.75rem,calc(1.5*var(--hero-unit)),2rem)] cover:left-(--hero-inset)"
             ref={nameRef}
           >
             <h1 className="sr-only">{t("name")}</h1>
