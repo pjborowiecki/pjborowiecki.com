@@ -159,6 +159,8 @@ Both locales are prerendered at build time and served as static assets; [`src/se
 
 The hero portrait never waits for JavaScript. It is a plain image, preloaded at high priority, that paints the moment it arrives; the WebGL scene with the pointer-driven light crossfades in over it once it is ready, already fully lit. An earlier version hid the image until the scene had started and then faded the light up, which on a mid-range phone kept a downloaded portrait invisible for 1.6 seconds and dark for 2.4 more.
 
+The text on the first screen has no entrance animation either. The name, the hero copy and the navigation are part of the prerendered page, so they paint with it and stay where they are. Earlier versions faded the copy in, and hid the name and the navigation as soon as the scripts ran in order to animate them back. Recorded frame by frame on a desktop, the name painted at 0.08 s, vanished at 0.15 s and returned only at 1.87 s; the headline finished appearing last, at 1.1 s.
+
 ### Images: measured, not assumed
 
 AVIF files were smaller than WebP, so the first pipeline used them. Measured in Chrome, they made the browser decode while scrolling and caused occasional frames of 160 to 640 ms; the same page with WebP stayed under 100 ms. The pipeline now writes only WebP: `bun run images` turns each master in `src/presentation/assets/images/originals` into variants at widths up to the master's own, [`src/data/images.ts`](src/data/images.ts) reads them into typed source sets, and Vite fingerprints them so they are cached for a year.

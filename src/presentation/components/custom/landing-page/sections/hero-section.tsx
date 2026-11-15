@@ -26,8 +26,6 @@ const NAME_FLOOD_SCALE = 90
 const NAME_REST_CLEAR_AT = 0.05
 
 const CANVAS_REVEAL: gsap.TweenVars = { autoAlpha: 1, duration: 0.6, ease: "power1.out" }
-const INTRO_WINDOW_MS = 1200
-const NAME_RISE: gsap.TweenVars = { delay: 0.25, duration: 1.5, ease: "expo.out", stagger: 0.09, y: 880 }
 const COPY_CLEAR: gsap.TweenVars = { autoAlpha: 0, duration: 0.2, ease: "power1.in", y: "-5svh" }
 const REST_ZOOM = 1
 const CAMERA_PUSH: gsap.TweenVars = { duration: 0.9, ease: "power1.in", zoom: 1.28 }
@@ -47,7 +45,6 @@ interface HeroElements {
 }
 
 interface NameDive {
-  readonly marks: Element[]
   readonly root: HTMLElement
   readonly studio: HeroStudio | undefined
 }
@@ -85,38 +82,13 @@ const startStudio = ({ box, canvas, name, stage }: HeroElements): HeroStudio | u
   return studio
 }
 
-const riseName = (root: HTMLElement, marks: Element[]): void => {
-  gsap.set(marks, { overflow: "hidden" })
-
-  const words = selectAll(root, "[data-word]").filter((word) => word.getBoundingClientRect().width > 0)
-
-  gsap.from(words, {
-    ...NAME_RISE,
-    onComplete: () => {
-      gsap.set(marks, { overflow: "visible" })
-    },
-  })
-}
-
-const diveIntoName = ({ marks, root, studio }: NameDive): (() => void) => {
-  const mark = { isOpen: false }
+const diveIntoName = ({ root, studio }: NameDive): (() => void) => {
   const view = { zoom: REST_ZOOM }
 
   gsap
     .timeline({
       defaults: { ease: "none" },
-      scrollTrigger: {
-        ...DIVE_SCROLL,
-        onUpdate: (self) => {
-          if (mark.isOpen || self.progress === 0) {
-            return
-          }
-
-          mark.isOpen = true
-          gsap.set(marks, { overflow: "visible" })
-        },
-        trigger: root,
-      },
+      scrollTrigger: { ...DIVE_SCROLL, trigger: root },
     })
     .to(selectAll(root, "[data-copy]"), { ...COPY_CLEAR }, 0)
     .to(
@@ -148,15 +120,10 @@ const renderWhileOnScreen = (root: HTMLElement, studio: HeroStudio | undefined):
 const playHero = (elements: HeroElements): (() => void) => {
   const { root } = elements
   const studio = startStudio(elements)
-  const marks = selectAll(root, "[data-name-mark]")
   const pinning = gsap.matchMedia()
 
-  if (performance.now() <= INTRO_WINDOW_MS) {
-    riseName(root, marks)
-  }
-
   renderWhileOnScreen(root, studio)
-  pinning.add(MEDIA.TALL, () => diveIntoName({ marks, root, studio }))
+  pinning.add(MEDIA.TALL, () => diveIntoName({ root, studio }))
 
   return () => {
     pinning.revert()
@@ -169,7 +136,7 @@ const HeroIntro = (): JSX.Element => {
   const t = useTranslations("pages.landing.hero")
 
   return (
-    <div className="hero-copy z-10 cover:flex cover:flex-col" data-copy>
+    <div className="z-10 cover:flex cover:flex-col" data-copy>
       <p className="hidden border-b border-cream/22 pb-[clamp(0.5rem,calc(0.85*var(--hero-unit)),1rem)] type-label text-champagne cover:block">
         {t("introLabel")}
       </p>
@@ -210,7 +177,7 @@ const HeroFocus = (): JSX.Element => {
   const t = useTranslations("pages.landing.hero")
 
   return (
-    <div className="hero-copy z-10 hidden cover:block" data-copy>
+    <div className="z-10 hidden cover:block" data-copy>
       <p className="border-b border-cream/22 pb-[clamp(0.5rem,calc(0.85*var(--hero-unit)),1rem)] type-label text-champagne">
         {t("focusLabel")}
       </p>
@@ -303,7 +270,7 @@ export const HeroSection = (): JSX.Element => {
             ref={nameRef}
           >
             <h1 className="sr-only">{t("name")}</h1>
-            <NameMark className="hidden h-auto w-full sm:block" />
+            <NameMark className="hidden h-auto w-full overflow-visible sm:block" />
             <NameMarkStacked className="sm:hidden" />
           </div>
         </div>
