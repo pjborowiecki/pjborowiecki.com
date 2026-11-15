@@ -323,7 +323,7 @@ const measureFade = ({ options, scene }: Studio, stageRect: DOMRect): void => {
 }
 
 const measureStudio = (studio: Studio): void => {
-  const { isCoarse, options, scene, state } = studio
+  const { isCoarse, options, scene } = studio
   const { canvas } = options
   const { gl, uniforms } = scene
   const scale = Math.min(globalThis.devicePixelRatio || PIXEL_RATIO.fallback, isCoarse ? PIXEL_RATIO.coarse : PIXEL_RATIO.fine)
@@ -341,15 +341,23 @@ const measureStudio = (studio: Studio): void => {
   gl.uniform1f(uniforms.pixel, scale)
   measureSubject(studio, stageRect)
   measureFade(studio, stageRect)
-  state.isDirty = true
 }
 
 const drawStudio = ({ scene, state }: Studio): void => {
   const { gl, uniforms } = scene
 
+  state.isDirty = false
   gl.uniform1f(uniforms.zoom, state.zoom)
   gl.uniform2f(uniforms.light, state.lightX, state.lightY)
   gl.drawArrays(gl.TRIANGLES, 0, TRIANGLE_VERTICES)
+}
+
+const resizeStudio = (studio: Studio): void => {
+  measureStudio(studio)
+
+  if (studio.state.isReady) {
+    drawStudio(studio)
+  }
 }
 
 const driftLight = (state: StudioState, time: number): void => {
@@ -391,12 +399,9 @@ const stepStudio = (studio: Studio, time: number): void => {
 
   followLight(state)
 
-  if (!state.isDirty) {
-    return
+  if (state.isDirty) {
+    drawStudio(studio)
   }
-
-  state.isDirty = false
-  drawStudio(studio)
 }
 
 const loadImage = async (src: string): Promise<HTMLImageElement> => {
@@ -472,7 +477,7 @@ export const createHeroStudio = (options: HeroStudioOptions): HeroStudio | undef
   }
 
   const observer = new ResizeObserver(() => {
-    measureStudio(studio)
+    resizeStudio(studio)
   })
   observer.observe(options.stage)
 

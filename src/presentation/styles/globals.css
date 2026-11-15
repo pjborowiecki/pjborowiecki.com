@@ -573,15 +573,15 @@ html:not(.js) .figure-fade {
   }
 }
 
-@media (max-width: 1100px) {
-  .hero-creds {
-    display: none;
-  }
+.hero-creds {
+  display: none;
 }
 
-@media (max-height: 800px) {
-  .hero-creds {
-    display: none;
+@variant cover {
+  @media (min-width: 1250px) and (min-height: 782px) {
+    .hero-creds {
+      display: block;
+    }
   }
 }
 

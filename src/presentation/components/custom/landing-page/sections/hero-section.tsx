@@ -29,12 +29,12 @@ const CANVAS_REVEAL: gsap.TweenVars = { autoAlpha: 1, duration: 0.6, ease: "powe
 const INTRO_WINDOW_MS = 1200
 const NAME_RISE: gsap.TweenVars = { delay: 0.25, duration: 1.5, ease: "expo.out", stagger: 0.09, y: 880 }
 const COPY_CLEAR: gsap.TweenVars = { autoAlpha: 0, duration: 0.2, ease: "power1.in", y: "-5svh" }
+const REST_ZOOM = 1
 const CAMERA_PUSH: gsap.TweenVars = { duration: 0.9, ease: "power1.in", zoom: 1.28 }
 const NAME_DIVE: gsap.TweenVars = { duration: 1, ease: "expo.in", scale: NAME_FLOOD_SCALE, svgOrigin: NAME_STEM_ORIGIN }
 const NAME_REST_CLEAR: gsap.TweenVars = { autoAlpha: 0, duration: 0.3, ease: "power1.in" }
 const DIVE_SCROLL: ScrollTrigger.Vars = { end: "bottom bottom", scrub: true, start: "top top" }
 const ON_SCREEN: ScrollTrigger.Vars = { end: "bottom top", start: "top bottom" }
-const HERO_MEDIA = { motion: MEDIA.MOTION_OK, pin: `${MEDIA.MOTION_OK} and ${MEDIA.TALL}` } as const
 
 const STRONG_TAGS = { strong: (chunks: ReactNode) => <strong>{chunks}</strong> }
 
@@ -46,15 +46,10 @@ interface HeroElements {
   readonly stage: HTMLDivElement
 }
 
-interface HeroView {
-  zoom: number
-}
-
 interface NameDive {
   readonly marks: Element[]
   readonly root: HTMLElement
   readonly studio: HeroStudio | undefined
-  readonly view: HeroView
 }
 
 const selectAll = (root: HTMLElement, selector: string): Element[] => [...root.querySelectorAll(selector)]
@@ -103,20 +98,15 @@ const riseName = (root: HTMLElement, marks: Element[]): void => {
   })
 }
 
-const diveIntoName = ({ marks, root, studio, view }: NameDive): void => {
+const diveIntoName = ({ marks, root, studio }: NameDive): (() => void) => {
   const mark = { isOpen: false }
-
-  const sync = (self: ScrollTrigger): void => {
-    studio?.setVisible(self.isActive || self.progress === 0)
-  }
+  const view = { zoom: REST_ZOOM }
 
   gsap
     .timeline({
       defaults: { ease: "none" },
       scrollTrigger: {
         ...DIVE_SCROLL,
-        onRefresh: sync,
-        onToggle: sync,
         onUpdate: (self) => {
           if (mark.isOpen || self.progress === 0) {
             return
@@ -141,6 +131,10 @@ const diveIntoName = ({ marks, root, studio, view }: NameDive): void => {
     )
     .to(selectAll(root, "[data-name-zoom]"), { ...NAME_DIVE }, 0)
     .to(selectAll(root, "[data-name-rest]"), { ...NAME_REST_CLEAR }, NAME_REST_CLEAR_AT)
+
+  return () => {
+    studio?.setZoom(REST_ZOOM)
+  }
 }
 
 const renderWhileOnScreen = (root: HTMLElement, studio: HeroStudio | undefined): void => {
@@ -151,23 +145,21 @@ const renderWhileOnScreen = (root: HTMLElement, studio: HeroStudio | undefined):
   ScrollTrigger.create({ ...ON_SCREEN, onRefresh: sync, onToggle: sync, trigger: root })
 }
 
-const animateHero = (elements: HeroElements, canPin: boolean): (() => void) => {
+const playHero = (elements: HeroElements): (() => void) => {
   const { root } = elements
-  const view: HeroView = { zoom: 1 }
   const studio = startStudio(elements)
   const marks = selectAll(root, "[data-name-mark]")
+  const pinning = gsap.matchMedia()
 
   if (performance.now() <= INTRO_WINDOW_MS) {
     riseName(root, marks)
   }
 
-  if (canPin) {
-    diveIntoName({ marks, root, studio, view })
-  } else {
-    renderWhileOnScreen(root, studio)
-  }
+  renderWhileOnScreen(root, studio)
+  pinning.add(MEDIA.TALL, () => diveIntoName({ marks, root, studio }))
 
   return () => {
+    pinning.revert()
     studio?.destroy()
     document.documentElement.classList.remove("studio-live")
   }
@@ -189,7 +181,7 @@ const HeroIntro = (): JSX.Element => {
         {t.rich("building", STRONG_TAGS)}
       </p>
 
-      <dl className="hero-creds mt-[clamp(0.75rem,calc(1.15*var(--hero-unit)),1.5rem)] hidden border-t border-cream/22 text-[clamp(0.8125rem,calc(0.86*var(--hero-unit)),1.0625rem)] tracking-[-0.008em] [@media(min-width:900px)_and_(min-aspect-ratio:11/10)_and_(min-height:760px)]:block">
+      <dl className="hero-creds mt-[clamp(0.75rem,calc(1.15*var(--hero-unit)),1.5rem)] border-t border-cream/22 text-[clamp(0.8125rem,calc(0.86*var(--hero-unit)),1.0625rem)] tracking-[-0.008em]">
         {CREDENTIALS.map((credential) => (
           <div
             className="grid grid-cols-[calc(6.2*var(--hero-unit))_1fr] gap-x-[calc(0.6*var(--hero-unit))] border-b border-cream/22 py-[clamp(0.3rem,calc(0.5*var(--hero-unit)),0.65rem)]"
@@ -268,13 +260,7 @@ export const HeroSection = (): JSX.Element => {
         return
       }
 
-      gsap.matchMedia().add(HERO_MEDIA, ({ conditions }) => {
-        if (conditions?.["motion"] !== true) {
-          return
-        }
-
-        return animateHero({ box, canvas, name, root, stage }, conditions["pin"] === true)
-      })
+      gsap.matchMedia().add(MEDIA.MOTION_OK, () => playHero({ box, canvas, name, root, stage }))
     },
     { scope: rootRef },
   )
