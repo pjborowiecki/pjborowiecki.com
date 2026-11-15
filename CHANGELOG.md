@@ -5,6 +5,7 @@ Each section lists the changes that reached `main` on that day. Every production
 ## 2026-11-15
 
 - Opening the mobile menu, or scrolling down, rolls the header's initials into the full name instead of crossfading the two on top of each other.
+- The hero keeps its proportions on every window shape. Its portrait, text and spacing scale together from one unit, so a narrower or squarer window shows the same composition smaller instead of the text drifting up and away from a towering portrait, and an ultrawide window centres it instead of stretching the name and text to the edges.
 - The hero portrait dissolves into the background on every screen shape. On windows only slightly wider than they are tall, its bottom edge used to stop short of the fade and show as a hard line.
 - On screens too short to hold them, such as a phone held sideways, the hero and the expertise cards scroll as ordinary content instead of pinning. The hero's headline and buttons used to fade away before they could scroll into view, and the cards cut off their last line.
 

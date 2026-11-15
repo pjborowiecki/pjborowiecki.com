@@ -538,13 +538,19 @@ html:not(.js) .figure-fade {
 }
 
 @variant cover {
+  .hero-stage {
+    --hero-unit: min(1vw, 1.6svh);
+    --hero-inset: max(var(--gutter), calc((100vw - 100 * var(--hero-unit)) / 2));
+    --hero-lift: calc(100svh - 62.5 * var(--hero-unit));
+  }
+
   .hero-subject {
-    top: max(calc(var(--nav-height) * 0.74), 3.4svh);
-    height: min(104svh, 65vw);
+    top: max(calc(var(--nav-height) * 0.74), calc(var(--hero-lift) + 2.125 * var(--hero-unit)));
+    height: calc(65 * var(--hero-unit));
   }
 
   .hero-fade {
-    height: 44svh;
+    height: calc(27.5 * var(--hero-unit));
     background: linear-gradient(to top, var(--emerald-deep) 34%, transparent);
   }
 
@@ -554,11 +560,11 @@ html:not(.js) .figure-fade {
 
   .hero-flanks {
     position: absolute;
-    inset-inline: var(--gutter);
-    top: clamp(5rem, 12.6svh, 11rem);
+    inset-inline: var(--hero-inset);
+    top: calc(var(--hero-lift) + clamp(5rem, 7.875 * var(--hero-unit), 11rem));
     z-index: 10;
     display: grid;
-    grid-template-columns: 25.5vw 1fr 24vw;
+    grid-template-columns: calc(25.5 * var(--hero-unit)) 1fr calc(24 * var(--hero-unit));
     align-items: stretch;
   }
 
@@ -581,7 +587,7 @@ html:not(.js) .figure-fade {
 
 @variant cover {
   :lang(pl) .hero-role {
-    font-size: min(3vw, 5.3svh);
+    font-size: calc(3 * var(--hero-unit));
   }
 }
 
